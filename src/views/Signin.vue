@@ -30,6 +30,8 @@
                         @click="submitAuth"
                     >Авторизация
                     </argon-button>
+
+                    <button @click="submitAuth"> SUBMIT</button>
                   </div>
                 </div>
               </div>
