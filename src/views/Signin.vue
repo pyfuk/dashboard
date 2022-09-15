@@ -30,8 +30,6 @@
                         @click="submitAuth"
                     >Авторизация
                     </argon-button>
-
-                    <button @click="submitAuth"> SUBMIT</button>
                   </div>
                 </div>
               </div>
@@ -66,6 +64,7 @@ import ArgonButton from "@/components/ArgonButton.vue";
 import axios from "axios";
 import { useToast } from 'vue-toastification'
 import { mapMutations } from "vuex";
+import { server } from "@/config";
 
 const body = document.getElementsByTagName("body")[0];
 
@@ -81,7 +80,7 @@ export default {
         password: '',
         phone: '',
       },
-      toast: useToast()
+      toast: useToast(),
     }
   },
   methods: {
@@ -90,7 +89,7 @@ export default {
       setCurrentUser: 'setCurrentUser'
     }),
     async submitAuth() {
-      const res = await axios.post('http://localhost:3000/api/users/login', this.formData)
+      const res = await axios.post(server.URL + '/api/users/login', this.formData)
       localStorage.setItem('session', res.session);
       localStorage.setItem('user', JSON.stringify(res.user));
       this.setIsAuth(true)
