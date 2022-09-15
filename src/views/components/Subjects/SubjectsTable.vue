@@ -9,14 +9,6 @@
           <thead>
           <tr>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Название</th>
-            <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
-            >Количество занятий
-            </th>
-            <th
-                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
-            >Стоимость
-            </th>
             <th class="text-secondary opacity-7"></th>
           </tr>
           </thead>
@@ -31,12 +23,6 @@
                   <h6 class="mb-0 text-sm">{{ subject.name }}</h6>
                 </div>
               </div>
-            </td>
-            <td>
-              <p class="text-xs font-weight-bold mb-0">{{ subject.lessons_count }}</p>
-            </td>
-            <td class="align-middle text-center">
-              <span class="text-secondary text-xs font-weight-bold">{{ subject.cost }}</span>
             </td>
             <td class="align-middle">
               <a
