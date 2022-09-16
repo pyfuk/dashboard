@@ -95,7 +95,13 @@ export default {
       this.setIsAuth(true)
       this.setCurrentUser(res.user)
       this.toast.success('Успешно логинились')
-      await this.$router.push(`/`)
+
+      if (res.user.role == 'student' || res.user.role == 'teacher') {
+        await this.$router.push(`/users/${res.user.id}`)
+      } else {
+        this.$store.state.showASidenav = true;
+        await this.$router.push(`/`)
+      }
     }
   },
   created() {

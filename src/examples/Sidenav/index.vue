@@ -17,6 +17,7 @@
         : ' '
     } ${this.$store.state.sidebarType}`"
       id="sidenav-main"
+      v-if="this.$store.state.showASidenav"
   >
     <div class="sidenav-header">
       <i

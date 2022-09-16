@@ -17,6 +17,7 @@ export default createStore({
         isAbsolute: false,
         showNavs: true,
         showSidenav: true,
+        showASidenav: false,
         showNavbar: true,
         showFooter: true,
         showMain: true,
@@ -60,6 +61,9 @@ export default createStore({
         setCurrentUser(state, user) {
             state.currentUser = user
         },
+        setShowASidenav(state, bool) {
+            state.showASidenav = bool
+        },
     },
     actions: {
         toggleSidebarColor({ commit }, payload) {
@@ -70,6 +74,7 @@ export default createStore({
             commit("setCurrentUser", null)
             localStorage.removeItem('session')
             localStorage.removeItem('user')
+            commit("setShowASidenav", false)
             router.push('/signin')
         }
     },

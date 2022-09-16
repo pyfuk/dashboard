@@ -80,11 +80,15 @@ export default {
     this.$store.state.isTransparent = "bg-transparent";
 
     const session = localStorage.getItem('session');
-    const user = localStorage.getItem('user');
+    const user = JSON.parse(localStorage.getItem('user'))
 
     if (session && user) {
+      this.$store.commit('setCurrentUser', user);
       this.$store.commit('setIsAuth', true);
-      this.$store.commit('setCurrentUser', JSON.parse(user));
+
+      if (user.role == 'admin') {
+        this.$store.state.showASidenav = true;
+      }
     }
   }
 };
