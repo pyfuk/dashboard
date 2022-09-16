@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid mt-4">
+  <div class="container-fluid mt-4" :class="`${user.role == 'admin' ? '' : 'col-10'}`">
     <div class="card shadow-lg">
       <div class="card-body p-3 d-flex justify-content-between">
         <div class="d-flex">
