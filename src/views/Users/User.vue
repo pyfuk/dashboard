@@ -1,38 +1,60 @@
 <template>
-  <div class="container-fluid mt-4" :class="`${user.role == 'admin' ? '' : 'col-10'}`">
+  <div class="container-fluid mt-4" :class="`${user.role == 'admin' ? '' : 'col col-xl-10'}`">
+
     <div class="card shadow-lg">
-      <div class="card-body p-3 d-flex justify-content-between">
-        <div class="d-flex">
-          <div class="avatar avatar-xl position-relative">
-            <img
-                src="../../assets/img/team-1.jpg"
-                alt="profile_image"
-                class="shadow-sm w-100 border-radius-lg"
-            />
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-4 col-md-3 col-lg-2 col-xl-2">
+                <div class="avatar avatar-xl position-relative">
+                  <img
+                      src="../../assets/img/team-1.jpg"
+                      alt="profile_image"
+                      class="shadow-sm w-100 border-radius-lg"
+                  />
+                </div>
+              </div>
+              <div class="col-8 col-md-9 col-lg-10 col-xl-10" :class="{'d-flex align-items-center': !isMobile}">
+                <div class="my-auto mx-3">
+                  <div class="h-100">
+                    <h5 class="mb-1">{{ user.lastname }} {{ user.firstname }}</h5>
+                    <p class="mb-0 font-weight-bold text-sm">{{ getTranslatedRole(user.role) }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="my-auto mx-3">
-            <div class="h-100">
-              <h5 class="mb-1">{{ user.lastname }} {{ user.firstname }}</h5>
-              <p class="mb-0 font-weight-bold text-sm">{{ getTranslatedRole(user.role) }}</p>
+
+          <div class="col-md-6" :class="{'d-flex align-items-center  justify-content-end': !isMobile}">
+            <div :class="{'row': isMobile}">
+
+              <argon-button color="success" :variant="page === 'edit' ? 'gradient' : 'outline'"
+                            @click="changeRoute('edit')"
+                            :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
+
+              >
+                Профиль
+              </argon-button>
+
+              <argon-button color="success" :variant="page === 'calendar' ? 'gradient' : 'outline'"
+                            @click="changeRoute('calendar')"
+                            :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
+              >Календарь
+              </argon-button>
+              <argon-button color="success" :variant="page === 'lessons' ? 'gradient' : 'outline'"
+                            @click="changeRoute('lessons')"
+                            :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
+              >Курсы
+              </argon-button>
             </div>
           </div>
         </div>
-        <div class="my-auto">
-          <argon-button color="success" :variant="page === 'edit' ? 'gradient' : 'outline'" @click="changeRoute('edit')"
-                        class="mx-1">
-            Профиль
-          </argon-button>
-          <argon-button color="success" :variant="page === 'calendar' ? 'gradient' : 'outline'"
-                        @click="changeRoute('calendar')"
-                        class="mx-1">Календарь
-          </argon-button>
-          <argon-button color="success" :variant="page === 'lessons' ? 'gradient' : 'outline'"
-                        @click="changeRoute('lessons')"
-                        class="mx-1">Курсы
-          </argon-button>
-        </div>
+
+
       </div>
     </div>
+
     <router-view v-if="user" :user="user"></router-view>
   </div>
 </template>
@@ -53,9 +75,18 @@ export default {
       page: '',
       user_id: '',
       user: '',
+      windowWidth: window.innerWidth,
+    }
+  },
+  computed: {
+    isMobile() {
+      return this.windowWidth <= 767
     }
   },
   mounted() {
+    window.onresize = () => {
+      this.windowWidth = window.innerWidth
+    }
     this.user_id = this.$route.params.id;
     this.parseRoute();
     this.getUser();
