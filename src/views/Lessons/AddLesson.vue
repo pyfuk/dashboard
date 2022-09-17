@@ -1,11 +1,11 @@
 <template>
 
-  <div class="container-fluid mt-4">
+  <div class="mt-4">
     <div class="row">
-      <div class="col-4">
+      <div class="col-md-4">
         <add-lesson-form :dates="dates"></add-lesson-form>
       </div>
-      <div class="col-8">
+      <div class="col-md-8" :class="{'mt-4': isMobile}">
         <div class="card">
           <div class="card-body">
             <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
@@ -30,13 +30,23 @@ export default {
     AddLessonForm,
     FullCalendar, // make the <FullCalendar> tag available
   },
+  props: {
+    isMobile: {
+      type: Boolean,
+      required: true
+    }
+  },
   data() {
     return {
       calendarOptions: {
         headerToolbar: {
-          left: 'prev,next today',
+          left: false,
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          right: 'prev,next'
+        },
+        footerToolbar: {
+          left: false,
+          center: 'dayGridMonth,timeGridWeek,timeGridDay',
         },
         buttonText: {
           today: 'Сегодня',
@@ -47,7 +57,7 @@ export default {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         locale: 'ru',
         timeZone: 'local',
-        contentHeight: 720,
+        contentHeight: this.isMobile ? 415 : 650,
         defaultView: 'dayGridMonth',
         navLinks: true, //Переход по датам
         events: [],

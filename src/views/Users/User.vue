@@ -55,7 +55,9 @@
       </div>
     </div>
 
-    <router-view v-if="user" :user="user" :isMobile="isMobile"></router-view>
+    <div :class="{'container-fluid': !isMobile}">
+      <router-view v-if="user" :user="user" :isMobile="isMobile"></router-view>
+    </div>
   </div>
 </template>
 
