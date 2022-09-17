@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <router-view v-if="user" :user="user"></router-view>
+    <router-view v-if="user" :user="user" :isMobile="isMobile"></router-view>
   </div>
 </template>
 

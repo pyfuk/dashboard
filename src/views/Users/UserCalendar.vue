@@ -20,6 +20,10 @@ export default {
     user: {
       type: Object,
       required: true
+    },
+    isMobile: {
+      type: Boolean,
+      required: true
     }
   },
   components: {
@@ -29,9 +33,13 @@ export default {
     return {
       calendarOptions: {
         headerToolbar: {
-          left: 'prev,next today',
+          left: false,
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          right: 'prev,next'
+        },
+        footerToolbar: {
+          left: false,
+          center: 'dayGridMonth,timeGridWeek,timeGridDay',
         },
         buttonText: {
           today: 'Сегодня',
@@ -42,7 +50,7 @@ export default {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         locale: 'ru',
         timeZone: 'local',
-        contentHeight: 720,
+        contentHeight: this.isMobile ? 415 : 650,
         defaultView: 'dayGridMonth',
         navLinks: true, //Переход по датам
         events: [],
@@ -66,7 +74,7 @@ export default {
         },
         displayEventEnd: true,
       },
-      lessons: []
+      lessons: [],
     }
   },
   methods: {
