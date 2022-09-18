@@ -69,19 +69,6 @@
       </li>
       <li class="nav-item">
         <sidenav-item
-            url="/passes"
-            :class="getRoute() === 'calendar' ? 'active' : ''"
-            :navText="'Passes'"
-        >
-          <template v-slot:icon>
-            <i
-                class="fa fa-ticket text-warning text-sm opacity-10"
-            ></i>
-          </template>
-        </sidenav-item>
-      </li>
-      <li class="nav-item">
-        <sidenav-item
             url="/billing"
             :class="getRoute() === 'billing' ? 'active' : ''"
             :navText="this.$store.state.isRTL ? 'الفواتیر' : 'Billing'"
