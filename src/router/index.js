@@ -18,6 +18,7 @@ import UserProfile from "../views/Users/UserProfile";
 import Subjects from "../views/Subjects/Subjects";
 import AddLesson from "../views/Lessons/AddLesson";
 import UserAdd from "../views/Users/UserAdd";
+import PageNotFound from "@/views/PageNotFound";
 
 const routes = [
     {
@@ -118,6 +119,7 @@ const routes = [
         name: "Signup",
         component: Signup,
     },
+    { path: "/:pathMatch(.*)*", component: PageNotFound }
 
 ];
 

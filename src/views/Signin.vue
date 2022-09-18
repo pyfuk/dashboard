@@ -65,6 +65,7 @@ import axios from "axios";
 import { useToast } from 'vue-toastification'
 import { mapMutations } from "vuex";
 import { server } from "@/config";
+import usersRoleMixin from "@/mixins/usersRoleMixin";
 
 const body = document.getElementsByTagName("body")[0];
 
@@ -83,6 +84,7 @@ export default {
       toast: useToast(),
     }
   },
+  mixins: [usersRoleMixin],
   methods: {
     ...mapMutations({
       setIsAuth: 'setIsAuth',
@@ -96,8 +98,8 @@ export default {
       this.setCurrentUser(res.user)
       this.toast.success('Успешно логинились')
 
-      if (res.user.role == 'student' || res.user.role == 'teacher') {
-        await this.$router.push(`/users/${res.user.id}`)
+      if (!this.isAdmin(res.user)) {
+        await this.$router.push(`/users/${res.user.id}/calendar`)
       } else {
         this.$store.state.showASidenav = true;
         await this.$router.push(`/`)

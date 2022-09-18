@@ -16,11 +16,18 @@
 import AddSubjectForm from "../components/User/AddSubjectForm";
 import usersRoleMixin from "../../mixins/usersRoleMixin";
 import AddUserForm from "../components/User/AddUserForm";
+import store from '../../store/index'
 
 export default {
   name: "UserProfile",
   components: { AddSubjectForm, AddUserForm },
   mixins: [usersRoleMixin],
+  beforeRouteEnter(to, from, next) {
+    if (usersRoleMixin.methods.isStudent(store.state.currentUser)) {
+      next(`${to.fullPath}/calendar`);
+    }
+    next()
+  },
   props: {
     user: {
       type: Object

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid mt-4" :class="`${user.role == 'admin' ? '' : 'col col-xl-10'}`">
+  <div class="container-fluid mt-4" :class="`${$store.state.currentUser.role == 'admin' ? '' : 'col col-xl-10'}`">
 
     <div class="card shadow-lg">
       <div class="card-body">
@@ -32,6 +32,7 @@
               <argon-button color="success" :variant="page === 'edit' ? 'gradient' : 'outline'"
                             @click="changeRoute('edit')"
                             :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
+                            v-if="isAdmin($store.state.currentUser)"
 
               >
                 Профиль
@@ -40,11 +41,13 @@
               <argon-button color="success" :variant="page === 'calendar' ? 'gradient' : 'outline'"
                             @click="changeRoute('calendar')"
                             :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
+                            v-if="!isAdmin(user)"
               >Календарь
               </argon-button>
               <argon-button color="success" :variant="page === 'lessons' ? 'gradient' : 'outline'"
                             @click="changeRoute('lessons')"
                             :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
+                            v-if="!isAdmin(user)"
               >Курсы
               </argon-button>
             </div>
@@ -104,7 +107,12 @@ export default {
         this.page = 'calendar'
         return
       }
-      this.page = 'edit'
+
+      if (!this.isAdmin(this.$store.state.currentUser)) {
+        this.page = 'calendar'
+      } else {
+        this.page = 'edit'
+      }
     },
     changeRoute(route) {
       this.$router.push(`/users/${this.user_id}/${route}`)
