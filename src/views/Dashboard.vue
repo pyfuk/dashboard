@@ -125,6 +125,8 @@ import US from "@/assets/img/icons/flags/US.png";
 import DE from "@/assets/img/icons/flags/DE.png";
 import GB from "@/assets/img/icons/flags/GB.png";
 import BR from "@/assets/img/icons/flags/BR.png";
+import usersRoleMixin from "@/mixins/usersRoleMixin";
+import store from "@/store";
 
 export default {
   name: "dashboard-default",
@@ -196,6 +198,12 @@ export default {
         },
       },
     };
+  },
+  beforeRouteEnter(to, from, next) {
+    if (usersRoleMixin.methods.isStudent(store.state.currentUser)) {
+      next(`/users/${store.state.currentUser.id}/calendar`);
+    }
+    next()
   },
   components: {
     Card,

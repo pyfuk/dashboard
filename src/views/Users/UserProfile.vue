@@ -24,7 +24,7 @@ export default {
   mixins: [usersRoleMixin],
   beforeRouteEnter(to, from, next) {
     if (usersRoleMixin.methods.isStudent(store.state.currentUser)) {
-      next(`${to.fullPath}/calendar`);
+      next(`/users/${store.state.currentUser.id}/calendar`);
     }
     next()
   },
