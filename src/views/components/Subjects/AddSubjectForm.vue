@@ -40,7 +40,6 @@ export default {
         name: '',
         icon: 'guitar'
       },
-      passes: []
     }
   },
   methods: {
@@ -50,7 +49,6 @@ export default {
     async addSubject() {
       const data = this.form;
       const res = await axios.post(server.URL + '/api/subjects/create', data);
-      await this.addSubjectToArray(res.subject)
       this.clearForm()
     },
     clearForm() {

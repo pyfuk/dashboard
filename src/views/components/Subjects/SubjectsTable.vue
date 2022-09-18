@@ -5,7 +5,7 @@
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-0">
-        <table class="table align-items-center mb-0">
+        <table v-if="subjects.length && !isSubjectsLoading" class="table align-items-center mb-0">
           <thead>
           <tr>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Название</th>
@@ -35,6 +35,17 @@
           </tr>
           </tbody>
         </table>
+
+        <div v-else-if="!isSubjectsLoading" class="d-flex justify-content-center my-2">
+          <span class="text-secondary text-3xl font-weight-bold">Нет данных</span>
+        </div>
+
+        <div class="d-flex justify-content-center my-2" v-if="isSubjectsLoading">
+          <div class="spinner-border text-success" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+
       </div>
     </div>
     <div class="card-footer p-3 ms-auto">
@@ -54,20 +65,36 @@
 import ArgonPagination from "../../../components/ArgonPagination";
 import ArgonPaginationItem from "../../../components/ArgonPaginationItem";
 import IconView from "../../../components/IconView";
+import utilsMixin from "@/mixins/utilsMixin";
+import axios from "axios";
+import { server, timeout } from "@/config";
 
 export default {
-  name: "SubjectsTable",
+  name: "subjects-table",
   components: {
     ArgonPagination,
     ArgonPaginationItem,
     IconView
   },
-  props: {
-    subjects: {
-      type: Array,
-      required: true
+  mixins: [utilsMixin],
+  data() {
+    return {
+      subjects: [],
+      isSubjectsLoading: true,
     }
-  }
+  },
+  methods: {
+    async getSubjects() {
+      this.isSubjectsLoading = true
+      const response = await axios.post(server.URL + '/api/subjects/get_all');
+      this.subjects = response.subjects;
+      this.isSubjectsLoading = false
+    }
+  },
+  async mounted() {
+    await this.sleep(timeout.LIST_SLEEP);
+    await this.getSubjects();
+  },
 }
 </script>
 
