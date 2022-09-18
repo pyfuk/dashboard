@@ -13,7 +13,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="subject in subjects" :key="subject._id">
+          <tr v-for="subject in subjects" :key="subject.id">
             <td>
               <div class="d-flex px-2 py-1">
                 <div class="text-center shadow icon icon-shape bg-gradient-dark icon-md mx-2">
