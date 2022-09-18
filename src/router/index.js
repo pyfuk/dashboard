@@ -18,6 +18,7 @@ import UserProfile from "../views/Users/UserProfile";
 import Subjects from "../views/Subjects/Subjects";
 import AddLesson from "../views/Lessons/AddLesson";
 import UserAdd from "../views/Users/UserAdd";
+import Passes from "@/views/Passes/Passes";
 
 const routes = [
     {
@@ -86,6 +87,11 @@ const routes = [
         path: "/calendar",
         name: "Calendar",
         component: Calendar,
+    },
+    {
+        path: "/passes",
+        name: "Passes",
+        component: Passes,
     },
     {
         path: "/billing",
