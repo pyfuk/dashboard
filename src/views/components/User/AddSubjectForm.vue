@@ -1,6 +1,6 @@
 <template>
   <div>
-    <categories-card cardTitle="Предметы" :subjects="userSubjects"/>
+    <categories-card cardTitle="Предметы" :subjects="teacherSubjects"/>
     <div class="card mt-4">
       <div class="p-3 pb-0 card-header">
         <h6 class="mb-0">Добавить предмет</h6>
@@ -29,7 +29,7 @@ import CategoriesCard from "../CategoriesCard/CategoriesCard";
 import ArgonSelect from "../../../components/ArgonSelect";
 import axios from "axios";
 import ArgonButton from "../../../components/ArgonButton";
-import { mapActions, mapState } from "vuex";
+import { server } from "@/config";
 
 export default {
   name: "AddSubjectForm",
@@ -41,15 +41,11 @@ export default {
   data() {
     return {
       subjects: [],
+      teacherSubjects: [],
       form: {
         name: ''
       }
     }
-  },
-  computed: {
-    ...mapState({
-      userSubjects: state => state.subjects.userSubjects,
-    })
   },
   mounted() {
     const user_id = this.$route.params.id;
@@ -57,16 +53,24 @@ export default {
     this.getUserSubjects(user_id)
   },
   methods: {
-    ...mapActions({
-      getUserSubjects: 'subjects/getUserSubjects'
-    }),
-
     async getSubjects() {
-      const res = await axios.post('http://localhost:3000/api/subjects/get_all');
-      this.subjects = res.data.map(sub => {
+      const res = await axios.post(server.URL + '/api/subjects/get_all');
+      this.subjects = res.subjects.map(sub => {
         return {
           name: sub.name,
-          value: sub._id
+          value: sub.id
+        }
+      })
+    },
+    async getUserSubjects(user_id) {
+      const data = {
+        teacher_id: user_id
+      }
+      const res = await axios.post(server.URL + '/api/subjects/get_teacher_subjects', data)
+      this.teacherSubjects = res.subjects.map(s => {
+        return {
+          title: s.name,
+          icon: s.icon
         }
       })
     },
@@ -77,9 +81,7 @@ export default {
         subject_id: this.form.name
       }
 
-      const res = await axios.post('http://localhost:3000/api/subjects/add_subject_to_teacher', data)
-
-      console.log(res)
+      const res = await axios.post(server.URL + '/api/subjects/add_subject_to_teacher', data)
     }
   }
 
