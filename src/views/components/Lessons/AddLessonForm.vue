@@ -20,6 +20,9 @@
                     :options="passes"></argon-select>
 
 
+      <argon-switch v-model="form.isPass"></argon-switch>
+
+
       Время и дата
       <div v-for="date in dates" :key="date.id">
         {{ parseDate(date) }}
@@ -39,10 +42,12 @@ import ArgonButton from "../../../components/ArgonButton";
 import { mapActions, mapState } from "vuex";
 import axios from "axios";
 import { server } from "../../../config";
+import ArgonSwitch from "@/components/ArgonSwitch";
 
 export default {
   name: "AddLessonForm",
   components: {
+    ArgonSwitch,
     ArgonSelect,
     ArgonButton
   },
@@ -51,7 +56,8 @@ export default {
       form: {
         subject: '',
         teacher: '',
-        pass: ''
+        pass: '',
+        isPass: true,
       },
       teachers: [],
       passes: [],
