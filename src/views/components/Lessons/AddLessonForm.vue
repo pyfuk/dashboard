@@ -14,6 +14,12 @@
       <argon-select v-model="form.teacher"
                     :options="teachers"></argon-select>
 
+      <label for="pass" class="form-control-label"
+      >Абонимент</label>
+      <argon-select v-model="form.pass"
+                    :options="passes"></argon-select>
+
+
       Время и дата
       <div v-for="date in dates" :key="date.id">
         {{ parseDate(date) }}
@@ -45,8 +51,10 @@ export default {
       form: {
         subject: '',
         teacher: '',
+        pass: ''
       },
       teachers: [],
+      passes: [],
       user_id: ''
     }
   },
@@ -99,6 +107,16 @@ export default {
         }
       })
     },
+    async getPasses() {
+      const res = await axios.post(server.URL + "/api/passes/get_all");
+
+      this.passes = res.passes.map(pass => {
+        return {
+          name: pass,
+          value: pass
+        }
+      });
+    },
     parseDate(date) {
       const week = this.getWeek(date.start.getDay());
       const startTime = this.addZero(date.start.getHours()) + ":" + this.addZero(date.start.getMinutes());
@@ -140,6 +158,7 @@ export default {
   mounted() {
     this.user_id = this.$route.params.id;
     this.getSubjects();
+    this.getPasses();
   },
   watch: {
     'form.subject'() {

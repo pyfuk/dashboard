@@ -2,10 +2,10 @@
 
   <div class="mt-4">
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <add-lesson-form :dates="dates"></add-lesson-form>
       </div>
-      <div class="col-md-8" :class="{'mt-4': isMobile}">
+      <div class="col-md-9" :class="{'mt-4': isMobile}">
         <div class="card">
           <div class="card-body">
             <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
