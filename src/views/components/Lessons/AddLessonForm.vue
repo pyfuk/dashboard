@@ -14,15 +14,20 @@
       <argon-select v-model="form.teacher"
                     :options="teachers"></argon-select>
 
-      <label for="pass" class="form-control-label"
+      <hr class="horizontal dark"/>
+
+      <div class="d-flex justify-content-between mb-2">
+        <span>Одноразовое посещение</span>
+        <argon-switch v-model="form.onetime"></argon-switch>
+      </div>
+
+      <label v-if="!form.onetime" for="onetime" class="form-control-label"
       >Абонимент</label>
-      <argon-select v-model="form.pass"
+      <argon-select v-if="!form.onetime" v-model="form.onetime"
                     :options="passes"></argon-select>
 
 
-      <argon-switch v-model="form.isPass"></argon-switch>
-
-
+      <hr class="horizontal dark"/>
       Время и дата
       <div v-for="date in dates" :key="date.id">
         {{ parseDate(date) }}
@@ -57,7 +62,7 @@ export default {
         subject: '',
         teacher: '',
         pass: '',
-        isPass: true,
+        onetime: false,
       },
       teachers: [],
       passes: [],
