@@ -75,6 +75,8 @@ export default {
         displayEventEnd: true,
       },
       lessons: [],
+      background: [],
+      view: 'dayGridMonth'
     }
   },
   methods: {
@@ -85,7 +87,7 @@ export default {
       }
       const response = await axios.post(server.URL + '/api/lessons/get_lessons', data);
 
-      const lessons = response.lessons.map(lesson => {
+      this.lessons = response.lessons.map(lesson => {
         return {
           ...lesson,
           title: lesson.subject.name,
@@ -93,7 +95,28 @@ export default {
         }
       })
 
-      this.calendarOptions.events = lessons;
+      this.background = response.background.map(date => {
+        return {
+          date,
+          display: 'background',
+          color: 'red'
+        }
+      })
+
+      if (this.view == 'dayGridMonth') {
+        this.calendarOptions.events = this.background;
+      } else {
+        this.calendarOptions.events = this.lessons;
+      }
+    },
+    viewDidMount(params) {
+      this.view = params.view.type;
+
+      if (this.view == 'dayGridMonth' && this.background.length && this.lessons.length) {
+        this.calendarOptions.events = this.background;
+      } else {
+        this.calendarOptions.events = this.lessons;
+      }
     }
 
   },
