@@ -23,7 +23,7 @@
 
       <label v-if="!form.onetime" for="onetime" class="form-control-label"
       >Абонимент</label>
-      <argon-select v-if="!form.onetime" v-model="form.onetime"
+      <argon-select v-if="!form.onetime" v-model="form.pass"
                     :options="passes"></argon-select>
 
 
@@ -173,8 +173,12 @@ export default {
   },
   watch: {
     'form.subject'() {
+      console.log('here222')
       this.form.teacher = ''
       this.getTeachersBySubject();
+    },
+    'form.teacher'() {
+      this.$emit('form', this.form);
     }
   }
 }

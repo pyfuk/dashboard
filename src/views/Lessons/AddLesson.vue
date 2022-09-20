@@ -3,11 +3,12 @@
   <div class="mt-4">
     <div class="row">
       <div class="col-md-3">
-        <add-lesson-form :dates="dates"></add-lesson-form>
+        <add-lesson-form :dates="dates" @form="getFormData"></add-lesson-form>
       </div>
       <div class="col-md-9" :class="{'mt-4': isMobile}">
         <div class="card">
           <div class="card-body">
+            <div :class="{'overlay': overlay}"></div>
             <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
           </div>
         </div>
@@ -90,7 +91,8 @@ export default {
 
         eventClick: this.eventClicked,
       },
-      dates: []
+      dates: [],
+      overlay: true
     }
   },
   methods: {
@@ -111,6 +113,13 @@ export default {
     },
     eventClicked(eventClickInfo) {
       console.log(eventClickInfo.event.id)
+    },
+    getFormData(value) {
+      if (value.teacher && value.subject) {
+        this.overlay = false;
+      } else {
+        this.overlay = true;
+      }
     }
   },
 
@@ -120,5 +129,13 @@ export default {
 </script>
 
 <style scoped>
-
+.overlay {
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  right: 15px;
+  bottom: 15px;
+  backdrop-filter: blur(6px);
+  z-index: 2;
+}
 </style>
