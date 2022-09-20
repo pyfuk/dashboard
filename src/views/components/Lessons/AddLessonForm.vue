@@ -48,6 +48,7 @@ import { mapActions, mapState } from "vuex";
 import axios from "axios";
 import { server } from "../../../config";
 import ArgonSwitch from "@/components/ArgonSwitch";
+import usersRoleMixin from "@/mixins/usersRoleMixin";
 
 export default {
   name: "AddLessonForm",
@@ -56,12 +57,13 @@ export default {
     ArgonSelect,
     ArgonButton
   },
+  mixins: [usersRoleMixin],
   data() {
     return {
       form: {
         subject: '',
         teacher: '',
-        pass: '',
+        pass: 4,
         onetime: false,
       },
       teachers: [],
@@ -79,7 +81,7 @@ export default {
       getSubjects: 'subjects/getSubjects'
     }),
     async addLesson() {
-      const date = this.dates.map(date => {
+      const dates = this.dates.map(date => {
         const startTime = this.addZero(date.start.getHours()) + ":" + this.addZero(date.start.getMinutes());
         const endTime = this.addZero(date.end.getHours()) + ":" + this.addZero(date.end.getMinutes());
         return {
@@ -90,19 +92,20 @@ export default {
         }
       })
 
+      const student_id = this.isAdmin(this.$store.state.currentUser) ? this.user_id : this.$store.state.currentUser.id;
+
       const data = {
-        date,
+        dates,
+        student_id,
         subject_id: this.form.subject,
         teacher_id: this.form.teacher,
-        student_id: this.user_id,
-        isCourse: true,
+        type: this.form.onetime ? 'one_time' : 'pass',
+        pass: this.form.pass,
       }
 
       const res = await axios.post(server.URL + '/api/lessons/create', data)
 
-      if (res.data.success) {
-        await this.$router.push(`/users/${this.user_id}/calendar`)
-      }
+      await this.$router.push(`/users/${this.user_id}/calendar`)
     },
     async getTeachersBySubject() {
       const data = {
@@ -173,7 +176,6 @@ export default {
   },
   watch: {
     'form.subject'() {
-      console.log('here222')
       this.form.teacher = ''
       this.getTeachersBySubject();
     },
