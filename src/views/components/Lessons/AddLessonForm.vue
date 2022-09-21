@@ -131,6 +131,8 @@ export default {
           value: pass
         }
       });
+
+      this.changedPassForm();
     },
     parseDate(date) {
       const week = this.getWeek(date.start.getDay());
@@ -166,6 +168,9 @@ export default {
     },
     removeCalendarEvent(eventId) {
       this.$emit('removeEvent', eventId);
+    },
+    changedPassForm() {
+      this.$emit('changedPassForm', this.form.pass)
     }
   },
   computed: {
@@ -185,6 +190,9 @@ export default {
     },
     'form.teacher'() {
       this.$emit('form', this.form);
+    },
+    'form.pass'(){
+      this.changedPassForm();
     }
   }
 }

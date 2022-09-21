@@ -3,7 +3,8 @@
   <div class="mt-4">
     <div class="row">
       <div class="col-md-3">
-        <add-lesson-form :dates="dates" @form="getFormData" @removeEvent="removeEvent"></add-lesson-form>
+        <add-lesson-form :dates="dates" @form="getFormData" @removeEvent="removeEvent"
+                         @changedPassForm="changedPassForm"></add-lesson-form>
       </div>
       <div class="col-md-9" :class="{'mt-4': isMobile}">
         <div class="card">
@@ -73,7 +74,6 @@ export default {
           minute: '2-digit',
           omitZeroMinute: false,
         },
-
         // Event Drag and Resize
 
         editable: true,
@@ -91,20 +91,24 @@ export default {
         eventClick: this.eventClicked,
       },
       dates: [],
-      overlay: true
+      overlay: true,
+      pass: '4',
+      eventCounter: 0
     }
   },
   methods: {
     selectedEvent(event) {
+      if (this.dates.length >= this.pass / 4) {
+        return;
+      }
 
-      const id = this.calendarOptions.events.length + 1;
-
+      const id = this.eventCounter++;
       this.calendarOptions.events = [...this.calendarOptions.events,
         {
           id,
           start: event.start,
           end: event.end,
-          overlap: false
+          overlap: false,
         }]
 
       this.dates = [...this.dates, {
@@ -159,6 +163,16 @@ export default {
     removeEvent(eventId) {
       this.dates = this.dates.filter(d => d.id != eventId);
       this.calendarOptions.events = this.calendarOptions.events.filter(e => e.id != eventId);
+    },
+    changedPassForm(pass) {
+      this.pass = pass;
+
+      if (this.dates.length >= this.pass / 4) {
+        for (let i = this.dates.length; i > this.pass / 4; i--) {
+          const popped = this.dates.pop()
+          this.calendarOptions.events = this.calendarOptions.events.filter(e => e.id != popped.id);
+        }
+      }
     }
   },
 
