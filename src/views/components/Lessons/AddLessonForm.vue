@@ -29,8 +29,9 @@
 
       <hr class="horizontal dark"/>
       Время и дата
-      <div v-for="date in dates" :key="date.id">
-        {{ parseDate(date) }}
+      <div v-for="date in dates" :key="date.id" class="d-flex justify-content-between">
+        <span>{{ parseDate(date) }}</span>
+        <span @click="removeCalendarEvent(date.id)">X</span>
       </div>
 
     </div>
@@ -162,6 +163,9 @@ export default {
           return 'Суббота'
 
       }
+    },
+    removeCalendarEvent(eventId) {
+      this.$emit('removeEvent', eventId);
     }
   },
   computed: {

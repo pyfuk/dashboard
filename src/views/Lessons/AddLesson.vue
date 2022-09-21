@@ -3,7 +3,7 @@
   <div class="mt-4">
     <div class="row">
       <div class="col-md-3">
-        <add-lesson-form :dates="dates" @form="getFormData"></add-lesson-form>
+        <add-lesson-form :dates="dates" @form="getFormData" @removeEvent="removeEvent"></add-lesson-form>
       </div>
       <div class="col-md-9" :class="{'mt-4': isMobile}">
         <div class="card">
@@ -155,6 +155,10 @@ export default {
       } else {
         this.overlay = true;
       }
+    },
+    removeEvent(eventId) {
+      this.dates = this.dates.filter(d => d.id != eventId);
+      this.calendarOptions.events = this.calendarOptions.events.filter(e => e.id != eventId);
     }
   },
 
