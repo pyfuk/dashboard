@@ -63,7 +63,7 @@ export default {
       form: {
         subject: '',
         teacher: '',
-        pass: 4,
+        pass: '4',
         onetime: false,
       },
       teachers: [],

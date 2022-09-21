@@ -50,7 +50,7 @@ export default {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         locale: 'ru',
         timeZone: 'local',
-        contentHeight: this.isMobile ? 415 : 650,
+        contentHeight: this.isMobile ? 415 : 460,
         defaultView: 'dayGridMonth',
         navLinks: true, //Переход по датам
         events: [],
@@ -60,9 +60,9 @@ export default {
         // Timeline настройка
         allDaySlot: false,
         slotMinTime: '09:00:00',
-        slotMaxTime: '22:00:00',
-        slotDuration: '00:30:00',
-        slotLabelInterval: '00:30:00',
+        slotMaxTime: '21:00:00',
+        slotDuration: '00:45:00',
+        slotLabelInterval: '00:45:00',
         slotLabelFormat: {
           hour: '2-digit',
           minute: '2-digit',

@@ -19,11 +19,12 @@
 
 <script>
 import FullCalendar from "@fullcalendar/vue3";
-import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import AddLessonForm from "../components/Lessons/AddLessonForm";
 import moment from "moment";
+import axios from "axios";
+import { server } from "@/config";
 
 export default {
 
@@ -43,25 +44,16 @@ export default {
       calendarOptions: {
         headerToolbar: {
           left: false,
-          center: 'title',
-          right: 'prev,next'
+          center: false,
+          right: false
         },
-        footerToolbar: {
-          left: false,
-          center: 'dayGridMonth,timeGridWeek,timeGridDay',
-        },
-        buttonText: {
-          today: 'Сегодня',
-          month: 'Месяц',
-          week: 'Неделя',
-          day: 'День',
-        },
-        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+        plugins: [timeGridPlugin, interactionPlugin],
         locale: 'ru',
         timeZone: 'local',
-        contentHeight: this.isMobile ? 415 : 650,
-        defaultView: 'dayGridMonth',
-        navLinks: true, //Переход по датам
+        // contentHeight: this.isMobile ? 415 : 500,
+        height: "auto",
+        defaultView: 'dayGridWeek',
+        dayHeaderFormat: { weekday: 'short' },
         events: [],
         dateClick: this.handleDateClick,
         viewDidMount: this.viewDidMount,
@@ -73,9 +65,9 @@ export default {
         // Timeline настройка
         allDaySlot: false,
         slotMinTime: '09:00:00',
-        slotMaxTime: '22:00:00',
-        slotDuration: '00:30:00',
-        slotLabelInterval: '00:30:00',
+        slotMaxTime: '21:00:00',
+        slotDuration: '00:45:00',
+        slotLabelInterval: '00:45:00',
         slotLabelFormat: {
           hour: '2-digit',
           minute: '2-digit',
@@ -85,12 +77,14 @@ export default {
         // Event Drag and Resize
 
         editable: true,
+        eventDurationEditable: false,
         eventDrop: this.eventDropped,
 
 
         //select
 
         selectable: true,
+        selectOverlap: false,
         select: this.selectedEvent,
 
 
@@ -102,15 +96,19 @@ export default {
   },
   methods: {
     selectedEvent(event) {
+
+      const id = this.calendarOptions.events.length + 1;
+
       this.calendarOptions.events = [...this.calendarOptions.events,
         {
-          id: this.calendarOptions.events.length + 1,
+          id,
           start: event.start,
-          end: event.end
+          end: event.end,
+          overlap: false
         }]
 
       this.dates = [...this.dates, {
-        id: this.calendarOptions.events.length + 1,
+        id,
         start: event.start,
         end: event.end
       }]
@@ -119,16 +117,49 @@ export default {
     eventClicked(eventClickInfo) {
       console.log(eventClickInfo.event.id)
     },
+    async getTeacherLessons(teacher_id) {
+      const data = {
+        teacher_id: teacher_id,
+      }
+      const res = await axios.post(server.URL + '/api/courses/get_teacher_reserved_time', data)
+
+      this.calendarOptions.events = res.reserved.map(res => {
+        return {
+          groupId: 'reserved',
+          start: res.start,
+          end: res.end,
+          color: 'red',
+          display: 'background',
+          overlap: false,
+        }
+      })
+    },
+    eventDropped(params) {
+      const datesIndex = this.dates.findIndex(event => event.id == params.event.id);
+      const calendarIndex = this.calendarOptions.events.findIndex(event => event.id == params.event.id);
+
+      this.dates[datesIndex] = params.event;
+      this.calendarOptions.events[calendarIndex] = {
+        id: params.event.id,
+        start: params.event.start,
+        end: params.event.end,
+        overlap: false
+      };
+    },
     getFormData(value) {
       if (value.teacher && value.subject) {
         this.overlay = false;
+
+        this.getTeacherLessons(value.teacher)
+
       } else {
         this.overlay = true;
       }
     }
   },
 
-  mounted() {}
+  mounted() {
+  }
 }
 </script>
 
@@ -140,6 +171,6 @@ export default {
   right: 15px;
   bottom: 15px;
   backdrop-filter: blur(6px);
-  z-index: 2;
+  z-index: 3;
 }
 </style>
