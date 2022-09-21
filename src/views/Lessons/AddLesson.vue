@@ -23,6 +23,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import AddLessonForm from "../components/Lessons/AddLessonForm";
+import moment from "moment";
 
 export default {
 
@@ -64,6 +65,10 @@ export default {
         events: [],
         dateClick: this.handleDateClick,
         viewDidMount: this.viewDidMount,
+        validRange: {
+          start: moment().startOf('month').format('YYYY-MM-DD'),
+          end: moment().add(1, "month").endOf('month').format('YYYY-MM-DD')
+        },
 
         // Timeline настройка
         allDaySlot: false,
@@ -123,8 +128,7 @@ export default {
     }
   },
 
-  mounted() {
-  }
+  mounted() {}
 }
 </script>
 
