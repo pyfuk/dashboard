@@ -4,15 +4,33 @@
       <h6>Добавить предмет</h6>
     </div>
     <div class="card-body">
-      <div class="row">
-        <div class="col">
-          <label for="name" class="form-control-label"
-          >Название</label
-          >
-          <argon-input v-model="form.name" type="text"
-                       placeholder="Название"/>
-        </div>
+      <label for="name" class="form-control-label"
+      >Название на русском</label
+      >
+      <argon-input v-model="form.name.ru" type="text"
+                   placeholder="Название на русском"/>
+
+      <label for="name" class="form-control-label"
+      >Название на узбекском</label
+      >
+      <argon-input v-model="form.name.uz" type="text"
+                   placeholder="Название на узбекском"/>
+
+      <label for="name" class="form-control-label"
+      >Название на английском</label
+      >
+      <argon-input v-model="form.name.en" type="text"
+                   placeholder="Название на английском"/>
+
+      <hr class="horizontal dark"/>
+
+      <div class="d-flex justify-content-evenly my-4">
+        <span>Групповое занятие</span>
+        <argon-switch v-model="form.group"></argon-switch>
       </div>
+
+      <hr class="horizontal dark"/>
+
 
       <subject-icons @selected="selectedItem"></subject-icons>
     </div>
@@ -30,14 +48,20 @@ import axios from "axios";
 import { server } from "../../../config";
 import { mapActions } from "vuex";
 import SubjectIcons from "./SubjectIcons";
+import ArgonSwitch from "@/components/ArgonSwitch";
 
 export default {
   name: "AddSubjectForm",
-  components: { SubjectIcons, ArgonInput, ArgonButton },
+  components: { SubjectIcons, ArgonInput, ArgonButton, ArgonSwitch },
   data() {
     return {
       form: {
-        name: '',
+        name: {
+          ru: '',
+          uz: '',
+          en: ''
+        },
+        group: false,
         icon: 'guitar'
       },
     }
@@ -53,8 +77,13 @@ export default {
     },
     clearForm() {
       this.form = {
-        name: '',
-        icon: ''
+        name: {
+          ru: '',
+          uz: '',
+          en: ''
+        },
+        icon: '',
+        group: false,
       }
     },
     selectedItem(icon) {
