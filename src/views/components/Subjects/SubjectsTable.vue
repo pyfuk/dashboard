@@ -19,7 +19,8 @@
                 <div class="text-center shadow icon icon-shape bg-gradient-dark icon-md mx-2">
                   <icon-view :img="subject.icon" size="lg" color="rgb(226, 231, 231)"></icon-view>
                 </div>
-                <div class="d-flex flex-column justify-content-center" @click="$router.push(`/users/${subject._id}`)">
+                <div class="d-flex flex-column justify-content-center"
+                     @click="$router.push(`/subjects/${subject.id}`)">
                   <h6 class="mb-0 text-sm">{{ subject.name }}</h6>
                 </div>
               </div>

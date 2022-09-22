@@ -19,6 +19,8 @@ import Subjects from "../views/Subjects/Subjects";
 import AddLesson from "../views/Lessons/AddLesson";
 import UserAdd from "../views/Users/UserAdd";
 import PageNotFound from "@/views/PageNotFound";
+import Subject from "@/views/Subjects/Subject";
+import SubjectProfile from "@/views/Subjects/SubjectProfile";
 
 const routes = [
     {
@@ -82,6 +84,22 @@ const routes = [
         path: "/subjects",
         name: "Subjects",
         component: Subjects,
+    },
+    {
+        path: "/subjects/:id",
+        name: "Subject",
+        component: Subject,
+        children: [
+            {
+                path: "",
+                component: SubjectProfile
+            },
+            {
+                path: "edit",
+                name: 'SubjectProfile',
+                component: SubjectProfile
+            },
+        ]
     },
     {
         path: "/calendar",
