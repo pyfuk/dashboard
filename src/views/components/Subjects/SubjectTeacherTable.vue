@@ -2,7 +2,11 @@
   <div class="card mt-4">
     <div class="card-header pb-0 d-flex justify-content-between">
       <h6>Пользователи</h6>
-      <argon-button color="success" @click="$router.push('/users/add')">Создать пользователя</argon-button>
+      <div class="d-flex justify-content-around">
+        <argon-select class="mx-2" v-model="form.teacher"
+                      :options="allTeachers"></argon-select>
+        <argon-button color="success" @click="addTeacher">Добавить</argon-button>
+      </div>
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-0">
@@ -68,15 +72,6 @@
 
       </div>
     </div>
-    <div class="card-footer p-3 ms-auto">
-      <argon-pagination color="success">
-        <argon-pagination-item prev/>
-        <argon-pagination-item label="1" active/>
-        <argon-pagination-item label="2" disabled/>
-        <argon-pagination-item label="3"/>
-        <argon-pagination-item next/>
-      </argon-pagination>
-    </div>
   </div>
 
 </template>
@@ -88,11 +83,13 @@ import ArgonPaginationItem from "@/components/ArgonPaginationItem";
 import utilsMixin from "@/mixins/utilsMixin";
 import { server, timeout } from "@/config";
 import axios from "axios";
+import ArgonSelect from "@/components/ArgonSelect";
 
 export default {
   name: "SubjectTeacherTable",
   components: {
     ArgonButton,
+    ArgonSelect,
     ArgonPagination,
     ArgonPaginationItem,
   },
@@ -104,31 +101,57 @@ export default {
   },
   data() {
     return {
+      form: {
+        teacher: ''
+      },
+      allTeachers: [],
       teachers: [],
       isTeachersLoading: true,
     }
   },
   methods: {
-    async getUsers() {
+    async getSubjectTeachers() {
       this.isTeachersLoading = true;
 
       const data = {
         subject_id: this.subject.id
       }
       const response = await axios.post(server.URL + '/api/subjects/get_teachers_by_subject', data);
-
-      console.log(response)
       this.teachers = response.teachers;
       this.isTeachersLoading = false;
+    },
+    async getAllTeachers() {
+      const data = {
+        role: 'teacher'
+      }
+
+      const res = await axios.post(server.URL + '/api/users/get_all', data)
+      this.allTeachers = res.users.map(t => {
+        return {
+          name: t.firstname + ' ' + t.lastname,
+          value: t.id
+        }
+      })
+    },
+    async addTeacher() {
+      const data = {
+        teacher_id: this.form.teacher,
+        subject_id: this.subject.id
+      }
+      const res = await axios.post(server.URL + '/api/subjects/add_subject_to_teacher', data)
     }
   },
   async mounted() {
     await this.sleep(timeout.LIST_SLEEP);
-    await this.getUsers();
+    await this.getSubjectTeachers();
+    await this.getAllTeachers();
   },
 }
 </script>
 
 <style scoped>
+.form-group {
+  margin-bottom: 0;
+}
 
 </style>
