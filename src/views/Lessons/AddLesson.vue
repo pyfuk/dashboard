@@ -137,6 +137,19 @@ export default {
           overlap: false,
         }
       })
+
+      const inactive_time = res.inactive_time.map(res => {
+        return {
+          groupId: 'inactive',
+          start: res.start,
+          end: res.end,
+          color: '#BFBFBF',
+          display: 'background',
+          overlap: false,
+        }
+      })
+      
+      this.calendarOptions.events = this.calendarOptions.events.concat(inactive_time);
     },
     eventDropped(params) {
       const datesIndex = this.dates.findIndex(event => event.id == params.event.id);
