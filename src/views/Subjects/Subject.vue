@@ -28,15 +28,10 @@
                 Профиль
               </argon-button>
 
-              <argon-button color="success" :variant="page === 'calendar' ? 'gradient' : 'outline'"
-                            @click="changeRoute('calendar')"
+              <argon-button v-if="subject.group" color="success" :variant="page === 'schedule' ? 'gradient' : 'outline'"
+                            @click="changeRoute('schedule')"
                             :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
-              >Календарь
-              </argon-button>
-              <argon-button color="success" :variant="page === 'lessons' ? 'gradient' : 'outline'"
-                            @click="changeRoute('lessons')"
-                            :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
-              >Курсы
+              >Расписание
               </argon-button>
             </div>
           </div>

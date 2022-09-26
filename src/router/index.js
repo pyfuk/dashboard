@@ -21,6 +21,7 @@ import UserAdd from "../views/Users/UserAdd";
 import PageNotFound from "@/views/PageNotFound";
 import Subject from "@/views/Subjects/Subject";
 import SubjectProfile from "@/views/Subjects/SubjectProfile";
+import SubjectSchedule from "@/views/Subjects/SubjectSchedule";
 
 const routes = [
     {
@@ -98,6 +99,11 @@ const routes = [
                 path: "edit",
                 name: 'SubjectProfile',
                 component: SubjectProfile
+            },
+            {
+                path: "schedule",
+                name: 'SubjectSchedule',
+                component: SubjectSchedule
             },
         ]
     },
