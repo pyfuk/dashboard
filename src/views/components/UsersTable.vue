@@ -48,7 +48,7 @@
               <p class="text-xs font-weight-bold mb-0">{{ user.role }}</p>
             </td>
             <td class="align-middle text-center text-sm">
-              <span class="badge badge-sm bg-gradient-success">Online</span>
+              <span class="badge badge-sm" :class="`${user.active ? 'bg-gradient-success' : 'bg-gradient-secondary'}`">{{ user.active ? 'Активирован' : 'Деактивирован' }}</span>
             </td>
             <td class="align-middle text-center">
               <span class="text-secondary text-xs font-weight-bold">{{ user.balance }}</span>
