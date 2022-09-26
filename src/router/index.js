@@ -17,7 +17,6 @@ import UserCalendar from "../views/Users/UserCalendar";
 import UserProfile from "../views/Users/UserProfile";
 import Subjects from "../views/Subjects/Subjects";
 import AddLesson from "../views/Lessons/AddLesson";
-import UserAdd from "../views/Users/UserAdd";
 import PageNotFound from "@/views/PageNotFound";
 import Subject from "@/views/Subjects/Subject";
 import SubjectProfile from "@/views/Subjects/SubjectProfile";
