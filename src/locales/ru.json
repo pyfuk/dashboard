@@ -1,4 +1,10 @@
 {
-  "title": "ВЬЮ 3 i18n",
-  "description": "Это перевод на русском Vue3"
+  "users": {
+    "users": "Пользователи",
+    "fullname": "Имя",
+    "role": "Роль",
+    "status": "Статус",
+    "activated": "Активирован",
+    "deactivated": "Деактивирован"
+  }
 }

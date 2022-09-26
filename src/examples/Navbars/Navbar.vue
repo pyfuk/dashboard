@@ -148,7 +148,7 @@ export default {
     return {
       showMenu: false,
       user: '',
-      locales: ["ru", "en"]
+      locales: ["ru", "en", "uz"]
     };
   },
   props: ["minNav", "textWhite"],

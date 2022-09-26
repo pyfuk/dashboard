@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header pb-0 d-flex justify-content-between">
-      <h6>Пользователи</h6>
+      <h6>{{ $t('users.users') }}</h6>
       <argon-button color="success" @click="$router.push('/users/add')">Создать пользователя</argon-button>
     </div>
     <div class="card-body px-0 pt-0 pb-2">
@@ -9,14 +9,15 @@
         <table v-if="users.length && !isUsersLoading" class="table align-items-center mb-0">
           <thead>
           <tr>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-            <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
-            >Role
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+              {{ $t('users.fullname') }}
             </th>
             <th
-                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
-            >Status
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+              {{ $t('users.role') }}
+            </th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+              {{ $t('users.status') }}
             </th>
             <th
                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
@@ -48,7 +49,9 @@
               <p class="text-xs font-weight-bold mb-0">{{ user.role }}</p>
             </td>
             <td class="align-middle text-center text-sm">
-              <span class="badge badge-sm" :class="`${user.active ? 'bg-gradient-success' : 'bg-gradient-secondary'}`">{{ user.active ? 'Активирован' : 'Деактивирован' }}</span>
+              <span class="badge badge-sm" :class="`${user.active ? 'bg-gradient-success' : 'bg-gradient-secondary'}`">
+                {{ user.active ? $t('users.activated') : $t('users.deactivated') }}
+              </span>
             </td>
             <td class="align-middle text-center">
               <span class="text-secondary text-xs font-weight-bold">{{ user.balance }}</span>
