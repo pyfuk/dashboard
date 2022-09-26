@@ -5,6 +5,11 @@
     "role": "Роль",
     "status": "Статус",
     "activated": "Активирован",
-    "deactivated": "Деактивирован"
+    "deactivated": "Деактивирован",
+    "roles": {
+      "admin": "Менеджер",
+      "teacher": "Учитель",
+      "student": "Ученик"
+    }
   }
 }

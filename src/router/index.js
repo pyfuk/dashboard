@@ -45,11 +45,6 @@ const routes = [
         component: Users,
     },
     {
-        path: "/users/add",
-        name: "Add User",
-        component: UserAdd,
-    },
-    {
         path: "/users/:id/",
         name: "User",
         component: User,

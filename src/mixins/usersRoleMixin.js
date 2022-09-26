@@ -9,17 +9,14 @@ export default {
         isAdmin(user) {
             return user.role === 'admin'
         },
-        getTranslatedRole(role) {
-            switch (role) {
-                case 'student':
-                    return 'Ученик'
-                case 'teacher':
-                    return 'Учитель'
-                case 'admin':
-                    return 'Админ'
-                default:
-                    return role
+        getI18nRole(role) {
+            if (role == 'admin') {
+                return this.$t('users.roles.admin')
             }
+            if (role == 'teacher') {
+                return this.$t('users.roles.teacher')
+            }
+            return this.$t('users.roles.student')
         }
     }
 }

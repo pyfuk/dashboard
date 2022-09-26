@@ -2,7 +2,6 @@
   <div class="card">
     <div class="card-header pb-0 d-flex justify-content-between">
       <h6>{{ $t('users.users') }}</h6>
-      <argon-button color="success" @click="$router.push('/users/add')">Создать пользователя</argon-button>
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-0">
@@ -42,7 +41,7 @@
               </div>
             </td>
             <td>
-              <p class="text-xs font-weight-bold mb-0">{{ user.role }}</p>
+              <p class="text-xs font-weight-bold mb-0">{{ getI18nRole(user.role) }}</p>
             </td>
             <td class="align-middle text-center text-sm">
               <span class="badge badge-sm" :class="`${user.active ? 'bg-gradient-success' : 'bg-gradient-secondary'}`">
@@ -85,6 +84,7 @@ import ArgonButton from "../../components/ArgonButton";
 import axios from "axios";
 import utilsMixin from "../../mixins/utilsMixin";
 import { server, timeout } from "../../config";
+import usersRoleMixin from "@/mixins/usersRoleMixin";
 
 export default {
   components: {
@@ -93,7 +93,10 @@ export default {
     ArgonPaginationItem,
   },
   name: "users-table",
-  mixins: [utilsMixin],
+  mixins: [
+    utilsMixin,
+    usersRoleMixin
+  ],
   data() {
     return {
       users: [],
@@ -106,7 +109,7 @@ export default {
       const response = await axios.post(server.URL + '/api/users/get_all');
       this.users = response.users;
       this.isUsersLoading = false;
-    }
+    },
   },
   async mounted() {
     await this.sleep(timeout.LIST_SLEEP);
