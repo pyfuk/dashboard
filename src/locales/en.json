@@ -1,15 +1,30 @@
 {
+  "common": {
+    "add": "Добавить",
+    "save": "Сохранить"
+  },
   "users": {
     "users": "Пользователи",
-    "fullname": "Имя",
-    "role": "Роль",
-    "status": "Статус",
-    "activated": "Активирован",
-    "deactivated": "Деактивирован",
+    "user": {
+      "firstname": "Имя",
+      "lastname": "Фамилия",
+      "password": "Пароль",
+      "re_password": "Повторите пароль",
+      "email": "Эл. почта",
+      "birthday": "Дата рождения",
+      "phone": "Номер телефона",
+      "fullname": "Имя",
+      "role": "Роль",
+      "status": "Статус",
+      "activated": "Активирован",
+      "deactivated": "Деактивирован"
+    },
     "roles": {
       "admin": "Менеджер",
       "teacher": "Учитель",
       "student": "Ученик"
-    }
+    },
+    "add_user": "Добавить пользователя",
+    "edit_user": "Редактировать пользователя"
   }
 }

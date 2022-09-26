@@ -5,7 +5,7 @@
         <users-table/>
       </div>
       <div class="col-4">
-        <add-user-form></add-user-form>
+        <add-user-form action="add"></add-user-form>
       </div>
     </div>
   </div>

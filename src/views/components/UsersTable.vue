@@ -9,14 +9,14 @@
           <thead>
           <tr>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-              {{ $t('users.fullname') }}
+              {{ $t('users.user.fullname') }}
             </th>
             <th
                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-              {{ $t('users.role') }}
+              {{ $t('users.user.role') }}
             </th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-              {{ $t('users.status') }}
+              {{ $t('users.user.status') }}
             </th>
           </tr>
           </thead>
@@ -45,7 +45,7 @@
             </td>
             <td class="align-middle text-center text-sm">
               <span class="badge badge-sm" :class="`${user.active ? 'bg-gradient-success' : 'bg-gradient-secondary'}`">
-                {{ user.active ? $t('users.activated') : $t('users.deactivated') }}
+                {{ user.active ? $t('users.user.activated') : $t('users.user.deactivated') }}
               </span>
             </td>
           </tr>

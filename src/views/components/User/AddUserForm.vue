@@ -2,44 +2,44 @@
   <div class="card">
     <div class="card-header pb-0">
       <div class="d-flex align-items-center">
-        <p class="mb-0">{{ action === 'add' ? 'Добавить пользователя' : 'Редактировать пользователя' }}</p>
+        <p class="mb-0">{{ action === 'add' ? $t('users.add_user') : $t('users.edit_user') }}</p>
       </div>
     </div>
     <div class="card-body">
       <div class="row">
         <div class="col-md-6">
-          <label for="firstname" class="form-control-label"
-          >Имя</label
-          >
+          <label :for="firstname" class="form-control-label">
+            {{ $t('users.user.firstname') }}
+          </label>
           <argon-input v-model="firstname"
                        type="text"
-                       placeholder="Имя"/>
+                       :placeholder="$t('users.user.firstname')"/>
           <span v-if="v$.firstname.$error"> {{ v$.firstname.$errors[0].$message }}</span>
         </div>
         <div class="col-md-6">
-          <label for="lastname" class="form-control-label"
-          >Фамилия</label
+          <label :for="lastname" class="form-control-label"
+          >{{ $t('users.user.lastname') }}</label
           >
           <argon-input v-model="lastname" type="text"
-                       placeholder="Фамилия"/>
+                       :placeholder="$t('users.user.lastname')"/>
           <span v-if="v$.lastname.$error"> {{ v$.lastname.$errors[0].$message }}</span>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
-          <label for="password" class="form-control-label"
-          >Пароль</label
-          >
+          <label :for="password" class="form-control-label">
+            {{ $t('users.user.password') }}
+          </label>
           <argon-input v-model="password" type="password"
-                       placeholder="Пароль"/>
+                       :placeholder="$t('users.user.password')"/>
           <span v-if="v$.password.$error"> {{ v$.password.$errors[0].$message }}</span>
         </div>
         <div class="col-md-6">
-          <label for="repassword" class="form-control-label"
-          >Повтор пароля</label
-          >
+          <label :for="repassword" class="form-control-label">
+            {{ $t('users.user.re_password') }}
+          </label>
           <argon-input v-model="repassword" type="password"
-                       placeholder="Повтор пароля"/>
+                       :placeholder="$t('users.user.re_password')"/>
           <span v-if="v$.repassword.$error"> {{ v$.repassword.$errors[0].$message }}</span>
         </div>
       </div>
@@ -47,35 +47,36 @@
 
       <div class="row">
         <div class="col-md-4">
-          <label for="email" class="form-control-label"
-          >Почта</label
-          >
+          <label :for="email" class="form-control-label">
+            {{ $t('users.user.email') }}
+          </label>
           <argon-input v-model="email" type="email"
-                       placeholder="Почта"/>
+                       :placeholder="$t('users.user.email')"/>
           <span v-if="v$.email.$error"> {{ v$.email.$errors[0].$message }}</span>
         </div>
         <div class="col-md-4">
-          <label for="birthday" class="form-control-label"
-          >Дата рождения</label
-          >
+          <label :for="birthday" class="form-control-label">
+            {{ $t('users.user.birthday') }}
+          </label>
           <argon-input v-model="birthday" type="date"
-                       placeholder="Дата рождения"/>
+                       :placeholder="$t('users.user.birthday')"/>
           <span v-if="v$.birthday.$error"> {{ v$.birthday.$errors[0].$message }}</span>
         </div>
         <div class="col-md-4">
-          <label for="phone" class="form-control-label"
-          >Телефон</label
-          >
+          <label :for="phone" class="form-control-label">
+            {{ $t('users.user.phone') }}
+          </label>
           <argon-input v-model="phone" type="text"
-                       placeholder="Телефон"/>
+                       :placeholder="$t('users.user.phone')"/>
           <span v-if="v$.phone.$error"> {{ v$.phone.$errors[0].$message }}</span>
         </div>
       </div>
       <hr class="horizontal dark"/>
       <div class="row justify-content-center">
         <div class="col-md-6">
-          <label for="role" class="form-control-label"
-          >Роль</label>
+          <label :for="role" class="form-control-label">
+            {{ $t('users.user.role') }}
+          </label>
           <argon-select v-model="role"
                         :options="roles"></argon-select>
           <span v-if="v$.role.$error"> {{ v$.role.$errors[0].$message }}</span>
@@ -83,7 +84,7 @@
       </div>
     </div>
     <div class="card-footer pt-1 ms-auto">
-      <argon-button color="success" @click="addUser">{{ action === 'add' ? 'Добавить' : 'Редактировать' }}
+      <argon-button color="success" @click="addUser">{{ action === 'add' ? $t('common.add') : $t('common.save') }}
       </argon-button>
     </div>
   </div>
