@@ -36,6 +36,13 @@
               <span class="d-sm-inline d-none">{{ user.firstname }} {{ user.lastname }}</span>
             </router-link>
           </li>
+          <li>
+            <select v-model="$i18n.locale">
+              <option v-for="(locale, i) in locales" :key="`locale-${i}`" :value="locale">
+                {{ locale }}
+              </option>
+            </select>
+          </li>
           <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
             <a
                 href="#"
@@ -140,7 +147,8 @@ export default {
   data() {
     return {
       showMenu: false,
-      user: ''
+      user: '',
+      locales: ["ru", "en"]
     };
   },
   props: ["minNav", "textWhite"],
@@ -165,7 +173,6 @@ export default {
     }
   },
   mounted() {
-    console.log('MOUNT NAVBAR')
     this.user = this.$store.state.currentUser;
   }
 };

@@ -8,6 +8,7 @@ import ArgonDashboard from "./argon-dashboard";
 import axios from "axios";
 import Toast, { useToast } from "vue-toastification";
 import "vue-toastification/dist/index.css";
+import i18n from './i18n'
 
 const options = {
     // You can set your default options here
@@ -15,7 +16,7 @@ const options = {
 
 const toast = useToast()
 
-const appInstance = createApp(App);
+const appInstance = createApp(App).use(i18n);
 appInstance.use(store);
 appInstance.use(router);
 appInstance.use(ArgonDashboard);
