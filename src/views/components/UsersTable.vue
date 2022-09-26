@@ -19,10 +19,6 @@
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
               {{ $t('users.status') }}
             </th>
-            <th
-                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
-            >Balance
-            </th>
           </tr>
           </thead>
           <tbody>
@@ -52,9 +48,6 @@
               <span class="badge badge-sm" :class="`${user.active ? 'bg-gradient-success' : 'bg-gradient-secondary'}`">
                 {{ user.active ? $t('users.activated') : $t('users.deactivated') }}
               </span>
-            </td>
-            <td class="align-middle text-center">
-              <span class="text-secondary text-xs font-weight-bold">{{ user.balance }}</span>
             </td>
           </tr>
           </tbody>
