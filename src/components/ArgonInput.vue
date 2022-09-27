@@ -14,6 +14,7 @@
           :isRequired="isRequired"
           :value="modelValue"
           @input="updateInput"
+          :disabled="disabled"
       />
       <div class="invalid-feedback">
         {{ validText }}
@@ -39,6 +40,10 @@ export default {
     placeholder: String,
     type: String,
     isRequired: Boolean,
+    disabled: {
+      type: Boolean,
+      default: false
+    }
   },
   methods: {
     updateInput(event) {

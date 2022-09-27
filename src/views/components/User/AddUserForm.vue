@@ -1,8 +1,14 @@
 <template>
   <div class="card">
     <div class="card-header pb-0">
-      <div class="d-flex align-items-center">
+      <div class="d-flex justify-content-between">
         <p class="mb-0">{{ action === 'add' ? $t('users.add_user') : $t('users.edit_user') }}</p>
+        <argon-button v-if="isEdit && !editingForm" color="success" @click="editingForm = true">
+          {{ $t('common.edit') }}
+        </argon-button>
+        <argon-button v-if="editingForm" color="success" @click="editUser">
+          {{ $t('common.save') }}
+        </argon-button>
       </div>
     </div>
     <div class="card-body">
@@ -15,7 +21,8 @@
                        type="text"
                        :placeholder="$t('users.user.firstname')"
                        :valid="this.validate(formSubmitted, v$.firstname.$error)"
-                       :valid-text="this.validateText(v$.firstname)"/>
+                       :valid-text="this.validateText(v$.firstname)"
+                       :disabled="!editingForm"/>
 
         </div>
         <div class="col-12 col-md-12 col-lg-6">
@@ -26,7 +33,8 @@
                        type="text"
                        :placeholder="$t('users.user.lastname')"
                        :valid="this.validate(formSubmitted, v$.lastname.$error)"
-                       :valid-text="this.validateText(v$.lastname)"/>
+                       :valid-text="this.validateText(v$.lastname)"
+                       :disabled="!editingForm"/>
 
         </div>
       </div>
@@ -39,7 +47,8 @@
                        type="password"
                        :placeholder="$t('users.user.password')"
                        :valid="this.validate(formSubmitted, v$.password.$error)"
-                       :valid-text="this.validateText(v$.password)"/>
+                       :valid-text="this.validateText(v$.password)"
+                       :disabled="!editingForm"/>
 
 
         </div>
@@ -51,7 +60,8 @@
                        type="password"
                        :placeholder="$t('users.user.re_password')"
                        :valid="this.validate(formSubmitted, v$.repassword.$error)"
-                       :valid-text="this.validateText(v$.repassword)"/>
+                       :valid-text="this.validateText(v$.repassword)"
+                       :disabled="!editingForm"/>
         </div>
       </div>
       <hr class="horizontal dark"/>
@@ -66,6 +76,7 @@
                        :placeholder="$t('users.user.email')"
                        :valid="this.validate(formSubmitted, v$.email.$error)"
                        :valid-text="this.validateText(v$.email)"
+                       :disabled="!editingForm"
           />
         </div>
         <div class="col-12 col-md-12 col-lg-6 col-xl-6">
@@ -76,7 +87,9 @@
                        type="date"
                        :placeholder="$t('users.user.birthday')"
                        :valid="this.validate(formSubmitted, v$.birthday.$error)"
-                       :valid-text="this.validateText(v$.birthday)"/>
+                       :valid-text="this.validateText(v$.birthday)"
+                       :disabled="!editingForm"/>
+
         </div>
         <div class="col-12 col-md-12 col-lg-12 col-xl-12">
           <label :for="phone" class="form-control-label">
@@ -86,7 +99,8 @@
                        type="text"
                        :placeholder="$t('users.user.phone')"
                        :valid="this.validate(formSubmitted, v$.phone.$error)"
-                       :valid-text="this.validateText(v$.phone)"/>
+                       :valid-text="this.validateText(v$.phone)"
+                       :disabled="!editingForm"/>
         </div>
       </div>
       <hr class="horizontal dark"/>
@@ -98,13 +112,15 @@
           <argon-select v-model="role"
                         :options="roles"
                         :valid="this.validate(formSubmitted, v$.role.$error)"
-                        :valid-text="this.validateText(v$.role)"></argon-select>
+                        :valid-text="this.validateText(v$.role)"
+                        :disabled="!editingForm"></argon-select>
 
         </div>
       </div>
     </div>
     <div class="card-footer pt-1 ms-auto">
-      <argon-button color="success" @click="addUser">{{ action === 'add' ? $t('common.add') : $t('common.save') }}
+      <argon-button v-if="isAdd" color="success" @click="addUser">
+        {{ $t('common.add') }}
       </argon-button>
     </div>
   </div>
@@ -143,13 +159,20 @@ export default {
       repassword: '',
       phone: '',
       email: '',
-      formSubmitted: false
+      formSubmitted: false,
+      editingForm: false,
     }
   },
   computed: {
     ...mapState({
       roles: state => state.users.roles,
-    })
+    }),
+    isEdit() {
+      return this.action === 'edit'
+    },
+    isAdd() {
+      return this.action === 'add'
+    },
   },
   validations() {
     return {
@@ -184,7 +207,9 @@ export default {
       const response = await axios.post(server.URL + '/api/users/create', data);
 
       await this.$router.push(`/users/${response.data.user_id}`)
-    }
+    },
+
+
   },
 
 }
