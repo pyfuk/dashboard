@@ -108,9 +108,6 @@ export default {
       dates: []
     }
   },
-  updated() {
-    console.log(this.user)
-  },
   methods: {
     selectedEvent(event) {
       const id = this.eventCounter++;
@@ -148,8 +145,6 @@ export default {
       }
       const res = await axios.post(server.URL + '/api/users/get_teacher_inactive_time', data)
 
-      console.log(res)
-
       this.calendarOptions.events = res.inactive_time.map(res => {
         return {
           groupId: 'inactive',
@@ -170,7 +165,8 @@ export default {
     },
   },
   mounted() {
-    this.getTeacherInactiveTime()
+    if (this.isTeacher(this.user))
+      this.getTeacherInactiveTime()
   }
 }
 </script>

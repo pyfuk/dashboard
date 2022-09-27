@@ -19,7 +19,7 @@
                 <div class="my-auto mx-3">
                   <div class="h-100">
                     <h5 class="mb-1">{{ user.lastname }} {{ user.firstname }}</h5>
-                    <p class="mb-0 font-weight-bold text-sm">{{ getTranslatedRole(user.role) }}</p>
+                    <p class="mb-0 font-weight-bold text-sm">{{ getI18nRole(user.role) }}</p>
                   </div>
                 </div>
               </div>
@@ -32,23 +32,21 @@
               <argon-button color="success" :variant="page === 'edit' ? 'gradient' : 'outline'"
                             @click="changeRoute('edit')"
                             :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
-                            v-if="isAdmin($store.state.currentUser)"
-
-              >
-                Профиль
+                            v-if="isAdmin($store.state.currentUser)">
+                {{ $t('users.profile') }}
               </argon-button>
 
               <argon-button color="success" :variant="page === 'calendar' ? 'gradient' : 'outline'"
                             @click="changeRoute('calendar')"
                             :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
-                            v-if="!isAdmin(user)"
-              >Календарь
+                            v-if="!isAdmin(user)">
+                {{ $t('users.calendar') }}
               </argon-button>
               <argon-button color="success" :variant="page === 'lessons' ? 'gradient' : 'outline'"
                             @click="changeRoute('lessons')"
                             :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
-                            v-if="!isAdmin(user)"
-              >Курсы
+                            v-if="!isAdmin(user)">
+                {{ $t('users.courses') }}
               </argon-button>
             </div>
           </div>
