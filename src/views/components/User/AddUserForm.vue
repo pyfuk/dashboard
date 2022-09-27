@@ -7,7 +7,7 @@
     </div>
     <div class="card-body">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-12 col-md-12 col-lg-6">
           <label :for="firstname" class="form-control-label">
             {{ $t('users.user.firstname') }}
           </label>
@@ -18,7 +18,7 @@
                        :valid-text="this.validateText(v$.firstname)"/>
 
         </div>
-        <div class="col-md-6">
+        <div class="col-12 col-md-12 col-lg-6">
           <label :for="lastname" class="form-control-label"
           >{{ $t('users.user.lastname') }}</label
           >
@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-12 col-md-12 col-lg-6">
           <label :for="password" class="form-control-label">
             {{ $t('users.user.password') }}
           </label>
@@ -43,7 +43,7 @@
 
 
         </div>
-        <div class="col-md-6">
+        <div class="col-12 col-md-12 col-lg-6">
           <label :for="repassword" class="form-control-label">
             {{ $t('users.user.re_password') }}
           </label>
@@ -57,7 +57,7 @@
       <hr class="horizontal dark"/>
 
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-12 col-md-12 col-lg-6 col-xl-6">
           <label :for="email" class="form-control-label">
             {{ $t('users.user.email') }}
           </label>
@@ -68,7 +68,7 @@
                        :valid-text="this.validateText(v$.email)"
           />
         </div>
-        <div class="col-md-4">
+        <div class="col-12 col-md-12 col-lg-6 col-xl-6">
           <label :for="birthday" class="form-control-label">
             {{ $t('users.user.birthday') }}
           </label>
@@ -78,7 +78,7 @@
                        :valid="this.validate(formSubmitted, v$.birthday.$error)"
                        :valid-text="this.validateText(v$.birthday)"/>
         </div>
-        <div class="col-md-4">
+        <div class="col-12 col-md-12 col-lg-12 col-xl-12">
           <label :for="phone" class="form-control-label">
             {{ $t('users.user.phone') }}
           </label>
@@ -91,7 +91,7 @@
       </div>
       <hr class="horizontal dark"/>
       <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-12 col-md-12 col-lg-12 col-xl-6">
           <label :for="role" class="form-control-label">
             {{ $t('users.user.role') }}
           </label>
