@@ -7,7 +7,7 @@
       <input
           :type="type"
           class="form-control"
-          :class="getClasses(size, valid)"
+          :class="valid"
           :name="name"
           :id="id"
           :placeholder="placeholder"
@@ -15,6 +15,9 @@
           :value="modelValue"
           @input="updateInput"
       />
+      <div class="invalid-feedback">
+        {{ validText }}
+      </div>
       <span v-if="iconDir === 'right'" class="input-group-text">
         <i :class="getIcon(icon)"></i>
       </span>
@@ -30,10 +33,8 @@ export default {
       type: String,
       default: "default",
     },
-    valid: {
-      type: Boolean,
-      default: false,
-    },
+    valid: String,
+    validText: String,
     icon: String,
     iconDir: String,
     name: String,
@@ -47,15 +48,14 @@ export default {
     updateInput(event) {
       this.$emit('update:modelValue', event.target.value)
     },
-    getClasses: (size, valid) => {
-      let sizeValue, isValidValue;
+    getClasses: (size) => {
+      let sizeValue;
 
       sizeValue = size ? `form-control-${size}` : null;
-
-      isValidValue = valid ? `${valid}` : "invalid";
-
-      return `${sizeValue} ${isValidValue}`;
+      return `${sizeValue}`;
     },
+
+
     getIcon: (icon) => (icon ? icon : null),
     hasIcon: (icon) => (icon ? "input-group" : null),
   },

@@ -13,16 +13,21 @@
           </label>
           <argon-input v-model="firstname"
                        type="text"
-                       :placeholder="$t('users.user.firstname')"/>
-          <span v-if="v$.firstname.$error"> {{ v$.firstname.$errors[0].$message }}</span>
+                       :placeholder="$t('users.user.firstname')"
+                       :valid="this.validate(formSubmitted, v$.firstname.$error)"
+                       :valid-text="this.validateText(v$.firstname)"/>
+
         </div>
         <div class="col-md-6">
           <label :for="lastname" class="form-control-label"
           >{{ $t('users.user.lastname') }}</label
           >
-          <argon-input v-model="lastname" type="text"
-                       :placeholder="$t('users.user.lastname')"/>
-          <span v-if="v$.lastname.$error"> {{ v$.lastname.$errors[0].$message }}</span>
+          <argon-input v-model="lastname"
+                       type="text"
+                       :placeholder="$t('users.user.lastname')"
+                       :valid="this.validate(formSubmitted, v$.lastname.$error)"
+                       :valid-text="this.validateText(v$.lastname)"/>
+
         </div>
       </div>
       <div class="row">
@@ -30,17 +35,23 @@
           <label :for="password" class="form-control-label">
             {{ $t('users.user.password') }}
           </label>
-          <argon-input v-model="password" type="password"
-                       :placeholder="$t('users.user.password')"/>
-          <span v-if="v$.password.$error"> {{ v$.password.$errors[0].$message }}</span>
+          <argon-input v-model="password"
+                       type="password"
+                       :placeholder="$t('users.user.password')"
+                       :valid="this.validate(formSubmitted, v$.password.$error)"
+                       :valid-text="this.validateText(v$.password)"/>
+
+
         </div>
         <div class="col-md-6">
           <label :for="repassword" class="form-control-label">
             {{ $t('users.user.re_password') }}
           </label>
-          <argon-input v-model="repassword" type="password"
-                       :placeholder="$t('users.user.re_password')"/>
-          <span v-if="v$.repassword.$error"> {{ v$.repassword.$errors[0].$message }}</span>
+          <argon-input v-model="repassword"
+                       type="password"
+                       :placeholder="$t('users.user.re_password')"
+                       :valid="this.validate(formSubmitted, v$.repassword.$error)"
+                       :valid-text="this.validateText(v$.repassword)"/>
         </div>
       </div>
       <hr class="horizontal dark"/>
@@ -50,25 +61,32 @@
           <label :for="email" class="form-control-label">
             {{ $t('users.user.email') }}
           </label>
-          <argon-input v-model="email" type="email"
-                       :placeholder="$t('users.user.email')"/>
-          <span v-if="v$.email.$error"> {{ v$.email.$errors[0].$message }}</span>
+          <argon-input v-model="email"
+                       type="email"
+                       :placeholder="$t('users.user.email')"
+                       :valid="this.validate(formSubmitted, v$.email.$error)"
+                       :valid-text="this.validateText(v$.email)"
+          />
         </div>
         <div class="col-md-4">
           <label :for="birthday" class="form-control-label">
             {{ $t('users.user.birthday') }}
           </label>
-          <argon-input v-model="birthday" type="date"
-                       :placeholder="$t('users.user.birthday')"/>
-          <span v-if="v$.birthday.$error"> {{ v$.birthday.$errors[0].$message }}</span>
+          <argon-input v-model="birthday"
+                       type="date"
+                       :placeholder="$t('users.user.birthday')"
+                       :valid="this.validate(formSubmitted, v$.birthday.$error)"
+                       :valid-text="this.validateText(v$.birthday)"/>
         </div>
         <div class="col-md-4">
           <label :for="phone" class="form-control-label">
             {{ $t('users.user.phone') }}
           </label>
-          <argon-input v-model="phone" type="text"
-                       :placeholder="$t('users.user.phone')"/>
-          <span v-if="v$.phone.$error"> {{ v$.phone.$errors[0].$message }}</span>
+          <argon-input v-model="phone"
+                       type="text"
+                       :placeholder="$t('users.user.phone')"
+                       :valid="this.validate(formSubmitted, v$.phone.$error)"
+                       :valid-text="this.validateText(v$.phone)"/>
         </div>
       </div>
       <hr class="horizontal dark"/>
@@ -100,10 +118,12 @@ import useValidate from '@vuelidate/core'
 import { required, sameAs } from '@vuelidate/validators'
 import axios from "axios";
 import { server } from "../../../config";
+import utilsMixin from "@/mixins/utilsMixin";
 
 export default {
   name: "add-user-form",
   components: { ArgonButton, ArgonInput, ArgonSelect },
+  mixins: [utilsMixin],
   props: {
     action: {
       type: String,
@@ -120,7 +140,8 @@ export default {
       password: '',
       repassword: '',
       phone: '',
-      email: ''
+      email: '',
+      formSubmitted: false
     }
   },
   computed: {
@@ -144,6 +165,7 @@ export default {
     async addUser() {
       this.v$.$validate();
 
+      this.formSubmitted = true;
       if (this.v$.$error) {
         return;
       }
@@ -162,8 +184,7 @@ export default {
       await this.$router.push(`/users/${response.data.user_id}`)
     }
   },
-  mounted() {
-  }
+
 }
 </script>
 
