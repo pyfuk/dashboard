@@ -29,10 +29,6 @@
 export default {
   name: "argon-input",
   props: {
-    size: {
-      type: String,
-      default: "default",
-    },
     valid: String,
     validText: String,
     icon: String,
@@ -48,14 +44,6 @@ export default {
     updateInput(event) {
       this.$emit('update:modelValue', event.target.value)
     },
-    getClasses: (size) => {
-      let sizeValue;
-
-      sizeValue = size ? `form-control-${size}` : null;
-      return `${sizeValue}`;
-    },
-
-
     getIcon: (icon) => (icon ? icon : null),
     hasIcon: (icon) => (icon ? "input-group" : null),
   },

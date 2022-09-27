@@ -96,8 +96,10 @@
             {{ $t('users.user.role') }}
           </label>
           <argon-select v-model="role"
-                        :options="roles"></argon-select>
-          <span v-if="v$.role.$error"> {{ v$.role.$errors[0].$message }}</span>
+                        :options="roles"
+                        :valid="this.validate(formSubmitted, v$.role.$error)"
+                        :valid-text="this.validateText(v$.role)"></argon-select>
+
         </div>
       </div>
     </div>
