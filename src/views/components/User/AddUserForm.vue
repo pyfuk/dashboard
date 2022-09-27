@@ -3,7 +3,7 @@
     <div class="card-header pb-0">
       <div class="d-flex justify-content-between">
         <p class="mb-0">{{ action === 'add' ? $t('users.add_user') : $t('users.edit_user') }}</p>
-        <argon-button v-if="isEdit && !editingForm" color="success" @click="editingForm = true">
+        <argon-button v-if="!editingForm && isEdit" color="success" @click="editingForm = true">
           {{ $t('common.edit') }}
         </argon-button>
         <argon-button v-if="editingForm" color="success" @click="editUser">
@@ -22,7 +22,7 @@
                        :placeholder="$t('users.user.firstname')"
                        :valid="this.validate(formSubmitted, v$.firstname.$error)"
                        :valid-text="this.validateText(v$.firstname)"
-                       :disabled="!editingForm"/>
+                       :disabled="!editingForm && isEdit"/>
 
         </div>
         <div class="col-12 col-md-12 col-lg-6">
@@ -34,12 +34,12 @@
                        :placeholder="$t('users.user.lastname')"
                        :valid="this.validate(formSubmitted, v$.lastname.$error)"
                        :valid-text="this.validateText(v$.lastname)"
-                       :disabled="!editingForm"/>
+                       :disabled="!editingForm && isEdit"/>
 
         </div>
       </div>
       <div class="row">
-        <div class="col-12 col-md-12 col-lg-6">
+        <div class="col-12 col-md-12 col-lg-6" v-if="isAdd">
           <label :for="password" class="form-control-label">
             {{ $t('users.user.password') }}
           </label>
@@ -48,11 +48,11 @@
                        :placeholder="$t('users.user.password')"
                        :valid="this.validate(formSubmitted, v$.password.$error)"
                        :valid-text="this.validateText(v$.password)"
-                       :disabled="!editingForm"/>
+                       :disabled="!editingForm && isEdit"/>
 
 
         </div>
-        <div class="col-12 col-md-12 col-lg-6">
+        <div class="col-12 col-md-12 col-lg-6" v-if="isAdd">
           <label :for="repassword" class="form-control-label">
             {{ $t('users.user.re_password') }}
           </label>
@@ -61,10 +61,10 @@
                        :placeholder="$t('users.user.re_password')"
                        :valid="this.validate(formSubmitted, v$.repassword.$error)"
                        :valid-text="this.validateText(v$.repassword)"
-                       :disabled="!editingForm"/>
+                       :disabled="!editingForm && isEdit"/>
         </div>
       </div>
-      <hr class="horizontal dark"/>
+      <hr v-if="isAdd" class="horizontal dark"/>
 
       <div class="row">
         <div class="col-12 col-md-12 col-lg-6 col-xl-6">
@@ -76,7 +76,7 @@
                        :placeholder="$t('users.user.email')"
                        :valid="this.validate(formSubmitted, v$.email.$error)"
                        :valid-text="this.validateText(v$.email)"
-                       :disabled="!editingForm"
+                       :disabled="!editingForm && isEdit"
           />
         </div>
         <div class="col-12 col-md-12 col-lg-6 col-xl-6">
@@ -88,7 +88,7 @@
                        :placeholder="$t('users.user.birthday')"
                        :valid="this.validate(formSubmitted, v$.birthday.$error)"
                        :valid-text="this.validateText(v$.birthday)"
-                       :disabled="!editingForm"/>
+                       :disabled="!editingForm && isEdit"/>
 
         </div>
         <div class="col-12 col-md-12 col-lg-12 col-xl-12">
@@ -100,11 +100,11 @@
                        :placeholder="$t('users.user.phone')"
                        :valid="this.validate(formSubmitted, v$.phone.$error)"
                        :valid-text="this.validateText(v$.phone)"
-                       :disabled="!editingForm"/>
+                       :disabled="!editingForm && isEdit"/>
         </div>
       </div>
-      <hr class="horizontal dark"/>
-      <div class="row justify-content-center">
+      <hr v-if="isAdd" class="horizontal dark"/>
+      <div v-if="isAdd" class="row justify-content-center">
         <div class="col-12 col-md-12 col-lg-12 col-xl-6">
           <label :for="role" class="form-control-label">
             {{ $t('users.user.role') }}
@@ -113,7 +113,7 @@
                         :options="roles"
                         :valid="this.validate(formSubmitted, v$.role.$error)"
                         :valid-text="this.validateText(v$.role)"
-                        :disabled="!editingForm"></argon-select>
+                        :disabled="!editingForm && isEdit"></argon-select>
 
         </div>
       </div>
@@ -146,7 +146,8 @@ export default {
     action: {
       type: String,
       required: true
-    }
+    },
+    user: Object
   },
   data() {
     return {
@@ -208,10 +209,16 @@ export default {
 
       await this.$router.push(`/users/${response.data.user_id}`)
     },
-
-
   },
-
+  mounted() {
+    if (this.isEdit && this.user) {
+      this.firstname = this.user.firstname;
+      this.lastname = this.user.lastname;
+      this.email = this.user.email;
+      this.birthday = this.user.birthday;
+      this.phone = this.user.phone;
+    }
+  }
 }
 </script>
 

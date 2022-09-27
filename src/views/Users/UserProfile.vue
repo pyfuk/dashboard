@@ -2,7 +2,7 @@
   <div class="mt-4">
     <div class="row">
       <div :class="[isTeacher(user) ? 'col-8': 'col-12' ]">
-        <add-user-form action="edit"></add-user-form>
+        <add-user-form action="edit" :user="user"></add-user-form>
       </div>
       <div class="col-4" v-if="isTeacher(user)">
         <add-subject-form></add-subject-form>
