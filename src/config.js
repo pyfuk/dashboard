@@ -10,5 +10,5 @@ export const server = {
 }
 
 export const timeout = {
-    LIST_SLEEP: env.LIST_SLEEP || 800
+    LIST_SLEEP: env.LIST_SLEEP || 500
 }

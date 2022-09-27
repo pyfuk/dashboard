@@ -52,7 +52,7 @@
           </tbody>
         </table>
         <div v-else-if="!isUsersLoading" class="d-flex justify-content-center my-2">
-          <span class="text-secondary text-3xl font-weight-bold">Нет данных</span>
+          <span class="text-secondary text-3xl font-weight-bold">{{ $t('common.no_data') }}</span>
         </div>
 
         <div class="d-flex justify-content-center my-2" v-if="isUsersLoading">
@@ -64,12 +64,13 @@
       </div>
     </div>
     <div class="card-footer p-3 ms-auto">
-      <argon-pagination color="success">
-        <argon-pagination-item prev/>
-        <argon-pagination-item label="1" active/>
-        <argon-pagination-item label="2" disabled/>
-        <argon-pagination-item label="3"/>
-        <argon-pagination-item next/>
+      <argon-pagination color="success"
+                        :current="paginator.current"
+                        :per-page="paginator.per_page"
+                        :total="paginator.total"
+                        :pageRange="1"
+                        @page-changed="PageChanged">
+
       </argon-pagination>
     </div>
   </div>
@@ -101,18 +102,32 @@ export default {
     return {
       users: [],
       isUsersLoading: true,
+      paginator: {
+        current: 1,
+        total: 0,
+        per_page: 10
+      }
     }
   },
   methods: {
     async getUsers() {
       this.isUsersLoading = true;
-      const response = await axios.post(server.URL + '/api/users/get_all');
+      await this.sleep(timeout.LIST_SLEEP);
+      const data = {
+        limit: this.paginator.per_page,
+        page: this.paginator.current - 1
+      }
+      const response = await axios.post(server.URL + '/api/users/get_all', data);
       this.users = response.users;
+      this.paginator.total = response.total_count;
       this.isUsersLoading = false;
     },
+    PageChanged(page) {
+      this.paginator.current = page;
+      this.getUsers()
+    }
   },
   async mounted() {
-    await this.sleep(timeout.LIST_SLEEP);
     await this.getUsers();
   },
 }
