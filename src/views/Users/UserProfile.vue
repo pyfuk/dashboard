@@ -1,10 +1,10 @@
 <template>
   <div class="mt-4">
     <div class="row">
-      <div class="col-8">
+      <div class="col-12 col-md-6 col-lg-7 col-xl-7 col-xxl-8">
         <add-user-form action="edit" :user="user" @userEdited="userEdited"></add-user-form>
       </div>
-      <div class="col-4">
+      <div class="col-12 col-md-6 col-lg-5 col-xl-5 col-xxl-4" :class="{'my-4': isMobile}">
         <change-password-form></change-password-form>
         <add-subject-form v-if="isTeacher(user)"></add-subject-form>
       </div>
@@ -56,7 +56,8 @@ export default {
   props: {
     user: {
       type: Object
-    }
+    },
+    isMobile: Boolean
   },
   data() {
     return {
