@@ -31,5 +31,8 @@
     "profile": "Профиль",
     "calendar": "Календарь",
     "courses": "Курсы"
+  },
+  "subjects": {
+    "subjects": "Предметы"
   }
 }

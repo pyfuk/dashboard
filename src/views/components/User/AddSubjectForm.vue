@@ -1,20 +1,22 @@
 <template>
   <div class="card">
     <div class="p-3 pb-0 card-header d-flex justify-content-between">
-      <h6 class="mb-0">Предметы</h6>
+      <h6 class="mb-0">{{ $t('subjects.subjects') }}</h6>
       <div class="d-flex justify-content-around">
         <argon-select class="mx-2" v-model="form.subject"
                       :options="subjects"></argon-select>
-        <argon-button color="success" @click="addSubjectToTeacher">Добавить</argon-button>
+        <argon-button color="success" @click="addSubjectToTeacher">{{ $t('common.add') }}</argon-button>
       </div>
     </div>
     <div class="p-3 card-body">
       <ul class="list-group" v-if="teacherSubjects.length">
         <category-card v-for="teacherSubject of teacherSubjects" :subject="teacherSubject" :key="teacherSubject._id"/>
       </ul>
-      <h2 v-else style="color: red">
-        Список постов пуст
-      </h2>
+      <div v-else class="d-flex justify-content-center my-2">
+        <span class="text-secondary text-3xl font-weight-bold">
+          {{ $t('common.no_data') }}
+        </span>
+      </div>
     </div>
   </div>
 
