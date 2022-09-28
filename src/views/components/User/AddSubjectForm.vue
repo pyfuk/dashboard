@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card mt-4">
     <div class="p-3 pb-0 card-header d-flex justify-content-between">
       <h6 class="mb-0">{{ $t('subjects.subjects') }}</h6>
       <div class="d-flex justify-content-around">

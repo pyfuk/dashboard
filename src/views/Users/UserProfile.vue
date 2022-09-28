@@ -1,11 +1,12 @@
 <template>
   <div class="mt-4">
     <div class="row">
-      <div :class="[isTeacher(user) ? 'col-8': 'col-12' ]">
+      <div class="col-8">
         <add-user-form action="edit" :user="user" @userEdited="userEdited"></add-user-form>
       </div>
-      <div class="col-4" v-if="isTeacher(user)">
-        <add-subject-form></add-subject-form>
+      <div class="col-4">
+        <change-password-form></change-password-form>
+        <add-subject-form v-if="isTeacher(user)"></add-subject-form>
       </div>
     </div>
 
@@ -40,10 +41,11 @@ import interactionPlugin from "@fullcalendar/interaction";
 import ArgonButton from "@/components/ArgonButton";
 import axios from "axios";
 import { server } from "@/config";
+import ChangePasswordForm from "@/views/components/User/ChangePasswordForm";
 
 export default {
   name: "UserProfile",
-  components: { AddSubjectForm, AddUserForm, FullCalendar, ArgonButton },
+  components: { ChangePasswordForm, AddSubjectForm, AddUserForm, FullCalendar, ArgonButton },
   mixins: [usersRoleMixin],
   beforeRouteEnter(to, from, next) {
     if (usersRoleMixin.methods.isStudent(store.state.currentUser)) {
