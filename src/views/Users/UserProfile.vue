@@ -15,8 +15,10 @@
         <div class="card my-4">
           <div class="card-header pb-0">
             <div class="d-flex align-items-center justify-content-between">
-              <h6 class="mb-0">Нерабочие часы</h6>
-              <argon-button v-if="dates.length" color="success" @click="addTeacherInactiveTime">Добавить</argon-button>
+              <h6 class="mb-0">{{ $t('users.inactive_time') }}</h6>
+              <argon-button v-if="dates.length" color="success" @click="addTeacherInactiveTime">
+                {{ $t('common.add') }}
+              </argon-button>
             </div>
           </div>
           <div class="card-body pt-0">
@@ -25,7 +27,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -36,17 +37,18 @@ import usersRoleMixin from "../../mixins/usersRoleMixin";
 import AddUserForm from "../components/User/AddUserForm";
 import store from '../../store/index'
 import FullCalendar from "@fullcalendar/vue3";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
 import ArgonButton from "@/components/ArgonButton";
 import axios from "axios";
 import { server } from "@/config";
 import ChangePasswordForm from "@/views/components/User/ChangePasswordForm";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import utilsMixin from "@/mixins/utilsMixin";
 
 export default {
   name: "UserProfile",
   components: { ChangePasswordForm, AddSubjectForm, AddUserForm, FullCalendar, ArgonButton },
-  mixins: [usersRoleMixin],
+  mixins: [usersRoleMixin, utilsMixin],
   beforeRouteEnter(to, from, next) {
     if (usersRoleMixin.methods.isStudent(store.state.currentUser)) {
       next(`/users/${store.state.currentUser.id}/calendar`);
@@ -70,18 +72,10 @@ export default {
         plugins: [timeGridPlugin, interactionPlugin],
         locale: 'ru',
         timeZone: 'local',
-        // contentHeight: this.isMobile ? 415 : 500,
-
         height: "auto",
-        defaultView: 'dayGridWeek',
-        dayHeaderFormat: { weekday: 'short' },
+        dayHeaderFormat: { weekday: 'short' }, // Название дней недели
         events: [],
-        dateClick: this.handleDateClick,
-        viewDidMount: this.viewDidMount,
-
-
-        // Timeline настройка
-        allDaySlot: false,
+        allDaySlot: false, // Показывать в шапке доп окно полного дня
         slotMinTime: '09:00:00',
         slotMaxTime: '21:00:00',
         slotDuration: '00:45:00',
@@ -91,21 +85,9 @@ export default {
           minute: '2-digit',
           omitZeroMinute: false,
         },
-        // Event Drag and Resize
-
-        // editable: true,
-        // eventDurationEditable: false,
-        // eventDrop: this.eventDropped,
-
-
-        //select
-
         selectable: true,
         selectOverlap: false,
         select: this.selectedEvent,
-
-
-        eventClick: this.eventClicked,
       },
       eventCounter: 0,
       dates: []
@@ -123,13 +105,10 @@ export default {
           color: '#BFBFBF'
         }]
 
-      const startTime = this.addZero(event.start.getHours()) + ":" + this.addZero(event.start.getMinutes());
-      const endTime = this.addZero(event.end.getHours()) + ":" + this.addZero(event.end.getMinutes());
-
       this.dates = [...this.dates, {
         weekDay: event.start.getDay(),
-        startTime,
-        endTime,
+        startTime: this.addZero(event.start.getHours()) + ":" + this.addZero(event.start.getMinutes()),
+        endTime: this.addZero(event.end.getHours()) + ":" + this.addZero(event.end.getMinutes()),
         millis: event.start.getTime()
       }]
 
@@ -159,20 +138,14 @@ export default {
         }
       })
     },
-
-    addZero(i) {
-      if (i < 10) {
-        i = "0" + i
-      }
-      return i;
-    },
     userEdited(user) {
       this.$emit('userEdited', user)
     }
   },
   mounted() {
-    if (this.isTeacher(this.user))
+    if (this.isTeacher(this.user)) {
       this.getTeacherInactiveTime()
+    }
   }
 }
 </script>

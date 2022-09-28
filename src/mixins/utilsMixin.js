@@ -18,6 +18,9 @@ export default {
                 return ''
             }
             return input.$errors[0].$message
-        }
+        },
+        addZero(num) {
+            return String(num).padStart(2, '0');
+        },
     }
 }
