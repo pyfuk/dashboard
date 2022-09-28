@@ -74,8 +74,6 @@
           <argon-input v-model="email"
                        type="email"
                        :placeholder="$t('users.user.email')"
-                       :valid="this.validate(formSubmitted, v$.email.$error)"
-                       :valid-text="this.validateText(v$.email)"
                        :disabled="!editingForm && isEdit"
           />
         </div>
@@ -184,7 +182,6 @@ export default {
       password: { required },
       repassword: { required, sameAs: sameAs(this.password) },
       phone: { required },
-      email: { required },
     }
   },
   methods: {
@@ -207,8 +204,31 @@ export default {
 
       const response = await axios.post(server.URL + '/api/users/create', data);
 
+      this.formSubmitted = false;
       await this.$router.push(`/users/${response.data.user_id}`)
     },
+
+    async editUser() {
+      this.v$.$validate();
+
+      this.formSubmitted = true;
+      if (this.v$.firstname.$error || this.v$.lastname.$error || this.v$.birthday.$error || this.v$.phone.$error) {
+        return;
+      }
+
+      const data = {
+        user_id: this.user.id,
+        firstname: this.firstname,
+        lastname: this.lastname,
+        email: this.email,
+        birthday: this.birthday,
+        phone: this.phone
+      }
+      const res = await axios.post(server.URL + '/api/users/edit', data);
+      this.$emit('userEdited', res.user);
+      this.formSubmitted = false;
+      this.editingForm = false;
+    }
   },
   mounted() {
     if (this.isEdit && this.user) {

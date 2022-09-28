@@ -57,7 +57,7 @@
     </div>
 
     <div :class="{'container-fluid': !isMobile}">
-      <router-view v-if="user" :user="user" :isMobile="isMobile"></router-view>
+      <router-view v-if="user" :user="user" :isMobile="isMobile" @userEdited="userEdited"></router-view>
     </div>
   </div>
 </template>
@@ -119,6 +119,9 @@ export default {
     async getUser() {
       const res = await axios.post(server.URL + '/api/users/get', { user_id: this.user_id });
       this.user = res.user;
+    },
+    userEdited(user) {
+      this.user = user;
     }
   }
 }
