@@ -116,8 +116,8 @@
         </div>
       </div>
     </div>
-    <div class="card-footer pt-1 ms-auto">
-      <argon-button v-if="isAdd" color="success" @click="addUser">
+    <div class="card-footer pt-1 ms-auto" v-if="isAdd">
+      <argon-button color="success" @click="addUser">
         {{ $t('common.add') }}
       </argon-button>
     </div>

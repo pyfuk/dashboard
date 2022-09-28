@@ -6,7 +6,7 @@
         <icon-view :img="subject.icon" size="lg" color="rgb(226, 231, 231)"></icon-view>
       </div>
       <div class="d-flex flex-column">
-        <h6 class="mb-1 text-sm text-dark">{{ subject.title }}</h6>
+        <h6 class="mb-1 text-sm text-dark">{{ subject.name }}</h6>
 
       </div>
     </div>

@@ -1,56 +1,53 @@
 <template>
-  <div>
-    <categories-card cardTitle="Предметы" :subjects="teacherSubjects"/>
-    <div class="card mt-4">
-      <div class="p-3 pb-0 card-header">
-        <h6 class="mb-0">Добавить предмет</h6>
-      </div>
-      <div class="p-3 card-body">
-        <div class="row">
-          <div class="col">
-            <label for="name" class="form-control-label"
-            >Название</label
-            >
-            <argon-select v-model="form.name"
-                          :options="subjects"></argon-select>
-          </div>
-        </div>
-      </div>
-      <div class="card-footer p-3 pt-1 ms-auto">
-        <argon-button color="success" @click="addSubjectToUser">Add user
-        </argon-button>
+  <div class="card">
+    <div class="p-3 pb-0 card-header d-flex justify-content-between">
+      <h6 class="mb-0">Предметы</h6>
+      <div class="d-flex justify-content-around">
+        <argon-select class="mx-2" v-model="form.subject"
+                      :options="subjects"></argon-select>
+        <argon-button color="success" @click="addSubjectToTeacher">Добавить</argon-button>
       </div>
     </div>
+    <div class="p-3 card-body">
+      <ul class="list-group" v-if="teacherSubjects.length">
+        <category-card v-for="teacherSubject of teacherSubjects" :subject="teacherSubject" :key="teacherSubject._id"/>
+      </ul>
+      <h2 v-else style="color: red">
+        Список постов пуст
+      </h2>
+    </div>
   </div>
+
 </template>
 
 <script>
-import CategoriesCard from "../CategoriesCard/CategoriesCard";
 import ArgonSelect from "../../../components/ArgonSelect";
 import axios from "axios";
 import ArgonButton from "../../../components/ArgonButton";
 import { server } from "@/config";
+import CategoryCard from "@/views/components/CategoriesCard/CategoryCard";
 
 export default {
   name: "AddSubjectForm",
   components: {
-    CategoriesCard,
     ArgonSelect,
-    ArgonButton
+    ArgonButton,
+    CategoryCard
   },
   data() {
     return {
       subjects: [],
       teacherSubjects: [],
+      teacher_id: '',
       form: {
-        name: ''
+        subject: ''
       }
     }
   },
   mounted() {
-    const user_id = this.$route.params.id;
+    this.teacher_id = this.$route.params.id;
     this.getSubjects();
-    this.getUserSubjects(user_id)
+    this.getUserSubjects()
   },
   methods: {
     async getSubjects() {
@@ -62,26 +59,19 @@ export default {
         }
       })
     },
-    async getUserSubjects(user_id) {
+    async getUserSubjects() {
       const data = {
-        teacher_id: user_id
+        teacher_id: this.teacher_id
       }
       const res = await axios.post(server.URL + '/api/subjects/get_teacher_subjects', data)
-      this.teacherSubjects = res.subjects.map(s => {
-        return {
-          title: s.name,
-          icon: s.icon
-        }
-      })
+      this.teacherSubjects = res.subjects;
     },
-    async addSubjectToUser() {
-      const user_id = this.$route.params.id;
+    async addSubjectToTeacher() {
       const data = {
-        teacher_id: user_id,
-        subject_id: this.form.name
+        teacher_id: this.teacher_id,
+        subject_id: this.form.subject
       }
-
-      const res = await axios.post(server.URL + '/api/subjects/add_subject_to_teacher', data)
+      await axios.post(server.URL + '/api/subjects/add_subject_to_teacher', data)
     }
   }
 
@@ -90,5 +80,7 @@ export default {
 </script>
 
 <style scoped>
-
+.form-group {
+  margin-bottom: 0;
+}
 </style>
