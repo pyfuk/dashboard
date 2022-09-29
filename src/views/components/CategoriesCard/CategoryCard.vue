@@ -6,16 +6,23 @@
         <icon-view :img="subject.icon" size="lg" color="rgb(226, 231, 231)"></icon-view>
       </div>
       <div class="d-flex flex-column">
-        <h6 class="mb-1 text-sm text-dark">{{ subject.name }}</h6>
-
+        <router-link
+            :to="{ path: `/subjects/${subject.id}` }"
+        >
+          <h6 class="mb-1 text-sm text-dark">{{ subject.name }}</h6>
+        </router-link>
       </div>
     </div>
     <div class="d-flex">
+
       <button
-          class="my-auto btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right"
-      >
-        <i class="ni ni-bold-right" aria-hidden="true"></i>
+          class="my-auto btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right">
+        <router-link
+            :to="{ path: `/subjects/${subject.id}` }">
+          <i class="ni ni-bold-right" aria-hidden="true"></i>
+        </router-link>
       </button>
+
     </div>
   </li>
 </template>
