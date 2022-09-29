@@ -6,11 +6,14 @@
         <icon-view :img="subject.icon" size="lg" color="rgb(226, 231, 231)"></icon-view>
       </div>
       <div class="d-flex flex-column">
-        <router-link
-            :to="{ path: `/subjects/${subject.id}` }"
+        <router-link v-if="isAdmin($store.state.currentUser)"
+                     :to="{ path: `/subjects/${subject.id}` }"
         >
           <h6 class="mb-1 text-sm text-dark">{{ subject.name }}</h6>
         </router-link>
+        <h6 v-if="!isAdmin($store.state.currentUser)" class="mb-1 text-sm text-dark cursor-pointer">{{
+            subject.name
+          }}</h6>
       </div>
     </div>
     <div class="d-flex">
@@ -18,9 +21,11 @@
       <button
           class="my-auto btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right">
         <router-link
+            v-if="isAdmin($store.state.currentUser)"
             :to="{ path: `/subjects/${subject.id}` }">
           <i class="ni ni-bold-right" aria-hidden="true"></i>
         </router-link>
+        <i v-if="!isAdmin($store.state.currentUser)" class="ni ni-bold-right" aria-hidden="true"></i>
       </button>
 
     </div>
@@ -29,12 +34,14 @@
 
 <script>
 import IconView from "../../../components/IconView";
+import usersRoleMixin from "@/mixins/usersRoleMixin";
 
 export default {
   name: "category-card",
   components: {
     IconView
   },
+  mixins: [usersRoleMixin],
   props: {
     subject: {
       type: Object,

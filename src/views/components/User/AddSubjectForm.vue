@@ -2,7 +2,7 @@
   <div class="card" :class="{'mt-4': !isAdmin($store.state.currentUser)}">
     <div class="pb-0 card-header d-flex justify-content-between">
       <h6 class="mb-0">{{ $t('subjects.subjects') }}</h6>
-      <div class="d-flex justify-content-around">
+      <div class="d-flex justify-content-around" v-if="isAdmin($store.state.currentUser)">
         <argon-select class="mx-2" v-model="form.subject"
                       :options="subjects"></argon-select>
         <argon-button color="success" @click="addSubjectToTeacher">{{ $t('common.add') }}</argon-button>
