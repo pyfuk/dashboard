@@ -10,7 +10,7 @@
                   <h4 class="font-weight-bolder">Авторизация</h4>
                   <p class="mb-0">Введите номер телефона и пароль</p>
                 </div>
-                <div class="card-body">
+                <div class="card-body" v-if="!recovery">
                   <div class="mb-3">
                     <argon-input v-model="formData.phone" type="text" placeholder="Номер телефона" name="phone"
                                  size="lg"/>
@@ -18,6 +18,10 @@
                   <div class="mb-3">
                     <argon-input v-model="formData.password" type="password" placeholder="Пароль" name="password"
                                  size="lg"/>
+                  </div>
+
+                  <div class="cursor-pointer" @click="recovery = true">
+                    Востановить пароль
                   </div>
 
                   <div class="text-center">
@@ -29,6 +33,38 @@
                         size="lg"
                         @click="submitAuth"
                     >Авторизация
+                    </argon-button>
+                  </div>
+                </div>
+
+                <div class="card-body" v-if="recovery">
+                  <div class="mb-3">
+                    <argon-input v-model="recoveryForm.phone" type="text" placeholder="Номер телефона" name="phone"
+                                 size="lg"/>
+                  </div>
+
+                  <div class="cursor-pointer" @click="sendOtp" v-if="!otp_send">
+                    Отправить код на почту
+                  </div>
+
+                  <div class="mb-3" v-if="otp_send">
+                    <argon-input v-model="recoveryForm.password" type="text" placeholder="Новый пароль" name="phone"
+                                 size="lg"/>
+                  </div>
+                  <div class="mb-3" v-if="otp_send">
+                    <argon-input v-model="recoveryForm.code" type="text" placeholder="Код" name="phone"
+                                 size="lg"/>
+                  </div>
+
+                  <div class="text-center">
+                    <argon-button
+                        class="mt-4"
+                        variant="gradient"
+                        color="success"
+                        fullWidth
+                        size="lg"
+                        @click="recoveryPassword"
+                    >Восстановить пароль
                     </argon-button>
                   </div>
                 </div>
@@ -81,7 +117,14 @@ export default {
         password: '',
         phone: '',
       },
+      recoveryForm: {
+        phone: '',
+        password: '',
+        code: ''
+      },
       toast: useToast(),
+      recovery: false,
+      otp_send: false,
     }
   },
   mixins: [usersRoleMixin],
@@ -104,6 +147,26 @@ export default {
         this.$store.state.showASidenav = true;
         await this.$router.push(`/`)
       }
+    },
+    async sendOtp() {
+
+      const data = {
+        phone: this.recoveryForm.phone
+      }
+
+      const res = await axios.post(server.URL + "/api/users/get_activation_code_recovery_password", data);
+      this.otp_send = true;
+    },
+    async recoveryPassword() {
+      const data = {
+        phone: this.recoveryForm.phone,
+        code: this.recoveryForm.code,
+        password: this.recoveryForm.password
+      }
+
+      await axios.post(server.URL + '/api/users/recovery_password', data)
+      this.recovery = false
+      this.otp_send = false
     }
   },
   created() {
