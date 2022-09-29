@@ -77,6 +77,8 @@
           <argon-input v-model="email"
                        type="email"
                        :placeholder="$t('users.user.email')"
+                       :valid="this.validate(formSubmitted, v$.email.$error)"
+                       :valid-text="this.validateText(v$.email)"
                        :disabled="!editingForm && isEdit"
           />
         </div>
@@ -134,7 +136,7 @@ import ArgonInput from "@/components/ArgonInput.vue";
 import ArgonSelect from "@/components/ArgonSelect.vue";
 import { mapState } from "vuex";
 import useValidate from '@vuelidate/core'
-import { required, sameAs } from '@vuelidate/validators'
+import { email, required, sameAs } from '@vuelidate/validators'
 import axios from "axios";
 import { server } from "../../../config";
 import utilsMixin from "@/mixins/utilsMixin";
@@ -186,6 +188,7 @@ export default {
       password: { required },
       repassword: { required, sameAs: sameAs(this.password) },
       phone: { required },
+      email: { required, email }
     }
   },
   methods: {
@@ -216,7 +219,7 @@ export default {
       this.v$.$validate();
 
       this.formSubmitted = true;
-      if (this.v$.firstname.$error || this.v$.lastname.$error || this.v$.birthday.$error || this.v$.phone.$error) {
+      if (this.v$.firstname.$error || this.v$.lastname.$error || this.v$.birthday.$error || this.v$.phone.$error || this.v$.email.$error) {
         return;
       }
 
