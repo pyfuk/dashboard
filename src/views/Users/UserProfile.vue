@@ -85,7 +85,7 @@ export default {
           minute: '2-digit',
           omitZeroMinute: false,
         },
-        selectable: true,
+        selectable: this.isAdmin(this.$store.state.currentUser) ? true : false,
         selectOverlap: false,
         select: this.selectedEvent,
       },
