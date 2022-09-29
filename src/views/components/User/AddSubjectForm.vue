@@ -29,6 +29,7 @@ import ArgonButton from "../../../components/ArgonButton";
 import { server } from "@/config";
 import CategoryCard from "@/views/components/CategoriesCard/CategoryCard";
 import usersRoleMixin from "@/mixins/usersRoleMixin";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "AddSubjectForm",
@@ -43,6 +44,7 @@ export default {
       subjects: [],
       teacherSubjects: [],
       teacher_id: '',
+      toast: useToast(),
       form: {
         subject: ''
       }
@@ -51,7 +53,7 @@ export default {
   mounted() {
     this.teacher_id = this.$route.params.id;
     this.getSubjects();
-    this.getUserSubjects()
+    this.getTeacherSubjects()
   },
   methods: {
     async getSubjects() {
@@ -63,7 +65,7 @@ export default {
         }
       })
     },
-    async getUserSubjects() {
+    async getTeacherSubjects() {
       const data = {
         teacher_id: this.teacher_id
       }
@@ -75,9 +77,11 @@ export default {
         teacher_id: this.teacher_id,
         subject_id: this.form.subject
       }
-      await axios.post(server.URL + '/api/subjects/add_subject_to_teacher', data)
-    }
-  }
+      const res = await axios.post(server.URL + '/api/subjects/add_subject_to_teacher', data)
+      this.teacherSubjects.push(res.subject);
+      this.toast.success(this.$t('notifications.add_subject_to_teacher'))
+    },
+  },
 
 
 }
