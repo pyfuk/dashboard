@@ -2,8 +2,11 @@
   <div class="card">
     <div class="card-header pb-0">
       <div class="d-flex justify-content-between">
-        <p class="mb-0">{{ action === 'add' ? $t('users.add_user') : $t('users.edit_user') }}</p>
-        <argon-button v-if="!editingForm && isEdit" color="success" @click="editingForm = true">
+        <h6 class="mb-0">{{
+            action === 'add' ? $t('users.add_user') : isAdmin($store.state.currentUser) ? $t('users.edit_user') : $t('users.info_user')
+          }}</h6>
+        <argon-button v-if="!editingForm && isEdit && isAdmin($store.state.currentUser)" color="success"
+                      @click="editingForm = true">
           {{ $t('common.edit') }}
         </argon-button>
         <argon-button v-if="editingForm" color="success" @click="editUser">
@@ -135,11 +138,12 @@ import { required, sameAs } from '@vuelidate/validators'
 import axios from "axios";
 import { server } from "../../../config";
 import utilsMixin from "@/mixins/utilsMixin";
+import usersRoleMixin from "@/mixins/usersRoleMixin";
 
 export default {
   name: "add-user-form",
   components: { ArgonButton, ArgonInput, ArgonSelect },
-  mixins: [utilsMixin],
+  mixins: [utilsMixin, usersRoleMixin],
   props: {
     action: {
       type: String,

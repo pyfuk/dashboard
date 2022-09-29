@@ -1,18 +1,19 @@
 <template>
   <div class="mt-4">
     <div class="row">
-      <div class="col-12 col-md-6 col-lg-7 col-xl-7 col-xxl-8">
+      <div class="col-12 col-md-6 col-lg-7 col-xl-7 col-xxl-8"
+           :class="{'col-md-12 col-lg-12 col-xl-12 col-xxl-12': !isCurrentUserEqualToUser && !isTeacher(user)}">
         <add-user-form action="edit" :user="user" @userEdited="userEdited"></add-user-form>
       </div>
       <div class="col-12 col-md-6 col-lg-5 col-xl-5 col-xxl-4" :class="{'my-4': isMobile}">
-        <change-password-form></change-password-form>
+        <change-password-form v-if="isCurrentUserEqualToUser"></change-password-form>
         <add-subject-form v-if="isTeacher(user)"></add-subject-form>
       </div>
     </div>
 
     <div class="row" v-if="isTeacher(user)">
       <div class="col">
-        <div class="card my-4">
+        <div class="card" :class="isMobile ? 'mb-4' : 'my-4'">
           <div class="card-header pb-0">
             <div class="d-flex align-items-center justify-content-between">
               <h6 class="mb-0">{{ $t('users.inactive_time') }}</h6>
@@ -35,7 +36,6 @@
 import AddSubjectForm from "../components/User/AddSubjectForm";
 import usersRoleMixin from "../../mixins/usersRoleMixin";
 import AddUserForm from "../components/User/AddUserForm";
-import store from '../../store/index'
 import FullCalendar from "@fullcalendar/vue3";
 import ArgonButton from "@/components/ArgonButton";
 import axios from "axios";
@@ -49,12 +49,12 @@ export default {
   name: "UserProfile",
   components: { ChangePasswordForm, AddSubjectForm, AddUserForm, FullCalendar, ArgonButton },
   mixins: [usersRoleMixin, utilsMixin],
-  beforeRouteEnter(to, from, next) {
-    if (usersRoleMixin.methods.isStudent(store.state.currentUser)) {
-      next(`/users/${store.state.currentUser.id}/calendar`);
-    }
-    next()
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   if (usersRoleMixin.methods.isStudent(store.state.currentUser)) {
+  //     next(`/users/${store.state.currentUser.id}/calendar`);
+  //   }
+  //   next()
+  // },
   props: {
     user: {
       type: Object
@@ -145,6 +145,11 @@ export default {
   mounted() {
     if (this.isTeacher(this.user)) {
       this.getTeacherInactiveTime()
+    }
+  },
+  computed: {
+    isCurrentUserEqualToUser() {
+      return this.$store.state.currentUser.id === this.user.id;
     }
   }
 }

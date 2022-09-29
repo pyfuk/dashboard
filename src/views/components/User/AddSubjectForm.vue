@@ -1,6 +1,6 @@
 <template>
-  <div class="card mt-4">
-    <div class="p-3 pb-0 card-header d-flex justify-content-between">
+  <div class="card" :class="{'mt-4': !isAdmin($store.state.currentUser)}">
+    <div class="pb-0 card-header d-flex justify-content-between">
       <h6 class="mb-0">{{ $t('subjects.subjects') }}</h6>
       <div class="d-flex justify-content-around">
         <argon-select class="mx-2" v-model="form.subject"
@@ -28,6 +28,7 @@ import axios from "axios";
 import ArgonButton from "../../../components/ArgonButton";
 import { server } from "@/config";
 import CategoryCard from "@/views/components/CategoriesCard/CategoryCard";
+import usersRoleMixin from "@/mixins/usersRoleMixin";
 
 export default {
   name: "AddSubjectForm",
@@ -36,6 +37,7 @@ export default {
     ArgonButton,
     CategoryCard
   },
+  mixins: [usersRoleMixin],
   data() {
     return {
       subjects: [],
