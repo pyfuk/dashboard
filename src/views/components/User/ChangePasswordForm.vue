@@ -22,6 +22,7 @@ import { required } from "@vuelidate/validators";
 import utilsMixin from "@/mixins/utilsMixin";
 import axios from "axios";
 import { server } from "@/config";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "ChangePasswordForm",
@@ -42,6 +43,7 @@ export default {
       v$: useValidate(),
       formSubmitted: false,
       user_id: '',
+      toast: useToast(),
       form: {
         password: ''
       }
@@ -49,9 +51,8 @@ export default {
   },
   methods: {
     async changePassword() {
-      this.v$.$validate();
-
       this.formSubmitted = true;
+      this.v$.$validate();
       if (this.v$.$error) {
         return;
       }
@@ -60,8 +61,16 @@ export default {
         user_id: this.user_id,
         password: this.form.password
       }
-
       await axios.post(server.URL + '/api/users/change_password', data)
+
+      this.clearForm();
+      this.formSubmitted = false;
+      this.toast.success(this.$t('notifications.change_password'))
+    },
+    clearForm() {
+      this.form = {
+        password: ''
+      }
     }
   },
   mounted() {

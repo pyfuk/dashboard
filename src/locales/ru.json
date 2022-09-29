@@ -38,5 +38,8 @@
   },
   "subjects": {
     "subjects": "Предметы"
+  },
+  "notifications": {
+    "change_password": "Пароль был успешно изменен"
   }
 }
