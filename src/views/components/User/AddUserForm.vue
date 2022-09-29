@@ -141,6 +141,7 @@ import axios from "axios";
 import { server } from "../../../config";
 import utilsMixin from "@/mixins/utilsMixin";
 import usersRoleMixin from "@/mixins/usersRoleMixin";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "add-user-form",
@@ -166,6 +167,7 @@ export default {
       email: '',
       formSubmitted: false,
       editingForm: false,
+      toast: useToast(),
     }
   },
   computed: {
@@ -212,7 +214,8 @@ export default {
       const response = await axios.post(server.URL + '/api/users/create', data);
 
       this.formSubmitted = false;
-      await this.$router.push(`/users/${response.data.user_id}`)
+      this.toast.success(this.$t('notifications.add_user'))
+      await this.$router.push(`/users/${response.user_id}`);
     },
 
     async editUser() {
@@ -235,6 +238,7 @@ export default {
       this.$emit('userEdited', res.user);
       this.formSubmitted = false;
       this.editingForm = false;
+      this.toast.success(this.$t('notifications.edit_user'))
     }
   },
   mounted() {
