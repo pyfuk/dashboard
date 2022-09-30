@@ -17,8 +17,12 @@
           <div class="card-header pb-0">
             <div class="d-flex align-items-center justify-content-between">
               <h6 class="mb-0">{{ $t('users.inactive_time') }}</h6>
-              <argon-button v-if="dates.length" color="success" @click="addTeacherInactiveTime">
-                {{ $t('common.add') }}
+              <argon-button v-if="inactiveEdit" color="success" @click="addTeacherInactiveTime">
+                {{ $t('common.save') }}
+              </argon-button>
+              <argon-button v-if="!inactiveEdit && isAdmin($store.state.currentUser)" color="success"
+                            @click="editInactiveTime">
+                {{ $t('common.edit') }}
               </argon-button>
             </div>
           </div>
@@ -44,6 +48,7 @@ import ChangePasswordForm from "@/views/components/User/ChangePasswordForm";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import utilsMixin from "@/mixins/utilsMixin";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "UserProfile",
@@ -85,12 +90,16 @@ export default {
           minute: '2-digit',
           omitZeroMinute: false,
         },
-        selectable: this.isAdmin(this.$store.state.currentUser) ? true : false,
+        selectable: false,
         selectOverlap: false,
         select: this.selectedEvent,
+        eventClick: this.clickEvent,
       },
       eventCounter: 0,
-      dates: []
+      dates: [],
+      inactive_times: [],
+      toast: useToast(),
+      inactiveEdit: false,
     }
   },
   methods: {
@@ -106,6 +115,7 @@ export default {
         }]
 
       this.dates = [...this.dates, {
+        id,
         weekDay: event.start.getDay(),
         startTime: this.addZero(event.start.getHours()) + ":" + this.addZero(event.start.getMinutes()),
         endTime: this.addZero(event.end.getHours()) + ":" + this.addZero(event.end.getMinutes()),
@@ -119,7 +129,24 @@ export default {
         dates: this.dates
       }
 
-      await axios.post(server.URL + '/api/users/add_teacher_inactive_time', data)
+      await axios.post(server.URL + '/api/users/add_teacher_inactive_time', data);
+      this.toast.success(this.$t('notifications.add_inactive_time_to_teacher'))
+      this.inactiveEdit = false;
+
+      this.calendarOptions.events = this.calendarOptions.events.map(event => {
+            const id = this.eventCounter++;
+            return {
+              id,
+              groupId: 'inactive',
+              start: event.start,
+              end: event.end,
+              color: '#BFBFBF',
+              display: 'background',
+              overlap: false,
+            }
+          }
+      )
+
     },
     async getTeacherInactiveTime() {
       const data = {
@@ -127,8 +154,12 @@ export default {
       }
       const res = await axios.post(server.URL + '/api/users/get_teacher_inactive_time', data)
 
+      this.inactive_times = res.inactive_time;
+
       this.calendarOptions.events = res.inactive_time.map(res => {
+        const id = this.eventCounter++;
         return {
+          id,
           groupId: 'inactive',
           start: res.start,
           end: res.end,
@@ -137,16 +168,51 @@ export default {
           overlap: false,
         }
       })
-    },
+    }
+    ,
     userEdited(user) {
       this.$emit('userEdited', user)
+    }
+    ,
+    editInactiveTime() {
+      this.inactiveEdit = true;
+      this.calendarOptions.selectable = true;
+
+      this.calendarOptions.events = this.inactive_times.map(event => {
+
+        const id = this.eventCounter++;
+
+        this.dates.push({
+          id,
+          weekDay: new Date(event.start).getDay(),
+          startTime: this.addZero(new Date(event.start).getHours()) + ":" + this.addZero(new Date(event.start).getMinutes()),
+          endTime: this.addZero(new Date(event.end).getHours()) + ":" + this.addZero(new Date(event.end).getMinutes()),
+          millis: new Date(event.start).getTime()
+        })
+
+        return {
+          id,
+          start: event.start,
+          end: event.end,
+          color: '#BFBFBF',
+          overlap: false,
+        }
+      })
+    },
+    clickEvent(event) {
+      if (event.event.display === 'background') {
+        return
+      }
+      this.dates = this.dates.filter(d => d.id != event.event.id);
+      this.calendarOptions.events = this.calendarOptions.events.filter(e => e.id != event.event.id);
     }
   },
   mounted() {
     if (this.isTeacher(this.user)) {
       this.getTeacherInactiveTime()
     }
-  },
+  }
+  ,
   computed: {
     isCurrentUserEqualToUser() {
       return this.$store.state.currentUser.id === this.user.id;
