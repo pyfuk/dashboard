@@ -1,27 +1,23 @@
 <template>
   <div class="card mt-4">
     <div class="card-header pb-0 d-flex justify-content-between">
-      <h6>Курсы</h6>
-      <argon-button color="success" @click="$router.push(`lessons/add`)">Добавить курс</argon-button>
+      <h6>{{ $t('courses.courses') }}</h6>
+      <argon-button color="success" @click="$router.push(`lessons/add`)">{{ $t('common.add') }}</argon-button>
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-0">
         <table v-if="courses.length && !isCoursesLoading" class="table align-items-center mb-0">
           <thead>
           <tr>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Название</th>
-            <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
-            >Учитель
-            </th>
-
-            <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
-            >Время
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('courses.name') }}
             </th>
             <th
                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
-            >Статус
+            >{{ $t('courses.teacher') }}
+            </th>
+            <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
+            >{{ $t('courses.status') }}
             </th>
           </tr>
           </thead>
@@ -41,19 +37,10 @@
             <td>
               <p class="text-md font-weight-bold mb-0">{{ course.teacher.firstname }} {{ course.teacher.lastname }}</p>
             </td>
-            <td>
-              <div v-for="date in course.date" :key="date.weekName" class="d-flex">
-                <p class="text-xs font-weight-bold mb-0 w-25">
-                  {{ date.weekName }}:
-                </p>
-                <p class="text-xs font-weight-bold mb-0">
-                  {{ date.startTime }} - {{ date.endTime }}
-                </p>
-              </div>
-            </td>
+
             <td class="text-sm">
               <span class="badge badge-sm" :class="course.active ? 'bg-gradient-success' : 'bg-gradient-danger'">{{
-                  course.active ? 'Активный' : 'Не активный'
+                  course.active ? $t('courses.paid') : $t('courses.unpaid')
                 }}</span>
             </td>
           </tr>
