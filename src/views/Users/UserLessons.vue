@@ -2,7 +2,10 @@
   <div class="card mt-4">
     <div class="card-header pb-0 d-flex justify-content-between">
       <h6>{{ $t('courses.courses') }}</h6>
-      <argon-button color="success" @click="$router.push(`lessons/add`)">{{ $t('common.add') }}</argon-button>
+      <argon-button v-if="isStudent(user)" color="success" @click="$router.push(`lessons/add`)">{{
+          $t('common.add')
+        }}
+      </argon-button>
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-0">
@@ -47,7 +50,7 @@
           </tbody>
         </table>
         <div v-else-if="!isCoursesLoading" class="d-flex justify-content-center my-2">
-          <span class="text-secondary text-3xl font-weight-bold">Нет данных</span>
+          <span class="text-secondary text-3xl font-weight-bold">{{ $t('common.no_data') }}</span>
         </div>
 
         <div class="d-flex justify-content-center my-2" v-if="isCoursesLoading">
@@ -56,15 +59,6 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="card-footer p-3 ms-auto">
-      <argon-pagination color="success">
-        <argon-pagination-item prev/>
-        <argon-pagination-item label="1" active/>
-        <argon-pagination-item label="2" disabled/>
-        <argon-pagination-item label="3"/>
-        <argon-pagination-item next/>
-      </argon-pagination>
     </div>
   </div>
 
@@ -79,6 +73,7 @@ import { server, timeout } from "../../config";
 import axios from "axios";
 import utilsMixin from "../../mixins/utilsMixin";
 import IconView from "../../components/IconView";
+import usersRoleMixin from "@/mixins/usersRoleMixin";
 
 export default {
   components: {
@@ -88,7 +83,7 @@ export default {
     IconView
   },
   name: "user-lessons-table",
-  mixins: [utilsMixin],
+  mixins: [utilsMixin, usersRoleMixin],
   props: {
     user: {
       type: Object,

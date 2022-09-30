@@ -1,42 +1,51 @@
 <template>
   <div class="card">
     <div class="card-header pb-0">
-      <h6>Добавить курс</h6>
+      <h6>{{ $t('courses.add_course') }}</h6>
     </div>
     <div class="card-body">
-      <label for="subject" class="form-control-label"
-      >Предмет</label>
+      <label :for="form.subject" class="form-control-label"
+      >{{ $t('courses.subject') }}</label>
       <argon-select v-model="form.subject"
                     :options="subjectsForSelect"></argon-select>
 
-      <label for="teacher" class="form-control-label"
-      >Учитель</label>
+      <label :for="form.teacher" class="form-control-label"
+      >{{ $t('courses.teacher') }}</label>
       <argon-select v-model="form.teacher"
                     :options="teachers"></argon-select>
 
       <hr class="horizontal dark"/>
 
       <div class="d-flex justify-content-between mb-2">
-        <span>Одноразовое посещение</span>
+        <span>{{ $t('courses.one_time') }}</span>
         <argon-switch v-model="form.onetime"></argon-switch>
       </div>
 
-      <label v-if="!form.onetime" for="onetime" class="form-control-label"
-      >Абонимент</label>
+      <label v-if="!form.onetime" :for="form.onetime" class="form-control-label"
+      >{{ $t('courses.pass') }}</label>
       <argon-select v-if="!form.onetime" v-model="form.pass"
                     :options="passes"></argon-select>
 
 
       <hr class="horizontal dark"/>
-      Время и дата
-      <div v-for="date in dates" :key="date.id" class="d-flex justify-content-between">
+      <label class="form-control-label"
+      >{{ $t('courses.time') }}</label>
+
+      <div v-for="date in dates" :key="date.id" class="form-control mb-2 d-flex justify-content-between">
         <span>{{ parseDate(date) }}</span>
-        <span @click="removeCalendarEvent(date.id)">X</span>
+        <span @click="removeCalendarEvent(date.id)">
+          <i class="fa fa-xmark"></i>
+        </span>
+      </div>
+
+      <div v-if="!dates.length" class="form-control">
+        <span>Время проведения уроков не выбрано</span>
+
       </div>
 
     </div>
     <div class="card-footer pt-1 ms-auto">
-      <argon-button color="success" @click="addLesson">Добавить курс
+      <argon-button color="success" @click="addLesson">{{ $t('common.add') }}
       </argon-button>
     </div>
   </div>
@@ -191,7 +200,7 @@ export default {
     'form.teacher'() {
       this.$emit('form', this.form);
     },
-    'form.pass'(){
+    'form.pass'() {
       this.changedPassForm();
     }
   }
