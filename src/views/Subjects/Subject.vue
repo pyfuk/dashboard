@@ -25,18 +25,17 @@
                             :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
 
               >
-                Профиль
+                {{ $t('subjects.profile') }}
               </argon-button>
 
               <argon-button v-if="subject.group" color="success" :variant="page === 'schedule' ? 'gradient' : 'outline'"
                             @click="changeRoute('schedule')"
                             :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
-              >Расписание
+              >{{ $t('subjects.schedule') }}
               </argon-button>
             </div>
           </div>
         </div>
-
 
       </div>
     </div>
