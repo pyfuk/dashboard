@@ -4,7 +4,8 @@
       <h6>{{ $t('subjects.teachers') }}</h6>
       <div class="d-flex justify-content-around">
         <argon-select class="mx-2" v-model="form.teacher"
-                      :options="allTeachers"></argon-select>
+                      :options="allTeachers"
+                      :valid="this.validate(formSubmitted, v$.form.teacher.$error)"></argon-select>
         <argon-button color="success" @click="addTeacher">{{ $t('common.add') }}</argon-button>
       </div>
     </div>
@@ -66,6 +67,9 @@ import utilsMixin from "@/mixins/utilsMixin";
 import { server, timeout } from "@/config";
 import axios from "axios";
 import ArgonSelect from "@/components/ArgonSelect";
+import useValidate from "@vuelidate/core";
+import { useToast } from "vue-toastification";
+import { required } from "@vuelidate/validators";
 
 export default {
   name: "SubjectTeacherTable",
@@ -89,6 +93,16 @@ export default {
       allTeachers: [],
       teachers: [],
       isTeachersLoading: true,
+      v$: useValidate(),
+      toast: useToast(),
+      formSubmitted: false,
+    }
+  },
+  validations() {
+    return {
+      form: {
+        teacher: { required },
+      }
     }
   },
   methods: {
@@ -116,11 +130,21 @@ export default {
       })
     },
     async addTeacher() {
+      this.formSubmitted = true;
+      this.v$.$validate();
+      if (this.v$.$error) {
+        return;
+      }
+
       const data = {
         teacher_id: this.form.teacher,
         subject_id: this.subject.id
       }
-      await axios.post(server.URL + '/api/subjects/add_subject_to_teacher', data)
+      const res = await axios.post(server.URL + '/api/subjects/add_subject_to_teacher', data);
+      this.teachers.push(res.teacher);
+      this.formSubmitted = false;
+      this.form.teacher = '';
+      this.toast.success(this.$t('notifications.add_teacher_to_subject'))
     }
   },
   async mounted() {
