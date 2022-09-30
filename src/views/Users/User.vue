@@ -74,6 +74,7 @@ import ArgonButton from "../../components/ArgonButton";
 import axios from "axios";
 import { server } from "../../config";
 import usersRoleMixin from "../../mixins/usersRoleMixin";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "User",
@@ -84,6 +85,7 @@ export default {
       page: '',
       user_id: '',
       user: '',
+      toast: useToast(),
       windowWidth: window.innerWidth,
     }
   },
@@ -135,6 +137,7 @@ export default {
       }
       await axios.post(server.URL + "/api/users/activate", data)
       this.user.active = true;
+      this.toast.success(this.$t('notifications.user_activated'))
     },
     async deactivateUser() {
       const data = {
@@ -142,6 +145,7 @@ export default {
       }
       await axios.post(server.URL + "/api/users/deactivate", data);
       this.user.active = false;
+      this.toast.success(this.$t('notifications.user_deactivated'))
     }
   }
 }
