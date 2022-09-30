@@ -1,12 +1,11 @@
 <template>
   <div class="row">
-    <div class="col-6">
+    <div class="col-12 col-md-6">
       <add-subject-form action="edit" :subject="subject" @subjectEdited="subjectEdited" class="mt-4"/>
     </div>
-    <div class="col-6">
+    <div class="col-12 col-md-6">
       <subject-teacher-table :subject="subject"/>
     </div>
-
   </div>
 </template>
 
