@@ -6,20 +6,9 @@
     <ul class="navbar-nav">
       <li class="nav-item">
         <sidenav-item
-            url="/dashboard-default"
-            :class="getRoute() === 'dashboard-default' ? 'active' : ''"
-            :navText="'Dashboard'"
-        >
-          <template v-slot:icon>
-            <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
-          </template>
-        </sidenav-item>
-      </li>
-      <li class="nav-item">
-        <sidenav-item
             url="/users"
             :class="getRoute() === 'users' ? 'active' : ''"
-            :navText="'Users'"
+            :navText="$t('users.users')"
         >
           <template v-slot:icon>
             <i
@@ -32,7 +21,7 @@
         <sidenav-item
             url="/subjects"
             :class="getRoute() === 'subjects' ? 'active' : ''"
-            :navText="'Subjects'"
+            :navText="$t('subjects.subjects')"
         >
           <template v-slot:icon>
             <i
