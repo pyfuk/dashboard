@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-4">
-      <add-subject-form class="mt-4"/>
+      <add-subject-form action="edit" :subject="subject" @subjectEdited="subjectEdited" class="mt-4"/>
     </div>
     <div class="col-8">
       <subject-teacher-table :subject="subject"/>
@@ -22,6 +22,11 @@ export default {
       type: Object
     }
   },
+  methods: {
+    subjectEdited(subject) {
+      this.$emit('subjectEdited', subject)
+    }
+  }
 }
 </script>
 

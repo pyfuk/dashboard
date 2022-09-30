@@ -1,7 +1,14 @@
 <template>
   <div class="card">
-    <div class="card-header pb-0">
-      <h6>{{ $t('subjects.add_subject') }}</h6>
+    <div class="card-header pb-0 d-flex justify-content-between">
+      <h6>{{ isAdd ? $t('subjects.add_subject') : $t('subjects.edit_subject') }}</h6>
+      <argon-button v-if="!editingForm && isEdit" color="success"
+                    @click="editingForm = true">
+        {{ $t('common.edit') }}
+      </argon-button>
+      <argon-button v-if="editingForm" color="success" @click="editSubject">
+        {{ $t('common.save') }}
+      </argon-button>
     </div>
     <div class="card-body">
       <label :for="form.name.ru" class="form-control-label"
@@ -11,6 +18,7 @@
                    :placeholder="$t('subjects.name_ru')"
                    :valid="this.validate(formSubmitted, v$.form.name.ru.$error)"
                    :valid-text="this.validateText(v$.form.name.ru)"
+                   :disabled="!editingForm && isEdit"
       />
 
       <label :for=" form.name.uz" class="form-control-label"
@@ -19,6 +27,7 @@
                    :placeholder="$t('subjects.name_uz')"
                    :valid="this.validate(formSubmitted, v$.form.name.uz.$error)"
                    :valid-text="this.validateText(v$.form.name.uz)"
+                   :disabled="!editingForm && isEdit"
       />
 
       <label :for="form.name.en" class="form-control-label"
@@ -27,21 +36,22 @@
       <argon-input v-model="form.name.en" type="text"
                    :placeholder="$t('subjects.name_en')"
                    :valid="this.validate(formSubmitted, v$.form.name.en.$error)"
-                   :valid-text="this.validateText(v$.form.name.en)"/>
+                   :valid-text="this.validateText(v$.form.name.en)"
+                   :disabled="!editingForm && isEdit"/>
 
-      <hr class="horizontal dark"/>
+      <hr class="horizontal dark" v-if="isAdd"/>
 
-      <div class="d-flex justify-content-evenly my-4">
+      <div class="d-flex justify-content-evenly my-4" v-if="isAdd">
         <span>{{ $t('subjects.group_subject') }}</span>
         <argon-switch v-model="form.group"></argon-switch>
       </div>
 
-      <hr class="horizontal dark"/>
+      <hr class="horizontal dark" v-if="isAdd"/>
 
 
-      <subject-icons @selected="selectedItem"></subject-icons>
+      <subject-icons @selected="selectedItem" v-if="isAdd"/>
     </div>
-    <div class="card-footer pt-1 ms-auto">
+    <div class="card-footer pt-1 ms-auto" v-if="isAdd">
       <argon-button color="success" @click="addSubject">{{ $t('common.add') }}
       </argon-button>
     </div>
@@ -65,6 +75,13 @@ export default {
   name: "AddSubjectForm",
   components: { SubjectIcons, ArgonInput, ArgonButton, ArgonSwitch },
   mixins: [utilsMixin],
+  props: {
+    action: {
+      type: String,
+      required: true
+    },
+    subject: Object
+  },
   data() {
     return {
       form: {
@@ -79,6 +96,7 @@ export default {
       v$: useValidate(),
       toast: useToast(),
       formSubmitted: false,
+      editingForm: false,
     }
   },
   validations() {
@@ -91,6 +109,14 @@ export default {
         }
       }
     }
+  },
+  computed: {
+    isEdit() {
+      return this.action === 'edit'
+    },
+    isAdd() {
+      return this.action === 'add'
+    },
   },
   methods: {
     ...mapActions({
@@ -123,6 +149,36 @@ export default {
     selectedItem(icon) {
       this.form.icon = icon;
     },
+    async editSubject() {
+      this.v$.$validate();
+
+      this.formSubmitted = true;
+      if (this.v$.form.name.ru.$error || this.v$.form.name.uz.$error || this.v$.form.name.en.$error) {
+        return;
+      }
+
+      const data = {
+        subject_id: this.subject.id,
+        name: {
+          ru: this.form.name.ru,
+          uz: this.form.name.uz,
+          en: this.form.name.en
+        }
+      }
+
+      const res = await axios.post(server.URL + '/api/subjects/edit', data);
+      this.$emit('subjectEdited', res.subject);
+      this.formSubmitted = false;
+      this.editingForm = false;
+      this.toast.success(this.$t('notifications.edit_subject'))
+    }
+  },
+  mounted() {
+    if (this.isEdit && this.subject) {
+      this.form.name.ru = this.subject.title.ru;
+      this.form.name.uz = this.subject.title.uz;
+      this.form.name.en = this.subject.title.en;
+    }
   }
 }
 </script>

@@ -41,7 +41,7 @@
     </div>
 
     <div :class="{'container-fluid': !isMobile}">
-      <router-view v-if="subject" :subject="subject"></router-view>
+      <router-view v-if="subject" :subject="subject" @subjectEdited="subjectEdited"></router-view>
     </div>
   </div>
 
@@ -96,6 +96,9 @@ export default {
       }
       const res = await axios.post(server.URL + '/api/subjects/get', data)
       this.subject = res.subject;
+    },
+    subjectEdited(subject) {
+      this.subject = subject;
     }
   },
   mounted() {

@@ -3,7 +3,7 @@
     <div class="card-header pb-0">
       <div class="d-flex justify-content-between">
         <h6 class="mb-0">{{
-            action === 'add' ? $t('users.add_user') : isAdmin($store.state.currentUser) ? $t('users.edit_user') : $t('users.info_user')
+            isAdd ? $t('users.add_user') : isAdmin($store.state.currentUser) ? $t('users.edit_user') : $t('users.info_user')
           }}</h6>
         <argon-button v-if="!editingForm && isEdit && isAdmin($store.state.currentUser)" color="success"
                       @click="editingForm = true">

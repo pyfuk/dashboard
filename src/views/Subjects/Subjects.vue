@@ -5,7 +5,7 @@
         <subjects-table/>
       </div>
       <div class="col-12 col-sm-5 col-md-4" :class="{'mt-4': isMobile}">
-        <add-subject-form/>
+        <add-subject-form action="add"/>
       </div>
     </div>
   </div>
