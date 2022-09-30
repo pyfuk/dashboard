@@ -32,6 +32,8 @@
     "info_user": "Информация о пользователе",
     "change_password": "Сменить пароль",
     "inactive_time": "Нерабочее время",
+    "activate": "Активировать",
+    "deactivate": "Деактивировать",
     "profile": "Профиль",
     "calendar": "Календарь",
     "courses": "Курсы"

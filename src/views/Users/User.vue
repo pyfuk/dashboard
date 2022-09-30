@@ -4,7 +4,7 @@
     <div class="card shadow-lg">
       <div class="card-body">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-5">
             <div class="row">
               <div class="col-4 col-md-3 col-lg-2 col-xl-2">
                 <div class="avatar avatar-xl position-relative">
@@ -26,7 +26,7 @@
             </div>
           </div>
 
-          <div class="col-md-6" :class="{'d-flex align-items-center  justify-content-end': !isMobile}">
+          <div class="col-md-7" :class="{'d-flex align-items-center  justify-content-end': !isMobile}">
             <div :class="{'row': isMobile}">
 
               <argon-button color="success" :variant="page === 'edit' ? 'gradient' : 'outline'"
@@ -47,6 +47,12 @@
                             :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
                             v-if="!isAdmin(user)">
                 {{ $t('users.courses') }}
+              </argon-button>
+              <argon-button color="secondary" :variant="'gradient'"
+                            @click="user.active ? deactivateUser() : activateUser()"
+                            :class="`${ isMobile ? 'mt-1' : 'mx-1'}`"
+                            v-if="isAdmin($store.state.currentUser)">
+                {{ user.active ? $t('users.deactivate') : $t('users.activate') }}
               </argon-button>
             </div>
           </div>
@@ -122,6 +128,20 @@ export default {
     },
     userEdited(user) {
       this.user = user;
+    },
+    async activateUser() {
+      const data = {
+        user_id: this.user_id
+      }
+      await axios.post(server.URL + "/api/users/activate", data)
+      this.user.active = true;
+    },
+    async deactivateUser() {
+      const data = {
+        user_id: this.user_id
+      }
+      await axios.post(server.URL + "/api/users/deactivate", data);
+      this.user.active = false;
     }
   }
 }
