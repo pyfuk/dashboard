@@ -1,31 +1,32 @@
 <template>
   <div class="card">
     <div class="card-header pb-0">
-      <h6>Добавить предмет</h6>
+      <h6>{{ $t('subjects.add_subject') }}</h6>
     </div>
     <div class="card-body">
-      <label for="name" class="form-control-label"
-      >Название на русском</label
+      <label :for="form.name.ru" class="form-control-label"
+      >{{ $t('subjects.name_ru') }}</label
       >
       <argon-input v-model="form.name.ru" type="text"
-                   placeholder="Название на русском"/>
+                   :placeholder="$t('subjects.name_ru')"/>
 
-      <label for="name" class="form-control-label"
-      >Название на узбекском</label
+      <label :for=" form.name.uz
+      " class="form-control-label"
+      >{{ $t('subjects.name_uz') }}</label
       >
       <argon-input v-model="form.name.uz" type="text"
-                   placeholder="Название на узбекском"/>
+                   :placeholder="$t('subjects.name_uz')"/>
 
-      <label for="name" class="form-control-label"
-      >Название на английском</label
+      <label :for="form.name.en" class="form-control-label"
+      >{{ $t('subjects.name_en') }}</label
       >
       <argon-input v-model="form.name.en" type="text"
-                   placeholder="Название на английском"/>
+                   :placeholder="$t('subjects.name_en')"/>
 
       <hr class="horizontal dark"/>
 
       <div class="d-flex justify-content-evenly my-4">
-        <span>Групповое занятие</span>
+        <span>{{ $t('subjects.group_subject') }}</span>
         <argon-switch v-model="form.group"></argon-switch>
       </div>
 
@@ -35,7 +36,7 @@
       <subject-icons @selected="selectedItem"></subject-icons>
     </div>
     <div class="card-footer pt-1 ms-auto">
-      <argon-button color="success" @click="addSubject">Добавить предмет
+      <argon-button color="success" @click="addSubject">{{ $t('common.add') }}
       </argon-button>
     </div>
   </div>
