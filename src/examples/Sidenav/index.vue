@@ -34,9 +34,9 @@
               alt="main_logo"
           />
           <span class="ms-2 font-weight-bold text-lg me-2">Tii School</span>
-          <i class="fa fa-xmark d-block position-absolute d-xl-none" style="left: 88%; top:2%"
-             @click="toggleSidebar"></i>
         </router-link>
+        <i class="fa fa-xmark d-block position-absolute d-xl-none" style="left: 88%; top:2%;"
+           @click="toggleSidebar"></i>
       </div>
       <hr class="mt-0 horizontal dark"/>
       <sidenav-list/>
@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     ...mapMutations(["navbarMinimize"]),
-    ...mapActions(["toggleSidebarColor", ""]),
+    ...mapActions(["toggleSidebarColor"]),
 
     toggleSidebar() {
       this.toggleSidebarColor("bg-white");
