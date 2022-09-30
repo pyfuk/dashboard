@@ -57,7 +57,8 @@
     "add_subject_to_teacher": "Предмет добавлен учителю",
     "add_inactive_time_to_teacher": "Добавлено неактивное время учителю",
     "user_activated": "Пользователь успешно активирован",
-    "user_deactivated": "Пользователь успешно деактивирован"
+    "user_deactivated": "Пользователь успешно деактивирован",
+    "add_subject": "Предмет успешно добавлен"
   },
   "courses": {
     "courses": "Курсы",
