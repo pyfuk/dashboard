@@ -1,15 +1,18 @@
 <template>
   <div class="card">
     <div class="card-header pb-0 d-flex justify-content-between">
-      <h6>Subjects</h6>
+      <h6>{{ $t('subjects.subjects') }}</h6>
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-0">
         <table v-if="subjects.length && !isSubjectsLoading" class="table align-items-center mb-0">
           <thead>
           <tr>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Название</th>
-            <th class="text-secondary opacity-7"></th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('subjects.name') }}
+            </th>
+            <th class="text-uppercase text-secondary text-xxs text-center font-weight-bolder opacity-7">
+              {{ $t('subjects.lesson') }}
+            </th>
           </tr>
           </thead>
           <tbody>
@@ -25,20 +28,17 @@
                 </div>
               </div>
             </td>
-            <td class="align-middle">
-              <a
-                  href="javascript:;"
-                  class="text-secondary font-weight-bold text-xs"
-                  data-toggle="tooltip"
-                  data-original-title="Edit user"
-              >Edit</a>
+            <td class="align-middle text-center text-sm">
+              <span class="badge badge-sm bg-gradient-success">
+              {{ subject.group ? $t('subjects.group') : $t('subjects.individual') }}
+              </span>
             </td>
           </tr>
           </tbody>
         </table>
 
         <div v-else-if="!isSubjectsLoading" class="d-flex justify-content-center my-2">
-          <span class="text-secondary text-3xl font-weight-bold">Нет данных</span>
+          <span class="text-secondary text-3xl font-weight-bold">{{ $t('common.no_data') }}</span>
         </div>
 
         <div class="d-flex justify-content-center my-2" v-if="isSubjectsLoading">
@@ -49,22 +49,11 @@
 
       </div>
     </div>
-    <div class="card-footer p-3 ms-auto">
-      <argon-pagination color="success">
-        <argon-pagination-item prev/>
-        <argon-pagination-item label="1" active/>
-        <argon-pagination-item label="2" disabled/>
-        <argon-pagination-item label="3"/>
-        <argon-pagination-item next/>
-      </argon-pagination>
-    </div>
   </div>
 </template>
 
 <script>
 
-import ArgonPagination from "../../../components/ArgonPagination";
-import ArgonPaginationItem from "../../../components/ArgonPaginationItem";
 import IconView from "../../../components/IconView";
 import utilsMixin from "@/mixins/utilsMixin";
 import axios from "axios";
@@ -73,8 +62,6 @@ import { server, timeout } from "@/config";
 export default {
   name: "subjects-table",
   components: {
-    ArgonPagination,
-    ArgonPaginationItem,
     IconView
   },
   mixins: [utilsMixin],
