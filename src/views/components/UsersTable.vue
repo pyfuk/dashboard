@@ -2,6 +2,11 @@
   <div class="card">
     <div class="card-header pb-0 d-flex justify-content-between">
       <h6>{{ $t('users.users') }}</h6>
+
+      <argon-input v-model="form.name"
+                   type="text"
+                   :placeholder="$t('users.user.firstname')"
+      />
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-0">
@@ -86,12 +91,14 @@ import axios from "axios";
 import utilsMixin from "../../mixins/utilsMixin";
 import { server, timeout } from "../../config";
 import usersRoleMixin from "@/mixins/usersRoleMixin";
+import ArgonInput from "@/components/ArgonInput";
 
 export default {
   components: {
     ArgonButton,
     ArgonPagination,
     ArgonPaginationItem,
+    ArgonInput
   },
   name: "users-table",
   mixins: [
@@ -102,6 +109,9 @@ export default {
     return {
       users: [],
       isUsersLoading: true,
+      form: {
+        name: ''
+      },
       paginator: {
         current: 1,
         total: 0,
@@ -110,13 +120,18 @@ export default {
     }
   },
   methods: {
-    async getUsers() {
+    async getUsers(name) {
       this.isUsersLoading = true;
       await this.sleep(timeout.LIST_SLEEP);
       const data = {
         limit: this.paginator.per_page,
         page: this.paginator.current - 1
       }
+
+      if (name) {
+        data.search = name;
+      }
+
       const response = await axios.post(server.URL + '/api/users/get_all', data);
       this.users = response.users;
       this.paginator.total = response.total_count;
@@ -130,6 +145,11 @@ export default {
   async mounted() {
     await this.getUsers();
   },
+  watch: {
+    'form.name'() {
+      this.getUsers(this.form.name)
+    }
+  }
 }
 </script>
 
