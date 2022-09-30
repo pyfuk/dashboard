@@ -172,8 +172,7 @@ export default {
     ,
     userEdited(user) {
       this.$emit('userEdited', user)
-    }
-    ,
+    },
     editInactiveTime() {
       this.inactiveEdit = true;
       this.calendarOptions.selectable = true;

@@ -1,11 +1,11 @@
 <template>
   <div class="card mt-4">
     <div class="card-header pb-0 d-flex justify-content-between">
-      <h6>Пользователи</h6>
+      <h6>{{ $t('subjects.teachers') }}</h6>
       <div class="d-flex justify-content-around">
         <argon-select class="mx-2" v-model="form.teacher"
                       :options="allTeachers"></argon-select>
-        <argon-button color="success" @click="addTeacher">Добавить</argon-button>
+        <argon-button color="success" @click="addTeacher">{{ $t('common.add') }}</argon-button>
       </div>
     </div>
     <div class="card-body px-0 pt-0 pb-2">
@@ -13,18 +13,9 @@
         <table v-if="teachers.length && !isTeachersLoading" class="table align-items-center mb-0">
           <thead>
           <tr>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-            <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
-            >Role
-            </th>
-            <th
-                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
-            >Status
-            </th>
-            <th
-                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
-            >Balance
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{
+                $t('users.user.fullname')
+              }}
             </th>
           </tr>
           </thead>
@@ -48,20 +39,11 @@
                 </div>
               </div>
             </td>
-            <td>
-              <p class="text-xs font-weight-bold mb-0">{{ teacher.role }}</p>
-            </td>
-            <td class="align-middle text-center text-sm">
-              <span class="badge badge-sm bg-gradient-success">Online</span>
-            </td>
-            <td class="align-middle text-center">
-              <span class="text-secondary text-xs font-weight-bold">{{ teacher.balance }}</span>
-            </td>
           </tr>
           </tbody>
         </table>
         <div v-else-if="!isTeachersLoading" class="d-flex justify-content-center my-2">
-          <span class="text-secondary text-3xl font-weight-bold">Нет данных</span>
+          <span class="text-secondary text-3xl font-weight-bold">{{ $t('common.no_data') }}</span>
         </div>
 
         <div class="d-flex justify-content-center my-2" v-if="isTeachersLoading">
@@ -138,7 +120,7 @@ export default {
         teacher_id: this.form.teacher,
         subject_id: this.subject.id
       }
-      const res = await axios.post(server.URL + '/api/subjects/add_subject_to_teacher', data)
+      await axios.post(server.URL + '/api/subjects/add_subject_to_teacher', data)
     }
   },
   async mounted() {

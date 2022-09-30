@@ -1,9 +1,9 @@
 <template>
   <div class="row">
-    <div class="col-4">
+    <div class="col-6">
       <add-subject-form action="edit" :subject="subject" @subjectEdited="subjectEdited" class="mt-4"/>
     </div>
-    <div class="col-8">
+    <div class="col-6">
       <subject-teacher-table :subject="subject"/>
     </div>
 

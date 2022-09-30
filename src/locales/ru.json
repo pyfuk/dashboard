@@ -51,7 +51,8 @@
     "name_uz": "Название на узбекском",
     "group_subject": "Групповое занятие",
     "profile": "Профиль",
-    "schedule": "Расписание"
+    "schedule": "Расписание",
+    "teachers": "Учителя"
   },
   "notifications": {
     "change_password": "Пароль был успешно изменен",
