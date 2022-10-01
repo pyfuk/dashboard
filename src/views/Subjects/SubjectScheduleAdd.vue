@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-4">
     <div class="col-4">
-      <group-subject-schedule-add/>
+      <group-subject-schedule-add :dates="dates"/>
     </div>
     <div class="col-8">
       <div class="card">
@@ -36,7 +36,6 @@ export default {
         // contentHeight: this.isMobile ? 415 : 500,
 
         height: "auto",
-        defaultView: 'dayGridWeek',
         dayHeaderFormat: { weekday: 'short' },
         events: [],
         dateClick: this.handleDateClick,
@@ -70,7 +69,32 @@ export default {
 
         eventClick: this.eventClicked,
       },
+      eventCounter: 0,
+      dates: []
     }
+  },
+  methods: {
+    selectedEvent(event) {
+      if (this.dates.length >= this.pass / 4) {
+        return;
+      }
+
+      const id = this.eventCounter++;
+      this.calendarOptions.events = [...this.calendarOptions.events,
+        {
+          id,
+          start: event.start,
+          end: event.end,
+          overlap: false,
+        }]
+
+      this.dates = [...this.dates, {
+        id,
+        start: event.start,
+        end: event.end
+      }]
+
+    },
   }
 }
 </script>
