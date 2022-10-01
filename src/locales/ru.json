@@ -52,7 +52,10 @@
     "group_subject": "Групповое занятие",
     "profile": "Профиль",
     "schedule": "Расписание",
-    "teachers": "Учителя"
+    "teachers": "Учителя",
+    "group": {
+      "group_subjects_schedule": "Расписание группового предмета"
+    }
   },
   "notifications": {
     "change_password": "Пароль был успешно изменен",

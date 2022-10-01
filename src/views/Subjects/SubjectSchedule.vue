@@ -1,20 +1,24 @@
 <template>
-  <div class="row">
-    <div class="col">
-      <div class="card my-4">
-        <div class="card-header pb-0">
-          <div class="d-flex align-items-center justify-content-between">
-            <h6 class="mb-0">Расписание</h6>
-            <argon-select class="mx-2" v-model="form.teacher"
-                          :options="teachers"></argon-select>
-          </div>
-        </div>
-        <div class="card-body pt-0">
-          <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
-        </div>
-      </div>
-    </div>
+  <div class="my-4">
+    <group-subjects-schedule-table :subject="subject"/>
   </div>
+
+  <!--  <div class="row">-->
+  <!--    <div class="col">-->
+  <!--      <div class="card my-4">-->
+  <!--        <div class="card-header pb-0">-->
+  <!--          <div class="d-flex align-items-center justify-content-between">-->
+  <!--            <h6 class="mb-0">Расписание</h6>-->
+  <!--            <argon-select class="mx-2" v-model="form.teacher"-->
+  <!--                          :options="teachers"></argon-select>-->
+  <!--          </div>-->
+  <!--        </div>-->
+  <!--        <div class="card-body pt-0">-->
+  <!--          <FullCalendar ref="fullCalendar" :options="calendarOptions"/>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--  </div>-->
 </template>
 
 <script>
@@ -25,10 +29,11 @@ import ArgonButton from "@/components/ArgonButton";
 import axios from "axios";
 import { server } from "@/config";
 import ArgonSelect from "@/components/ArgonSelect";
+import GroupSubjectsScheduleTable from "@/views/components/Subjects/GroupSubjectsScheduleTable";
 
 export default {
   name: "SubjectSchedule",
-  components: { FullCalendar, ArgonButton, ArgonSelect },
+  components: { GroupSubjectsScheduleTable, FullCalendar, ArgonButton, ArgonSelect },
   props: {
     subject: {
       type: Object
