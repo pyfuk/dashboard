@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-4">
     <div class="col-4">
-      <group-subject-schedule-add :dates="dates"/>
+      <group-subject-schedule-add :dates="dates" @teacherChanged="teacherChanged"/>
     </div>
     <div class="col-8">
       <div class="card">
@@ -18,6 +18,8 @@ import GroupSubjectScheduleAdd from "@/views/components/Subjects/GroupSubjectSch
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/vue3";
+import axios from "axios";
+import { server } from "@/config";
 
 export default {
   name: "SubjectScheduleAdd",
@@ -95,7 +97,41 @@ export default {
       }]
 
     },
-  }
+    async getTeacherLessons(teacher) {
+      const data = {
+        teacher_id: teacher,
+      }
+      const res = await axios.post(server.URL + '/api/courses/get_teacher_reserved_time', data)
+
+      console.log(res)
+      this.calendarOptions.events = res.reserved.map(res => {
+        return {
+          groupId: 'reserved',
+          start: res.start,
+          end: res.end,
+          color: 'red',
+          display: 'background',
+          overlap: false,
+        }
+      })
+
+      const inactive_time = res.inactive_time.map(res => {
+        return {
+          groupId: 'inactive',
+          start: res.start,
+          end: res.end,
+          color: '#BFBFBF',
+          display: 'background',
+          overlap: false,
+        }
+      })
+
+      this.calendarOptions.events = this.calendarOptions.events.concat(inactive_time);
+    },
+    teacherChanged(teacher) {
+      this.getTeacherLessons(teacher);
+    }
+  },
 }
 </script>
 

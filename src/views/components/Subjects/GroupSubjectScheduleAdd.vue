@@ -147,6 +147,11 @@ export default {
     },
 
   },
+  watch: {
+    'form.teacher'() {
+      this.$emit('teacherChanged', this.form.teacher);
+    },
+  },
   mounted() {
     this.subject_id = this.$route.params.id;
     this.getTeachers();

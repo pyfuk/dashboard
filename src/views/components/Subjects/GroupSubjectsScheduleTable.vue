@@ -9,33 +9,31 @@
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-0">
-        <table v-if="subjectScheduler  .length && !isSubjectsSchedulerLoading" class="table align-items-center mb-0">
+        <table v-if="subjectScheduler.length && !isSubjectsSchedulerLoading" class="table align-items-center mb-0">
           <thead>
           <tr>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('subjects.name') }}
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{
+                $t('subjects.group.name')
+              }}
             </th>
             <th class="text-uppercase text-secondary text-xxs text-center font-weight-bolder opacity-7">
-              {{ $t('subjects.lesson') }}
+              {{ $t('subjects.group.teacher') }}
+            </th>
+            <th class="text-uppercase text-secondary text-xxs text-center font-weight-bolder opacity-7">
+              {{ $t('subjects.group.students_count') }}
             </th>
           </tr>
           </thead>
           <tbody>
-          <tr v-for="subject in subjectScheduler  " :key="subject.id">
+          <tr v-for="subSche in subjectScheduler" :key="subject.id">
             <td>
-              <div class="d-flex px-2 py-1">
-                <div class="text-center shadow icon icon-shape bg-gradient-dark icon-md mx-2">
-                  <icon-view :img="subject.icon" size="lg" color="rgb(226, 231, 231)"></icon-view>
-                </div>
-                <div class="d-flex flex-column justify-content-center cursor-pointer"
-                     @click="$router.push(`/subjects/${subject.id}`)">
-                  <h6 class="mb-0 text-sm">{{ subject.name }}</h6>
-                </div>
-              </div>
+              <h6 class="ms-4 mb-0 text-sm">{{ subSche.name }}</h6>
             </td>
             <td class="align-middle text-center text-sm">
-              <span class="badge badge-sm bg-gradient-success">
-              {{ subject.group ? $t('subjects.group') : $t('subjects.individual') }}
-              </span>
+              {{ subSche.teacher.firstname + ' ' + subSche.teacher.lastname }}
+            </td>
+            <td class="align-middle text-center text-sm">
+              {{ subSche.students_count }}
             </td>
           </tr>
           </tbody>
@@ -91,8 +89,6 @@ export default {
       }
 
       const response = await axios.post(server.URL + '/api/subjects/get_group_subject_schedule', data);
-
-      console.log(response)
       this.subjectScheduler = response.subjectScheduler;
       this.isSubjectsSchedulerLoading = false
     }
