@@ -14,16 +14,23 @@
       <argon-select v-model="form.teacher"
                     :options="teachers"></argon-select>
 
-      <hr class="horizontal dark"/>
+      <label :for="form.group" class="form-control-label"
+             v-if="isSelectedSubjectWithGroup"
+      >{{ $t('courses.group') }}</label>
+      <argon-select v-model="form.group"
+                    :options="groupsForSelect"
+                    v-if="isSelectedSubjectWithGroup"></argon-select>
 
-      <div class="d-flex justify-content-between mb-2">
+      <hr class="horizontal dark" v-if="!isSelectedSubjectWithGroup"/>
+
+      <div class="d-flex justify-content-between mb-2" v-if="!isSelectedSubjectWithGroup">
         <span>{{ $t('courses.one_time') }}</span>
         <argon-switch v-model="form.onetime"></argon-switch>
       </div>
 
-      <label v-if="!form.onetime" :for="form.onetime" class="form-control-label"
+      <label v-if="!form.onetime && !isSelectedSubjectWithGroup" :for="form.onetime" class="form-control-label"
       >{{ $t('courses.pass') }}</label>
-      <argon-select v-if="!form.onetime" v-model="form.pass"
+      <argon-select v-if="!form.onetime && !isSelectedSubjectWithGroup" v-model="form.pass"
                     :options="passes"></argon-select>
 
 
@@ -54,7 +61,6 @@
 <script>
 import ArgonSelect from "../../../components/ArgonSelect";
 import ArgonButton from "../../../components/ArgonButton";
-import { mapActions, mapState } from "vuex";
 import axios from "axios";
 import { server } from "../../../config";
 import ArgonSwitch from "@/components/ArgonSwitch";
@@ -73,12 +79,17 @@ export default {
       form: {
         subject: '',
         teacher: '',
+        group: '',
         pass: '4',
         onetime: false,
       },
       teachers: [],
       passes: [],
-      user_id: ''
+      user_id: '',
+      subjectsForSelect: [],
+      subjects: [],
+      groupsForSelect: [],
+      groupsSchedules: []
     }
   },
   props: {
@@ -87,9 +98,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      getSubjects: 'subjects/getSubjects'
-    }),
     async addLesson() {
       const dates = this.dates.map(date => {
         const startTime = this.addZero(date.start.getHours()) + ":" + this.addZero(date.start.getMinutes());
@@ -131,6 +139,16 @@ export default {
         }
       })
     },
+    async getSubjects() {
+      const response = await axios.post(server.URL + '/api/subjects/get_all');
+      this.subjects = response.subjects;
+      this.subjectsForSelect = response.subjects.map(s => {
+        return {
+          name: s.name,
+          value: s.id
+        }
+      })
+    },
     async getPasses() {
       const res = await axios.post(server.URL + "/api/passes/get_all");
 
@@ -144,9 +162,9 @@ export default {
       this.changedPassForm();
     },
     parseDate(date) {
-      const week = this.getWeek(date.start.getDay());
-      const startTime = this.addZero(date.start.getHours()) + ":" + this.addZero(date.start.getMinutes());
-      const endTime = this.addZero(date.end.getHours()) + ":" + this.addZero(date.end.getMinutes());
+      const week = this.getWeek(new Date(date.start).getDay());
+      const startTime = this.addZero(new Date(date.start).getHours()) + ":" + this.addZero(new Date(date.start).getMinutes());
+      const endTime = this.addZero(new Date(date.end).getHours()) + ":" + this.addZero(new Date(date.end).getMinutes());
 
       return `${week} -  ${startTime} : ${endTime}`
     },
@@ -180,12 +198,23 @@ export default {
     },
     changedPassForm() {
       this.$emit('changedPassForm', this.form.pass)
+    },
+    async getGroupSchedule() {
+
+      const data = {
+        subject_id: this.form.subject,
+        teacher_id: this.form.teacher,
+      }
+
+      const res = await axios.post(server.URL + '/api/subjects/get_groups_schedule', data)
+      this.groupsSchedules = res.groupSchedules;
+      this.groupsForSelect = res.groupSchedules.map(group => {
+        return {
+          name: group.name,
+          value: group.id
+        }
+      })
     }
-  },
-  computed: {
-    ...mapState({
-      subjectsForSelect: state => state.subjects.subjectsForSelect,
-    })
   },
   mounted() {
     this.user_id = this.$route.params.id;
@@ -194,16 +223,38 @@ export default {
   },
   watch: {
     'form.subject'() {
-      this.form.teacher = ''
+      this.form.teacher = '';
+      this.form.group = '';
+      this.groupsForSelect = [];
       this.getTeachersBySubject();
     },
     'form.teacher'() {
       this.$emit('form', this.form);
+
+      if (this.isSelectedSubjectWithGroup) {
+        this.getGroupSchedule()
+      }
     },
     'form.pass'() {
       this.changedPassForm();
+    },
+    'form.group'() {
+      if (this.form.group) {
+        const schedule = this.groupsSchedules.find(gs => gs.id === this.form.group);
+
+        this.$emit('groupSchedule', schedule.dates)
+      }
     }
-  }
+  },
+  computed: {
+    isSelectedSubjectWithGroup() {
+      if (!this.form.subject) {
+        return false;
+      }
+      const subject = this.subjects.find(s => s.id === this.form.subject);
+      return subject.group;
+    }
+  },
 }
 </script>
 

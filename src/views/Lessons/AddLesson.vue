@@ -4,7 +4,7 @@
     <div class="row">
       <div class="col-md-3">
         <add-lesson-form :dates="dates" @form="getFormData" @removeEvent="removeEvent"
-                         @changedPassForm="changedPassForm"></add-lesson-form>
+                         @changedPassForm="changedPassForm" @groupSchedule="groupSchedule"></add-lesson-form>
       </div>
       <div class="col-md-9" :class="{'mt-4': isMobile}">
         <div class="card">
@@ -23,7 +23,6 @@ import FullCalendar from "@fullcalendar/vue3";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import AddLessonForm from "../components/Lessons/AddLessonForm";
-import moment from "moment";
 import axios from "axios";
 import { server } from "@/config";
 
@@ -58,11 +57,6 @@ export default {
         events: [],
         dateClick: this.handleDateClick,
         viewDidMount: this.viewDidMount,
-        validRange: {
-          start: moment().startOf('month').format('YYYY-MM-DD'),
-          end: moment().add(1, "month").endOf('month').format('YYYY-MM-DD')
-        },
-
         // Timeline настройка
         allDaySlot: false,
         slotMinTime: '09:00:00',
@@ -148,7 +142,7 @@ export default {
           overlap: false,
         }
       })
-      
+
       this.calendarOptions.events = this.calendarOptions.events.concat(inactive_time);
     },
     eventDropped(params) {
@@ -186,10 +180,26 @@ export default {
           this.calendarOptions.events = this.calendarOptions.events.filter(e => e.id != popped.id);
         }
       }
+    },
+    groupSchedule(schedule) {
+      this.calendarOptions.events = this.calendarOptions.events.filter(e => e.id != 'groupSchedule');
+
+      const scheduleEvents = schedule.map(sc => {
+        return {
+          id: 'groupSchedule',
+          start: sc.startDate,
+          end: sc.endDate,
+        }
+      })
+
+      this.dates = scheduleEvents;
+
+      this.calendarOptions.events = this.calendarOptions.events.concat(scheduleEvents);
     }
   },
 
   mounted() {
+    console.log(this.calendarOptions.events)
   }
 }
 </script>
