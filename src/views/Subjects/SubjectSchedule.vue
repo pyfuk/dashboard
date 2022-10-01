@@ -2,23 +2,6 @@
   <div class="my-4">
     <group-subjects-schedule-table :subject="subject"/>
   </div>
-
-  <!--  <div class="row">-->
-  <!--    <div class="col">-->
-  <!--      <div class="card my-4">-->
-  <!--        <div class="card-header pb-0">-->
-  <!--          <div class="d-flex align-items-center justify-content-between">-->
-  <!--            <h6 class="mb-0">Расписание</h6>-->
-  <!--            <argon-select class="mx-2" v-model="form.teacher"-->
-  <!--                          :options="teachers"></argon-select>-->
-  <!--          </div>-->
-  <!--        </div>-->
-  <!--        <div class="card-body pt-0">-->
-  <!--          <FullCalendar ref="fullCalendar" :options="calendarOptions"/>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--  </div>-->
 </template>
 
 <script>
@@ -41,52 +24,7 @@ export default {
   },
   data() {
     return {
-      calendarOptions: {
-        headerToolbar: {
-          left: false,
-          center: false,
-          right: false
-        },
-        plugins: [timeGridPlugin, interactionPlugin],
-        locale: 'ru',
-        timeZone: 'local',
-        // contentHeight: this.isMobile ? 415 : 500,
 
-        height: "auto",
-        defaultView: 'dayGridWeek',
-        dayHeaderFormat: { weekday: 'short' },
-        events: [],
-        dateClick: this.handleDateClick,
-        viewDidMount: this.viewDidMount,
-
-
-        // Timeline настройка
-        allDaySlot: false,
-        slotMinTime: '09:00:00',
-        slotMaxTime: '21:00:00',
-        slotDuration: '00:45:00',
-        slotLabelInterval: '00:45:00',
-        slotLabelFormat: {
-          hour: '2-digit',
-          minute: '2-digit',
-          omitZeroMinute: false,
-        },
-        // Event Drag and Resize
-
-        // editable: true,
-        // eventDurationEditable: false,
-        // eventDrop: this.eventDropped,
-
-
-        //select
-
-        selectable: true,
-        selectOverlap: false,
-        select: this.selectedEvent,
-
-
-        eventClick: this.eventClicked,
-      },
       teachers: [],
       form: {
         teacher: ''

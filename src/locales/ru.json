@@ -54,7 +54,9 @@
     "schedule": "Расписание",
     "teachers": "Учителя",
     "group": {
-      "group_subjects_schedule": "Расписание группового предмета"
+      "group_subjects_schedule": "Расписание группового предмета",
+      "name": "Название",
+      "students_count": "Количество учеников"
     }
   },
   "notifications": {
