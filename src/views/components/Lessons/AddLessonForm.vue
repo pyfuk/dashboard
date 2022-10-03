@@ -40,7 +40,7 @@
 
       <div v-for="date in dates" :key="date.id" class="form-control mb-2 d-flex justify-content-between">
         <span>{{ parseDate(date) }}</span>
-        <span @click="removeCalendarEvent(date.id)">
+        <span @click="removeCalendarEvent(date.id)" v-if="!isSelectedSubjectWithGroup">
           <i class="fa fa-xmark"></i>
         </span>
       </div>
@@ -100,13 +100,13 @@ export default {
   methods: {
     async addLesson() {
       const dates = this.dates.map(date => {
-        const startTime = this.addZero(date.start.getHours()) + ":" + this.addZero(date.start.getMinutes());
-        const endTime = this.addZero(date.end.getHours()) + ":" + this.addZero(date.end.getMinutes());
+        const startTime = this.addZero(new Date(date.start).getHours()) + ":" + this.addZero(new Date(date.start).getMinutes());
+        const endTime = this.addZero(new Date(date.end).getHours()) + ":" + this.addZero(new Date(date.end).getMinutes());
         return {
-          weekDay: date.start.getDay(),
+          weekDay: new Date(date.start).getDay(),
           startTime,
           endTime,
-          millis: date.start.getTime()
+          millis: new Date(date.start).getTime()
         }
       })
 
@@ -117,9 +117,12 @@ export default {
         student_id,
         subject_id: this.form.subject,
         teacher_id: this.form.teacher,
+        group_id: this.form.group,
         type: this.form.onetime ? 'one_time' : 'pass',
         pass: this.form.pass,
       }
+
+      console.log(data)
 
       const res = await axios.post(server.URL + '/api/lessons/create', data)
 
@@ -229,7 +232,10 @@ export default {
       this.getTeachersBySubject();
     },
     'form.teacher'() {
-      this.$emit('form', this.form);
+      this.$emit('form', {
+        ...this.form,
+        isGroup: this.isSelectedSubjectWithGroup
+      });
 
       if (this.isSelectedSubjectWithGroup) {
         this.getGroupSchedule()
@@ -239,10 +245,14 @@ export default {
       this.changedPassForm();
     },
     'form.group'() {
-      if (this.form.group) {
-        const schedule = this.groupsSchedules.find(gs => gs.id === this.form.group);
+      const schedule = this.groupsSchedules.find(gs => gs.id === this.form.group);
 
-        this.$emit('groupSchedule', schedule.dates)
+      if (this.form.group) {
+        this.$emit('form', {
+          ...this.form,
+          isGroup: this.isSelectedSubjectWithGroup,
+          schedule: schedule.dates
+        });
       }
     }
   },

@@ -115,7 +115,7 @@ export default {
     eventClicked(eventClickInfo) {
       console.log(eventClickInfo.event.id)
     },
-    async getTeacherLessons(teacher_id) {
+    async getTeacherLessons(teacher_id, isGroup, schedule) {
       const data = {
         teacher_id: teacher_id,
       }
@@ -144,6 +144,23 @@ export default {
       })
 
       this.calendarOptions.events = this.calendarOptions.events.concat(inactive_time);
+
+      if (isGroup) {
+        this.calendarOptions.selectable = false;
+        this.calendarOptions.editable = false;
+        this.calendarOptions.events = this.calendarOptions.events.filter(e => e.id != 'groupSchedule');
+        const scheduleEvents = schedule.map(sc => {
+          return {
+            id: 'groupSchedule',
+            start: sc.startDate,
+            end: sc.endDate,
+          }
+        })
+
+        this.dates = scheduleEvents;
+
+        this.calendarOptions.events = this.calendarOptions.events.concat(scheduleEvents);
+      }
     },
     eventDropped(params) {
       const datesIndex = this.dates.findIndex(event => event.id == params.event.id);
@@ -158,11 +175,20 @@ export default {
       };
     },
     getFormData(value) {
+
+      if (value.isGroup && !value.group) {
+        this.overlay = true;
+        return
+      }
+
+      console.log(value)
+
       if (value.teacher && value.subject) {
         this.overlay = false;
-
-        this.getTeacherLessons(value.teacher)
-
+        this.calendarOptions.selectable = true;
+        this.calendarOptions.editable = true;
+        this.dates = [];
+        this.getTeacherLessons(value.teacher, value.isGroup, value.schedule)
       } else {
         this.overlay = true;
       }
@@ -182,19 +208,7 @@ export default {
       }
     },
     groupSchedule(schedule) {
-      this.calendarOptions.events = this.calendarOptions.events.filter(e => e.id != 'groupSchedule');
 
-      const scheduleEvents = schedule.map(sc => {
-        return {
-          id: 'groupSchedule',
-          start: sc.startDate,
-          end: sc.endDate,
-        }
-      })
-
-      this.dates = scheduleEvents;
-
-      this.calendarOptions.events = this.calendarOptions.events.concat(scheduleEvents);
     }
   },
 
