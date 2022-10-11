@@ -122,9 +122,7 @@ export default {
         pass: this.form.pass,
       }
 
-      console.log(data)
-
-      const res = await axios.post(server.URL + '/api/lessons/create', data)
+      await axios.post(server.URL + '/api/lessons/create', data)
 
       await this.$router.push(`/users/${this.user_id}/calendar`)
     },

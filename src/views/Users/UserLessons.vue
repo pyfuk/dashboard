@@ -62,6 +62,71 @@
     </div>
   </div>
 
+  <div class="card mt-4">
+    <div class="card-header pb-0 d-flex justify-content-between">
+      <h6>{{ $t('courses.one_time') }}</h6>
+    </div>
+    <div class="card-body px-0 pt-0 pb-2">
+      <div class="table-responsive p-0">
+        <table v-if="one_time_lessons.length && !isOneTimeLessonsLoading" class="table align-items-center mb-0">
+          <thead>
+          <tr>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ $t('courses.name') }}
+            </th>
+            <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
+            >{{ $t('courses.teacher') }}
+            </th>
+            <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
+            >{{ $t('courses.date') }}
+            </th>
+            <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
+            >{{ $t('courses.status') }}
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="lesson in one_time_lessons" :key="lesson.id">
+            <td>
+              <div class="d-flex px-2 py-1">
+                <div class="text-center shadow icon icon-shape bg-gradient-dark icon-md mx-2">
+                  <icon-view :img="lesson.subject.icon" size="lg" color="rgb(226, 231, 231)"></icon-view>
+                </div>
+                <div class="d-flex flex-column justify-content-center"
+                     @click="$router.push(`/lessons/${lesson.id}`)">
+                  <h6 class="mb-0 text-lg">{{ lesson.subject.name }}</h6>
+                </div>
+              </div>
+            </td>
+            <td>
+              <p class="text-md font-weight-bold mb-0">{{ lesson.teacher.firstname }} {{ lesson.teacher.lastname }}</p>
+            </td>
+            <td>
+              {{ lesson.start }}
+            </td>
+            <td class="text-sm">
+              <span class="badge badge-sm" :class="lesson.paid ? 'bg-gradient-success' : 'bg-gradient-danger'">{{
+                  lesson.paid ? $t('courses.paid') : $t('courses.unpaid')
+                }}</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div v-else-if="!isOneTimeLessonsLoading" class="d-flex justify-content-center my-2">
+          <span class="text-secondary text-3xl font-weight-bold">{{ $t('common.no_data') }}</span>
+        </div>
+
+        <div class="d-flex justify-content-center my-2" v-if="isOneTimeLessonsLoading">
+          <div class="spinner-border text-success" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 </template>
 
@@ -74,6 +139,7 @@ import axios from "axios";
 import utilsMixin from "../../mixins/utilsMixin";
 import IconView from "../../components/IconView";
 import usersRoleMixin from "@/mixins/usersRoleMixin";
+import moment from "moment";
 
 export default {
   components: {
@@ -93,7 +159,9 @@ export default {
   data() {
     return {
       courses: [],
+      one_time_lessons: [],
       isCoursesLoading: true,
+      isOneTimeLessonsLoading: true,
     }
   },
   computed: {},
@@ -107,13 +175,30 @@ export default {
       const response = await axios.post(server.URL + '/api/courses/get_courses', data);
       this.courses = response.courses;
 
-      console.log(this.courses)
       this.isCoursesLoading = false;
+    },
+
+    async getOneTimeLessons() {
+      this.isOneTimeLessonsLoading = true;
+      const data = {
+        user_id: this.user.id,
+        type: this.user.role
+      }
+      const response = await axios.post(server.URL + '/api/lessons/get_one_time_lessons', data);
+      this.one_time_lessons = response.lessons.map(lesson => {
+        return {
+          ...lesson,
+          start: moment(lesson.start).locale('ru').format('LL')
+        }
+      });
+
+      this.isOneTimeLessonsLoading = false;
     }
   },
   async mounted() {
     await this.sleep(timeout.LIST_SLEEP);
     await this.getCourses();
+    await this.getOneTimeLessons();
   }
 }
 </script>
