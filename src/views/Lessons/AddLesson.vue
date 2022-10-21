@@ -143,6 +143,21 @@ export default {
         }
       })
 
+      if (!isGroup) {
+        const group_time = res.group_time.map(res => {
+          return {
+            groupId: 'group',
+            start: res.start,
+            end: res.end,
+            color: 'red',
+            display: 'background',
+            overlap: false,
+          }
+        })
+        this.calendarOptions.events = this.calendarOptions.events.concat(group_time);
+      }
+
+
       this.calendarOptions.events = this.calendarOptions.events.concat(inactive_time);
 
       if (isGroup) {
