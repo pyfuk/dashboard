@@ -22,6 +22,7 @@ import Subject from "@/views/Subjects/Subject";
 import SubjectProfile from "@/views/Subjects/SubjectProfile";
 import SubjectSchedule from "@/views/Subjects/SubjectSchedule";
 import SubjectScheduleAdd from "@/views/Subjects/SubjectScheduleAdd";
+import Courses from "@/views/Courses/Course";
 
 const routes = [
     {
@@ -106,6 +107,11 @@ const routes = [
                 component: SubjectScheduleAdd,
             },
         ]
+    },
+    {
+        path: "/courses/:id",
+        name: "Courses",
+        component: Courses,
     },
     {
         path: "/calendar",

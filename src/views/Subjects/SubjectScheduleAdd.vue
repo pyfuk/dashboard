@@ -103,7 +103,6 @@ export default {
       }
       const res = await axios.post(server.URL + '/api/courses/get_teacher_reserved_time', data)
 
-      console.log(res)
       this.calendarOptions.events = res.reserved.map(res => {
         return {
           groupId: 'reserved',
@@ -126,6 +125,18 @@ export default {
         }
       })
 
+      const group_time = res.group_time.map(res => {
+        return {
+          groupId: 'group',
+          start: res.start,
+          end: res.end,
+          color: 'red',
+          display: 'background',
+          overlap: false,
+        }
+      });
+
+      this.calendarOptions.events = this.calendarOptions.events.concat(group_time);
       this.calendarOptions.events = this.calendarOptions.events.concat(inactive_time);
     },
     teacherChanged(teacher) {
