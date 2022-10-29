@@ -16,6 +16,13 @@
               </div>
             </div>
           </div>
+
+          <div class="col-md-6 d-flex align-items-center  justify-content-end">
+            <argon-button :color="course.active ? 'secondary': 'success'" :variant="'gradient'"
+                          @click="course.active ? coursePayed() : activate()">
+              {{ course.active ? $t('courses.activated') : $t('courses.activate') }}
+            </argon-button>
+          </div>
         </div>
       </div>
     </div>
@@ -38,10 +45,11 @@ import { server } from "@/config";
 import IconView from "@/components/IconView";
 import CourseLessonsList from "@/views/components/Courses/CourseLessonsList";
 import ProfileCard from "@/views/components/ProfileCard";
+import ArgonButton from "@/components/ArgonButton";
 
 export default {
   name: "Courses",
-  components: { ProfileCard, CourseLessonsList, IconView },
+  components: { ProfileCard, CourseLessonsList, IconView, ArgonButton },
   data() {
     return {
       course_id: '',
@@ -58,6 +66,16 @@ export default {
       const res = await axios.post(server.URL + '/api/courses/get', data);
       this.course = res.course;
       console.log(this.course.subject.icon)
+    },
+    coursePayed() {
+
+    },
+    async activate() {
+      const data = {
+        course_id: this.course_id
+      }
+
+      await axios.post(server.URL + '/api/courses/activate', data)
     }
   },
   mounted() {

@@ -97,9 +97,9 @@ export default {
 
       this.background = response.background.map(date => {
         return {
-          date,
+          date: date.date,
           display: 'background',
-          color: 'red'
+          color: date.paid ? 'blue' : 'red'
         }
       })
 
