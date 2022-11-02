@@ -3,7 +3,7 @@
   <div class="mt-4">
     <div class="row">
       <div class="col-md-3">
-        <add-lesson-form :dates="dates" @form="getFormData" @removeEvent="removeEvent"
+        <add-lesson-form :dates="dates" :edit="edit" @form="getFormData" @removeEvent="removeEvent"
                          @changedPassForm="changedPassForm" @groupSchedule="groupSchedule"></add-lesson-form>
       </div>
       <div class="col-md-9" :class="{'mt-4': isMobile}">
@@ -31,12 +31,15 @@ export default {
   name: "AddLesson",
   components: {
     AddLessonForm,
-    FullCalendar, // make the <FullCalendar> tag available
+    FullCalendar,
   },
   props: {
     isMobile: {
       type: Boolean,
       required: true
+    },
+    edit: {
+      type: String,
     }
   },
   data() {
@@ -52,7 +55,6 @@ export default {
         timeZone: 'local',
         // contentHeight: this.isMobile ? 415 : 500,
         height: "auto",
-        defaultView: 'dayGridWeek',
         dayHeaderFormat: { weekday: 'short' },
         events: [],
         dateClick: this.handleDateClick,
@@ -87,7 +89,9 @@ export default {
       dates: [],
       overlay: true,
       pass: '4',
-      eventCounter: 0
+      eventCounter: 0,
+      course: '',
+      editCourseLessons: []
     }
   },
   methods: {
@@ -142,6 +146,7 @@ export default {
           overlap: false,
         }
       })
+      this.calendarOptions.events = this.calendarOptions.events.concat(inactive_time);
 
       if (!isGroup) {
         const group_time = res.group_time.map(res => {
@@ -157,8 +162,6 @@ export default {
         this.calendarOptions.events = this.calendarOptions.events.concat(group_time);
       }
 
-
-      this.calendarOptions.events = this.calendarOptions.events.concat(inactive_time);
 
       if (isGroup) {
         this.calendarOptions.selectable = false;
@@ -176,6 +179,10 @@ export default {
 
         this.calendarOptions.events = this.calendarOptions.events.concat(scheduleEvents);
       }
+
+      if (this.edit === 'course') {
+        this.calendarOptions.events = this.calendarOptions.events.concat(this.editCourseLessons)
+      }
     },
     eventDropped(params) {
       const datesIndex = this.dates.findIndex(event => event.id == params.event.id);
@@ -189,21 +196,33 @@ export default {
         overlap: false
       };
     },
-    getFormData(value) {
-
+    async getFormData(value) {
       if (value.isGroup && !value.group) {
         this.overlay = true;
         return
       }
 
-      console.log(value)
-
       if (value.teacher && value.subject) {
+        console.log('CLEAR DATA')
         this.overlay = false;
         this.calendarOptions.selectable = true;
         this.calendarOptions.editable = true;
-        this.dates = [];
-        this.getTeacherLessons(value.teacher, value.isGroup, value.schedule)
+
+        if (this.edit === 'course') {
+          await this.getCourse(this.$route.params.course);
+          this.editCourseLessons = this.course.dates.map(d => {
+            return {
+              id: this.eventCounter++,
+              start: d.startDate,
+              end: d.endDate,
+            }
+          })
+
+          this.dates = this.editCourseLessons;
+        } else {
+          this.dates = [];
+        }
+        await this.getTeacherLessons(value.teacher, value.isGroup, value.schedule)
       } else {
         this.overlay = true;
       }
@@ -222,13 +241,16 @@ export default {
         }
       }
     },
-    groupSchedule(schedule) {
-
-    }
+    async getCourse(course_id) {
+      const data = {
+        course_id: course_id
+      }
+      const res = await axios.post(server.URL + '/api/courses/get', data);
+      this.course = res.course;
+    },
   },
+  async mounted() {
 
-  mounted() {
-    console.log(this.calendarOptions.events)
   }
 }
 </script>

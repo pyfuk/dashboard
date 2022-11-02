@@ -22,6 +22,9 @@
                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
             >{{ $t('courses.status') }}
             </th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+              {{ $t('lessons.actions') }}
+            </th>
           </tr>
           </thead>
           <tbody>
@@ -45,6 +48,9 @@
               <span class="badge badge-sm" :class="course.active ? 'bg-gradient-success' : 'bg-gradient-danger'">{{
                   course.active ? $t('courses.paid') : $t('courses.unpaid')
                 }}</span>
+            </td>
+            <td class="align-middle text-center text-sm">
+              <i class="fa fa-pen cursor-pointer" @click="editCourse(course.id)"></i>
             </td>
           </tr>
           </tbody>
@@ -193,6 +199,10 @@ export default {
       });
 
       this.isOneTimeLessonsLoading = false;
+    },
+
+    async editCourse(course_id) {
+      await this.$router.push(`/users/${this.user.id}/lessons/course/edit/${course_id}`)
     }
   },
   async mounted() {

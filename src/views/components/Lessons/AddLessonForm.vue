@@ -7,7 +7,8 @@
       <label :for="form.subject" class="form-control-label"
       >{{ $t('courses.subject') }}</label>
       <argon-select v-model="form.subject"
-                    :options="subjectsForSelect"></argon-select>
+                    :options="subjectsForSelect"
+                    :disabled="isCourseEdit"></argon-select>
 
       <label :for="form.teacher" class="form-control-label"
       >{{ $t('courses.teacher') }}</label>
@@ -23,7 +24,7 @@
 
       <hr class="horizontal dark" v-if="!isSelectedSubjectWithGroup"/>
 
-      <div class="d-flex justify-content-between mb-2" v-if="!isSelectedSubjectWithGroup">
+      <div class="d-flex justify-content-between mb-2" v-if="!isCourseEdit && !isSelectedSubjectWithGroup">
         <span>{{ $t('courses.one_time') }}</span>
         <argon-switch v-model="form.onetime"></argon-switch>
       </div>
@@ -89,12 +90,17 @@ export default {
       subjectsForSelect: [],
       subjects: [],
       groupsForSelect: [],
-      groupsSchedules: []
+      groupsSchedules: [],
+      course: '',
+      isCourseEdit: false
     }
   },
   props: {
     dates: {
       type: Array
+    },
+    edit: {
+      type: String
     }
   },
   methods: {
@@ -110,21 +116,36 @@ export default {
         }
       })
 
-      const student_id = this.isAdmin(this.$store.state.currentUser) ? this.user_id : this.$store.state.currentUser.id;
+      if (this.edit === 'course') {
 
-      const data = {
-        dates,
-        student_id,
-        subject_id: this.form.subject,
-        teacher_id: this.form.teacher,
-        group_id: this.form.group,
-        type: this.form.onetime ? 'one_time' : 'pass',
-        pass: this.form.pass,
+        const data = {
+          dates,
+          course_id: this.course.id,
+          teacher_id: this.form.teacher,
+          pass: this.form.pass,
+        }
+
+        await axios.post(server.URL + '/api/courses/edit', data);
+        await this.$router.push(`/users/${this.user_id}/calendar`)
+
+      } else {
+        const student_id = this.isAdmin(this.$store.state.currentUser) ? this.user_id : this.$store.state.currentUser.id;
+
+        const data = {
+          dates,
+          student_id,
+          subject_id: this.form.subject,
+          teacher_id: this.form.teacher,
+          group_id: this.form.group,
+          type: this.form.onetime ? 'one_time' : 'pass',
+          pass: this.form.pass,
+        }
+
+        await axios.post(server.URL + '/api/lessons/create', data)
+
+        await this.$router.push(`/users/${this.user_id}/calendar`)
       }
 
-      await axios.post(server.URL + '/api/lessons/create', data)
-
-      await this.$router.push(`/users/${this.user_id}/calendar`)
     },
     async getTeachersBySubject() {
       const data = {
@@ -201,7 +222,6 @@ export default {
       this.$emit('changedPassForm', this.form.pass)
     },
     async getGroupSchedule() {
-
       const data = {
         subject_id: this.form.subject,
         teacher_id: this.form.teacher,
@@ -215,12 +235,29 @@ export default {
           value: group.id
         }
       })
-    }
+    },
+    async getCourse(course_id) {
+      const data = {
+        course_id: course_id
+      }
+
+      const res = await axios.post(server.URL + '/api/courses/get', data);
+      this.course = res.course;
+    },
   },
-  mounted() {
+  async mounted() {
     this.user_id = this.$route.params.id;
-    this.getSubjects();
-    this.getPasses();
+    await this.getSubjects();
+    await this.getPasses();
+
+    if (this.edit === 'course') {
+      await this.getCourse(this.$route.params.course);
+      this.form.subject = this.course.subject.id;
+      this.isCourseEdit = true;
+      await this.getTeachersBySubject()
+      this.form.teacher = this.course.teacher.id;
+      this.form.pass = this.course.pass;
+    }
   },
   watch: {
     'form.subject'() {
