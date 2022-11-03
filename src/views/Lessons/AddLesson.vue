@@ -25,6 +25,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import AddLessonForm from "../components/Lessons/AddLessonForm";
 import axios from "axios";
 import { server } from "@/config";
+import moment from "moment";
 
 export default {
 
@@ -82,6 +83,7 @@ export default {
         selectable: true,
         selectOverlap: false,
         select: this.selectedEvent,
+        selectAllow: this.isSelectAllow,
 
 
         eventClick: this.eventClicked,
@@ -95,6 +97,10 @@ export default {
     }
   },
   methods: {
+    isSelectAllow(event) {
+      const diff = moment(event.end).diff(event.start, 'minutes');
+      return diff === 45;
+    },
     selectedEvent(event) {
       if (this.dates.length >= this.pass / 4) {
         return;

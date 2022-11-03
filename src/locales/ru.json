@@ -70,7 +70,8 @@
     "user_deactivated": "Пользователь успешно деактивирован",
     "add_subject": "Предмет успешно добавлен",
     "edit_subject": "Информация о предмете успешно изменена",
-    "add_teacher_to_subject": "Учитель добавлен в предмет"
+    "add_teacher_to_subject": "Учитель добавлен в предмет",
+    "add_time_for_lesson": "Добавьте время для урока"
   },
   "courses": {
     "courses": "Курсы",

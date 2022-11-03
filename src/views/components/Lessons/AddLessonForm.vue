@@ -66,6 +66,7 @@ import axios from "axios";
 import { server } from "../../../config";
 import ArgonSwitch from "@/components/ArgonSwitch";
 import usersRoleMixin from "@/mixins/usersRoleMixin";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "AddLessonForm",
@@ -92,7 +93,8 @@ export default {
       groupsForSelect: [],
       groupsSchedules: [],
       course: '',
-      isCourseEdit: false
+      isCourseEdit: false,
+      toast: useToast(),
     }
   },
   props: {
@@ -105,6 +107,10 @@ export default {
   },
   methods: {
     async addLesson() {
+      if (this.dates.length < this.form.pass / 4) {
+        this.toast.error(this.$t('notifications.add_time_for_lesson'))
+      }
+
       const dates = this.dates.map(date => {
         const startTime = this.addZero(new Date(date.start).getHours()) + ":" + this.addZero(new Date(date.start).getMinutes());
         const endTime = this.addZero(new Date(date.end).getHours()) + ":" + this.addZero(new Date(date.end).getMinutes());
