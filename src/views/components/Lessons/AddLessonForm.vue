@@ -132,7 +132,7 @@ export default {
         }
 
         await axios.post(server.URL + '/api/courses/edit', data);
-        await this.$router.push(`/users/${this.user_id}/calendar`)
+        await this.$router.push(`/courses/${this.course.id}`)
 
       } else {
         const student_id = this.isAdmin(this.$store.state.currentUser) ? this.user_id : this.$store.state.currentUser.id;
