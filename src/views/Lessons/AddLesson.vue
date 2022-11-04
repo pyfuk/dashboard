@@ -4,7 +4,8 @@
     <div class="row">
       <div class="col-md-3">
         <add-lesson-form :dates="dates" :edit="edit" @form="getFormData" @removeEvent="removeEvent"
-                         @changedPassForm="changedPassForm" @groupSchedule="groupSchedule"></add-lesson-form>
+                         @changedPassForm="changedPassForm"
+                         @onetime="changedOneTime"></add-lesson-form>
       </div>
       <div class="col-md-9" :class="{'mt-4': isMobile}">
         <div class="card">
@@ -51,6 +52,7 @@ export default {
           center: false,
           right: false
         },
+        footerToolbar: false,
         plugins: [timeGridPlugin, interactionPlugin],
         locale: 'ru',
         timeZone: 'local',
@@ -93,7 +95,8 @@ export default {
       pass: '4',
       eventCounter: 0,
       course: '',
-      editCourseLessons: []
+      editCourseLessons: [],
+      isOneTime: false
     }
   },
   methods: {
@@ -254,6 +257,42 @@ export default {
       const res = await axios.post(server.URL + '/api/courses/get', data);
       this.course = res.course;
     },
+    changedOneTime(onetime) {
+      this.isOneTime = onetime;
+
+      if (this.isOneTime) {
+        this.calendarOptions = {
+          ...this.calendarOptions,
+          headerToolbar: {
+            left: false,
+            center: 'title',
+            right: 'prev,next'
+          },
+          dayHeaderFormat: false,
+          validRange: {
+            start: moment().subtract(1, 'w').format('YYYY-MM-DD'),
+            end: moment().add(4, 'w').format('YYYY-MM-DD')
+          }
+        }
+        return;
+      }
+
+      this.calendarOptions = {
+        ...this.calendarOptions,
+        headerToolbar: {
+          left: false,
+          center: false,
+          right: false
+        },
+        dayHeaderFormat: { weekday: 'short' },
+        validRange: false
+      }
+
+      let calendarApi = this.$refs.fullCalendar.getApi()
+      calendarApi.today();
+
+
+    }
   },
   async mounted() {
 

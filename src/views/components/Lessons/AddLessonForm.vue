@@ -285,6 +285,9 @@ export default {
     'form.pass'() {
       this.changedPassForm();
     },
+    'form.onetime'() {
+      this.$emit('onetime', this.form.onetime);
+    },
     'form.group'() {
       const schedule = this.groupsSchedules.find(gs => gs.id === this.form.group);
 
