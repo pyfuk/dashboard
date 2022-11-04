@@ -96,11 +96,16 @@ export default {
       eventCounter: 0,
       course: '',
       editCourseLessons: [],
-      isOneTime: false
+      isOneTime: false,
+      oneTimeLessons: []
     }
   },
   methods: {
     isSelectAllow(event) {
+      if (this.isOneTime && moment().add('24', 'h').isAfter(event.start)) {
+        return false
+      }
+
       const diff = moment(event.end).diff(event.start, 'minutes');
       return diff === 45;
     },
@@ -133,6 +138,19 @@ export default {
         teacher_id: teacher_id,
       }
       const res = await axios.post(server.URL + '/api/courses/get_teacher_reserved_time', data)
+
+      const one_time_data = {
+        user_id: teacher_id,
+        type: 'teacher',
+        include_course_not_edited: true
+      }
+
+      const one_time_res = await axios.post(server.URL + '/api/lessons/get_one_time_lessons', one_time_data)
+
+      console.log(one_time_res.lessons)
+
+      this.oneTimeLessons = one_time_res.lessons;
+
 
       this.calendarOptions.events = res.reserved.map(res => {
         return {
@@ -171,6 +189,20 @@ export default {
         this.calendarOptions.events = this.calendarOptions.events.concat(group_time);
       }
 
+      if (this.isOneTime) {
+        const one_time = this.oneTimeLessons.map(lesson => {
+          return {
+            groupId: 'one_time',
+            start: lesson.start,
+            end: lesson.end,
+            color: 'red',
+            display: 'background',
+            overlap: false,
+          }
+        });
+
+        this.calendarOptions.events = this.calendarOptions.events.concat(one_time);
+      }
 
       if (isGroup) {
         this.calendarOptions.selectable = false;
@@ -274,6 +306,19 @@ export default {
             end: moment().add(4, 'w').format('YYYY-MM-DD')
           }
         }
+
+        const one_time = this.oneTimeLessons.map(lesson => {
+          return {
+            groupId: 'one_time',
+            start: lesson.start,
+            end: lesson.end,
+            color: 'red',
+            display: 'background',
+            overlap: false,
+          }
+        });
+
+        this.calendarOptions.events = this.calendarOptions.events.concat(one_time);
         return;
       }
 
@@ -291,6 +336,7 @@ export default {
       let calendarApi = this.$refs.fullCalendar.getApi()
       calendarApi.today();
 
+      this.calendarOptions.events = this.calendarOptions.events.filter(e => e.groupId != 'one_time');
 
     }
   },
