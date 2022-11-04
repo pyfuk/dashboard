@@ -11,6 +11,12 @@
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
               {{ $t('lessons.date') }}
             </th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+              {{ $t('lessons.teacher') }}
+            </th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+              {{ $t('lessons.payment') }}
+            </th>
             <th
                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
               {{ $t('lessons.attendance') }}
@@ -25,6 +31,14 @@
             <td class="text-sm">
               <span class="ms-2">
                               {{ getStartDate(lesson.start, lesson.end) }}
+              </span>
+            </td>
+            <td class="text-sm">
+              <span>{{ lesson.teacher.firstname }} {{ lesson.teacher.lastname }}</span>
+            </td>
+            <td class="align-middle text-sm">
+              <span class="badge badge-sm" :class="`${lesson.paid ? 'bg-gradient-success' : 'bg-gradient-warning'}`">
+                {{ lesson.paid ? $t('lessons.paid') : $t('lessons.un_paid') }}
               </span>
             </td>
             <td class="align-middle text-sm">
@@ -93,8 +107,6 @@ export default {
         user_id: this.course.student.id,
         course_id: this.course.id
       }
-
-      console.log(data)
 
       const response = await axios.post(server.URL + '/api/lessons/get_lessons', data);
       this.lessons = response.lessons;
