@@ -97,7 +97,9 @@ export default {
       course: '',
       editCourseLessons: [],
       isOneTime: false,
-      oneTimeLessons: []
+      oneTimeLessons: [],
+      inactiveCalendarDays: [],
+      excludedEvents: []
     }
   },
   methods: {
@@ -190,6 +192,30 @@ export default {
       }
 
       if (this.isOneTime) {
+        const inactiveDates = this.inactiveCalendarDays.map(date => {
+          return {
+            groupId: 'inactive_dates',
+            date,
+            color: 'gray',
+            display: 'background',
+            overlap: false,
+          }
+        })
+
+        this.excludedEvents = [];
+        this.calendarOptions.events = this.calendarOptions.events.filter(event => {
+          const start = moment(event.start).format('YYYY-MM-DD')
+
+          if (!this.inactiveCalendarDays.includes(start)) {
+            return true
+          }
+          this.excludedEvents.push(event);
+          return false
+        })
+
+
+        this.calendarOptions.events = this.calendarOptions.events.concat(inactiveDates);
+
         const one_time = this.oneTimeLessons.map(lesson => {
           return {
             groupId: 'one_time',
@@ -225,6 +251,14 @@ export default {
         this.calendarOptions.events = this.calendarOptions.events.concat(this.editCourseLessons)
       }
     },
+    async getCalendarInactiveDates() {
+      const res = await axios.post(server.URL + '/api/calendar/get_inactive_days');
+
+      this.inactiveCalendarDays = res.inactive_calendar_dates;
+
+      console.log(this.inactiveCalendarDays)
+
+    },
     eventDropped(params) {
       const datesIndex = this.dates.findIndex(event => event.id == params.event.id);
       const calendarIndex = this.calendarOptions.events.findIndex(event => event.id == params.event.id);
@@ -244,7 +278,6 @@ export default {
       }
 
       if (value.teacher && value.subject) {
-        console.log('CLEAR DATA')
         this.overlay = false;
         this.calendarOptions.selectable = true;
         this.calendarOptions.editable = true;
@@ -292,6 +325,11 @@ export default {
     changedOneTime(onetime) {
       this.isOneTime = onetime;
 
+      const validDate = {
+        start: moment().startOf('week'),
+        end: moment().add(4, 'w').endOf('week').add('1', 'd')
+      }
+
       if (this.isOneTime) {
         this.calendarOptions = {
           ...this.calendarOptions,
@@ -302,10 +340,34 @@ export default {
           },
           dayHeaderFormat: false,
           validRange: {
-            start: moment().subtract(1, 'w').format('YYYY-MM-DD'),
-            end: moment().add(4, 'w').format('YYYY-MM-DD')
+            start: validDate.start.format('YYYY-MM-DD'),
+            end: validDate.end.format('YYYY-MM-DD')
           }
         }
+
+        const inactiveDates = this.inactiveCalendarDays.map(date => {
+          return {
+            groupId: 'inactive_dates',
+            date,
+            color: 'gray',
+            display: 'background',
+            overlap: false,
+          }
+        })
+
+        this.excludedEvents = [];
+        this.calendarOptions.events = this.calendarOptions.events.filter(event => {
+          const start = moment(event.start).format('YYYY-MM-DD')
+
+          if (!this.inactiveCalendarDays.includes(start)) {
+            return true
+          }
+          this.excludedEvents.push(event);
+          return false
+        })
+
+
+        this.calendarOptions.events = this.calendarOptions.events.concat(inactiveDates);
 
         const one_time = this.oneTimeLessons.map(lesson => {
           return {
@@ -336,12 +398,14 @@ export default {
       let calendarApi = this.$refs.fullCalendar.getApi()
       calendarApi.today();
 
-      this.calendarOptions.events = this.calendarOptions.events.filter(e => e.groupId != 'one_time');
+      this.calendarOptions.events = this.calendarOptions.events.filter(e => e.groupId != 'one_time' && e.groupId != 'inactive_dates');
+
+      this.calendarOptions.events = this.calendarOptions.events.concat(this.excludedEvents)
 
     }
   },
   async mounted() {
-
+    await this.getCalendarInactiveDates()
   }
 }
 </script>
