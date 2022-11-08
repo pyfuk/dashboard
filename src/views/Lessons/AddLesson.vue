@@ -295,7 +295,7 @@ export default {
         this.calendarOptions.selectable = true;
         this.calendarOptions.editable = true;
 
-        if (this.edit === 'course') {
+        if (this.edit === 'course' && !value.isGroup) {
           await this.getCourse(this.$route.params.course);
           this.editCourseLessons = this.course.dates.map(d => {
             return {

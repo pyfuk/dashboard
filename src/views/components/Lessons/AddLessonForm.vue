@@ -123,12 +123,12 @@ export default {
       })
 
       if (this.edit === 'course') {
-
         const data = {
           dates,
           course_id: this.course.id,
           teacher_id: this.form.teacher,
           pass: this.form.pass,
+          group_id: this.form.group || undefined
         }
 
         await axios.post(server.URL + '/api/courses/edit', data);
@@ -263,6 +263,8 @@ export default {
       await this.getTeachersBySubject()
       this.form.teacher = this.course.teacher.id;
       this.form.pass = this.course.pass;
+      await this.getGroupSchedule();
+      this.form.group = this.course.group
     }
   },
   watch: {
