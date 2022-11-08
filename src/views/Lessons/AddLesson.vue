@@ -190,19 +190,17 @@ export default {
 
       this.calendarOptions.events = this.calendarOptions.events.concat(one_time_for_course);
 
-      if (!isGroup) {
-        const group_time = res.group_time.map(res => {
-          return {
-            groupId: 'group',
-            start: res.start,
-            end: res.end,
-            color: 'red',
-            display: 'background',
-            overlap: false,
-          }
-        })
-        this.calendarOptions.events = this.calendarOptions.events.concat(group_time);
-      }
+      const group_time = res.group_time.map(res => {
+        return {
+          groupId: 'group',
+          start: res.start,
+          end: res.end,
+          color: 'red',
+          display: 'background',
+          overlap: false,
+        }
+      })
+      this.calendarOptions.events = this.calendarOptions.events.concat(group_time);
 
       if (this.isOneTime) {
         const inactiveDates = this.inactiveCalendarDays.map(date => {
