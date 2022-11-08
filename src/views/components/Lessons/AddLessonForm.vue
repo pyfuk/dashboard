@@ -273,6 +273,10 @@ export default {
       this.form.group = '';
       this.groupsForSelect = [];
       this.getTeachersBySubject();
+
+      if (this.form.subject && this.isSelectedSubjectWithGroup) {
+        this.form.onetime = false;
+      }
     },
     'form.teacher'() {
       this.$emit('form', {
@@ -280,7 +284,7 @@ export default {
         isGroup: this.isSelectedSubjectWithGroup
       });
 
-      if (this.isSelectedSubjectWithGroup) {
+      if (this.isSelectedSubjectWithGroup && this.form.teacher) {
         this.getGroupSchedule()
       }
     },
