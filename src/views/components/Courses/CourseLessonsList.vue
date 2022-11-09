@@ -47,7 +47,8 @@
               </span>
             </td>
             <td class="align-middle text-center text-sm">
-              <i class="fa fa-pen cursor-pointer"></i>
+              <i class="fa fa-pen cursor-pointer mx-2"></i>
+              <i class="fa fa-ban cursor-pointer mx-2"></i>
             </td>
           </tr>
           </tbody>
