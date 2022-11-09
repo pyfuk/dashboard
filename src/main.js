@@ -10,6 +10,8 @@ import Toast, { useToast } from "vue-toastification";
 import "vue-toastification/dist/index.css";
 import i18n from './i18n'
 
+import VueSweetalert2 from 'vue-sweetalert2';
+
 const options = {
     // You can set your default options here
 };
@@ -39,4 +41,5 @@ axios.interceptors.response.use(function (response) {
     return Promise.reject(error);
 });
 appInstance.use(Toast, options);
+appInstance.use(VueSweetalert2);
 appInstance.mount("#app");

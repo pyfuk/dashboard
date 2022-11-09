@@ -14,6 +14,7 @@
     } ${this.$store.state.sidebarType}`"
       id="sidenav-main"
       v-if="this.$store.state.showASidenav"
+      style="z-index: 1060"
   >
     <div class="d-flex flex-column h-100">
       <div class="sidenav-header">
