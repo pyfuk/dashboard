@@ -19,8 +19,8 @@
 
           <div class="col-md-6 d-flex align-items-center  justify-content-end">
             <argon-button :color="course.active ? 'secondary': 'success'" :variant="'gradient'"
-                          @click="course.active ? coursePayed() : activate()">
-              {{ course.active ? $t('courses.activated') : $t('courses.activate') }}
+                          @click="changeActivateState">
+              {{ course.active ? $t('courses.deactivate') : $t('courses.activate') }}
             </argon-button>
           </div>
         </div>
@@ -58,24 +58,33 @@ export default {
   },
   methods: {
     async getCourse() {
-
       const data = {
         course_id: this.course_id
       }
 
       const res = await axios.post(server.URL + '/api/courses/get', data);
       this.course = res.course;
-      console.log(this.course.subject.icon)
     },
-    coursePayed() {
+    async changeActivateState() {
+      const result = await this.$swal({
+        title: 'Вы уверены?',
+        text: "После редактирования предмета, у вас будет член.",
+        icon: 'warning',
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: 'Да, продолжить',
+        cancelButtonText: 'Отменить'
+      });
 
-    },
-    async activate() {
-      const data = {
-        course_id: this.course_id
+      if (result.isConfirmed) {
+        const data = {
+          course_id: this.course_id
+        }
+
+        await axios.post(server.URL + '/api/courses/change_activate_state', data);
+        this.course.active = !this.course.active;
       }
 
-      await axios.post(server.URL + '/api/courses/activate', data)
     }
   },
   mounted() {

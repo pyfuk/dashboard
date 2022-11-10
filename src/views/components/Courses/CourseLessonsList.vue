@@ -42,8 +42,9 @@
               </span>
             </td>
             <td class="align-middle text-sm">
-              <span class="badge badge-sm" :class="`${false ? 'bg-gradient-success' : 'bg-gradient-secondary'}`">
-                {{ false ? $t('lessons.visited') : $t('lessons.absent') }}
+              <span @click="changeVisitState(lesson.id)" class="badge badge-sm cursor-pointer"
+                    :class="`${lesson.visited ? 'bg-gradient-success' : 'bg-gradient-secondary'}`">
+                {{ lesson.visited ? $t('lessons.visited') : $t('lessons.absent') }}
               </span>
             </td>
             <td class="align-middle text-center text-sm">
@@ -110,7 +111,6 @@ export default {
 
       const response = await axios.post(server.URL + '/api/lessons/get_lessons', data);
       this.lessons = response.lessons;
-      console.log(this.lessons)
       this.isLessonsLoading = false;
     },
     getStartDate(start, end) {
@@ -133,10 +133,36 @@ export default {
         }
       })
     },
+    async changeVisitState(lesson_id) {
+      const result = await this.$swal({
+        title: 'Вы уверены?',
+        text: "После редактирования предмета, у вас будет член.",
+        icon: 'warning',
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: 'Да, продолжить',
+        cancelButtonText: 'Отменить'
+      });
+
+      if (result.isConfirmed) {
+        const data = {
+          lesson_id: lesson_id,
+        }
+        await axios.post(server.URL + '/api/lessons/change_visited_state', data);
+
+        const lessonIndex = this.lessons.findIndex(lesson => lesson.id === lesson_id);
+        this.lessons[lessonIndex].visited = !this.lessons[lessonIndex].visited;
+      }
+    },
   },
   async mounted() {
     moment.locale('ru')
     await this.getLessons();
+  },
+  watch: {
+    'course.active'() {
+      this.lessons.forEach(lesson => lesson.paid = !lesson.paid)
+    }
   }
 }
 </script>
