@@ -34,7 +34,7 @@
                 <div class="text-center shadow icon icon-shape bg-gradient-dark icon-md mx-2">
                   <icon-view :img="course.subject.icon" size="lg" color="rgb(226, 231, 231)"></icon-view>
                 </div>
-                <div class="d-flex flex-column justify-content-center"
+                <div class="d-flex flex-column justify-content-center cursor-pointer"
                      @click="$router.push(`/courses/${course.id}`)">
                   <h6 class="mb-0 text-lg">{{ course.subject.name }}</h6>
                 </div>
@@ -45,7 +45,8 @@
             </td>
 
             <td class="text-sm">
-              <span class="badge badge-sm" :class="course.active ? 'bg-gradient-success' : 'bg-gradient-danger'">{{
+              <span @click="changeCoursePayStatus(course.id)" class="badge badge-sm cursor-pointer"
+                    :class="course.active ? 'bg-gradient-success' : 'bg-gradient-danger'">{{
                   course.active ? $t('courses.paid') : $t('courses.unpaid')
                 }}</span>
             </td>
@@ -113,7 +114,8 @@
               {{ lesson.start }}
             </td>
             <td class="text-sm">
-              <span class="badge badge-sm" :class="lesson.paid ? 'bg-gradient-success' : 'bg-gradient-danger'">{{
+              <span class="badge badge-sm cursor-pointer"
+                    :class="lesson.paid ? 'bg-gradient-success' : 'bg-gradient-danger'">{{
                   lesson.paid ? $t('courses.paid') : $t('courses.unpaid')
                 }}</span>
             </td>
@@ -203,6 +205,27 @@ export default {
 
     async editCourse(course_id) {
       await this.$router.push(`/users/${this.user.id}/lessons/course/edit/${course_id}`)
+    },
+    async changeCoursePayStatus(course_id) {
+      const result = await this.$swal({
+        title: 'Вы уверены?',
+        text: "После редактирования предмета, у вас будет член.",
+        icon: 'warning',
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: 'Да, продолжить',
+        cancelButtonText: 'Отменить'
+      });
+
+      if (result.isConfirmed) {
+        const data = {
+          course_id: course_id,
+        }
+        await axios.post(server.URL + '/api/courses/change_activate_state', data);
+
+        const courseIndex = this.courses.findIndex(course => course.id === course_id);
+        this.courses[courseIndex].active = !this.courses[courseIndex].active;
+      }
     }
   },
   async mounted() {

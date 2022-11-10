@@ -47,8 +47,7 @@
               </span>
             </td>
             <td class="align-middle text-center text-sm">
-              <i class="fa fa-pen cursor-pointer mx-2"></i>
-              <i class="fa fa-ban cursor-pointer mx-2"></i>
+              <i class="fa fa-pen cursor-pointer mx-2" @click="showAlert"></i>
             </td>
           </tr>
           </tbody>
@@ -118,7 +117,22 @@ export default {
       const startTime = moment(start);
       const endTime = moment(end);
       return `${startTime.format('DD MMMM')} ${startTime.format('HH:mm')} - ${endTime.format('HH:mm')}`
-    }
+    },
+    showAlert() {
+      this.$swal({
+        title: 'Вы уверены?',
+        text: "После редактирования предмета, у вас будет член.",
+        icon: 'warning',
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: 'Да, продолжить',
+        cancelButtonText: 'Отменить'
+      }).then((result) => {
+        if (result.isConfirmed) {
+
+        }
+      })
+    },
   },
   async mounted() {
     moment.locale('ru')
@@ -128,5 +142,7 @@ export default {
 </script>
 
 <style scoped>
-
+.noHover {
+  pointer-events: none;
+}
 </style>
