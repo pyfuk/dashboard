@@ -158,9 +158,14 @@ export default {
   },
   name: "user-lessons-table",
   mixins: [utilsMixin, usersRoleMixin],
+  emits: ['userEdited'],
   props: {
     user: {
       type: Object,
+      required: true
+    },
+    isMobile: {
+      type: Boolean,
       required: true
     }
   },
@@ -226,7 +231,7 @@ export default {
         const courseIndex = this.courses.findIndex(course => course.id === course_id);
         this.courses[courseIndex].active = !this.courses[courseIndex].active;
       }
-    }
+    },
   },
   async mounted() {
     await this.sleep(timeout.LIST_SLEEP);

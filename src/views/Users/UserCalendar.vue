@@ -51,7 +51,6 @@ export default {
         locale: 'ru',
         timeZone: 'local',
         contentHeight: this.isMobile ? 415 : 460,
-        defaultView: 'dayGridMonth',
         navLinks: true, //Переход по датам
         events: [],
         dateClick: this.handleDateClick,
