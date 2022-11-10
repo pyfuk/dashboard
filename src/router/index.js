@@ -81,6 +81,14 @@ const routes = [
                 props: {
                     edit: 'course'
                 }
+            },
+            {
+                path: "lessons/lesson/edit/:lesson",
+                name: "EditLesson",
+                component: AddLesson,
+                props: {
+                    edit: 'lesson'
+                }
             }
         ]
 

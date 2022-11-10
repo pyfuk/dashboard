@@ -133,7 +133,7 @@
               </span>
             </td>
             <td class="align-middle text-center text-sm">
-              <i class="fa fa-pen cursor-pointer mx-2" @click="showAlert"></i>
+              <i class="fa fa-pen cursor-pointer mx-2" @click="editLesson(lesson.id)"></i>
             </td>
           </tr>
           </tbody>
@@ -226,6 +226,9 @@ export default {
 
     async editCourse(course_id) {
       await this.$router.push(`/users/${this.user.id}/lessons/course/edit/${course_id}`)
+    },
+    async editLesson(lesson_id) {
+      await this.$router.push(`/users/${this.user.id}/lessons/lesson/edit/${lesson_id}`)
     },
     async changeCoursePayStatus(course_id) {
       const result = await this.$swal({
