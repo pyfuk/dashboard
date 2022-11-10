@@ -92,6 +92,13 @@
                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
             >{{ $t('courses.status') }}
             </th>
+            <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+              {{ $t('lessons.attendance') }}
+            </th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+              {{ $t('lessons.actions') }}
+            </th>
           </tr>
           </thead>
           <tbody>
@@ -114,10 +121,19 @@
               {{ lesson.start }}
             </td>
             <td class="text-sm">
-              <span class="badge badge-sm cursor-pointer"
+              <span @click="changeLessonPaidState(lesson.id)" class="badge badge-sm cursor-pointer"
                     :class="lesson.paid ? 'bg-gradient-success' : 'bg-gradient-danger'">{{
                   lesson.paid ? $t('courses.paid') : $t('courses.unpaid')
                 }}</span>
+            </td>
+            <td class="align-middle text-sm">
+              <span @click="changeLessonVisitState(lesson.id)" class="badge badge-sm cursor-pointer"
+                    :class="`${lesson.visited ? 'bg-gradient-success' : 'bg-gradient-secondary'}`">
+                {{ lesson.visited ? $t('lessons.visited') : $t('lessons.absent') }}
+              </span>
+            </td>
+            <td class="align-middle text-center text-sm">
+              <i class="fa fa-pen cursor-pointer mx-2" @click="showAlert"></i>
             </td>
           </tr>
           </tbody>
@@ -230,6 +246,48 @@ export default {
 
         const courseIndex = this.courses.findIndex(course => course.id === course_id);
         this.courses[courseIndex].active = !this.courses[courseIndex].active;
+      }
+    },
+    async changeLessonVisitState(lesson_id) {
+      const result = await this.$swal({
+        title: 'Вы уверены?',
+        text: "После редактирования предмета, у вас будет член.",
+        icon: 'warning',
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: 'Да, продолжить',
+        cancelButtonText: 'Отменить'
+      });
+
+      if (result.isConfirmed) {
+        const data = {
+          lesson_id: lesson_id,
+        }
+        await axios.post(server.URL + '/api/lessons/change_visited_state', data);
+
+        const lessonIndex = this.one_time_lessons.findIndex(lesson => lesson.id === lesson_id);
+        this.one_time_lessons[lessonIndex].visited = !this.one_time_lessons[lessonIndex].visited;
+      }
+    },
+    async changeLessonPaidState(lesson_id) {
+      const result = await this.$swal({
+        title: 'Вы уверены?',
+        text: "После редактирования предмета, у вас будет член.",
+        icon: 'warning',
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: 'Да, продолжить',
+        cancelButtonText: 'Отменить'
+      });
+
+      if (result.isConfirmed) {
+        const data = {
+          lesson_id: lesson_id,
+        }
+        await axios.post(server.URL + '/api/lessons/change_paid_state', data);
+
+        const lessonIndex = this.one_time_lessons.findIndex(lesson => lesson.id === lesson_id);
+        this.one_time_lessons[lessonIndex].paid = !this.one_time_lessons[lessonIndex].paid;
       }
     },
   },

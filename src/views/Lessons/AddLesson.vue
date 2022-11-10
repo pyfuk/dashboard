@@ -207,7 +207,7 @@ export default {
           return {
             groupId: 'inactive_dates',
             date,
-            color: 'gray',
+            color: '#BFBFBF',
             display: 'background',
             overlap: false,
           }
@@ -362,7 +362,7 @@ export default {
           return {
             groupId: 'inactive_dates',
             date,
-            color: 'gray',
+            color: '#BFBFBF',
             display: 'background',
             overlap: false,
           }

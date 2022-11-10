@@ -18,6 +18,10 @@
           </div>
 
           <div class="col-md-6 d-flex align-items-center  justify-content-end">
+            <argon-button class="mx-1" color="success" :variant="'gradient'"
+                          @click="editCourse">
+              {{ $t('common.edit') }}
+            </argon-button>
             <argon-button :color="course.active ? 'secondary': 'success'" :variant="'gradient'"
                           @click="changeActivateState">
               {{ course.active ? $t('courses.deactivate') : $t('courses.activate') }}
@@ -84,8 +88,10 @@ export default {
         await axios.post(server.URL + '/api/courses/change_activate_state', data);
         this.course.active = !this.course.active;
       }
-
-    }
+    },
+    async editCourse() {
+      await this.$router.push(`/users/${this.course.student.id}/lessons/course/edit/${this.course.id}`)
+    },
   },
   mounted() {
     this.course_id = this.$route.params.id;
