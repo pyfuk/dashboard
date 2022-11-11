@@ -11,6 +11,7 @@ import FullCalendar from '@fullcalendar/vue3'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import dayGridPlugin from "@fullcalendar/daygrid";
+import listPlugin from '@fullcalendar/list';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import axios from "axios";
 import { server } from "../../config";
@@ -39,15 +40,16 @@ export default {
         },
         footerToolbar: {
           left: false,
-          center: 'dayGridMonth,timeGridWeek,timeGridDay',
+          center: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
         },
         buttonText: {
           today: 'Сегодня',
           month: 'Месяц',
           week: 'Неделя',
           day: 'День',
+          list: 'Лист'
         },
-        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
         locale: 'ru',
         timeZone: 'local',
         contentHeight: this.isMobile ? 415 : 460,

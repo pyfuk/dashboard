@@ -94,6 +94,7 @@ export default {
 };
 </script>
 <style>
+/*Кнопки в календаре*/
 .fc-button-primary {
   background-color: #2dce89 !important;
   border-color: #2dce89 !important;
@@ -102,10 +103,16 @@ export default {
   padding: 0.625rem 1.25rem !important;
 }
 
+/*Текст в background events*/
 .fc .fc-bg-event .fc-event-title {
   margin: 0.2em !important;
   color: white !important;
   font-weight: 650;
+}
+
+/*Текст в background events*/
+.fc-v-event .fc-event-main-frame {
+  flex-direction: inherit !important;
 }
 
 .form-switch .form-check-input:checked {
