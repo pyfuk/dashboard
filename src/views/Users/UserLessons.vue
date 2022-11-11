@@ -118,7 +118,7 @@
               <p class="text-md font-weight-bold mb-0">{{ lesson.teacher.firstname }} {{ lesson.teacher.lastname }}</p>
             </td>
             <td>
-              {{ lesson.start }}
+              {{ lesson.start_raw }}
             </td>
             <td class="text-sm">
               <span @click="changeLessonPaidState(lesson.id)" class="badge badge-sm cursor-pointer"
@@ -164,6 +164,7 @@ import utilsMixin from "../../mixins/utilsMixin";
 import IconView from "../../components/IconView";
 import usersRoleMixin from "@/mixins/usersRoleMixin";
 import moment from "moment";
+import { useToast } from "vue-toastification";
 
 export default {
   components: {
@@ -191,6 +192,7 @@ export default {
       one_time_lessons: [],
       isCoursesLoading: true,
       isOneTimeLessonsLoading: true,
+      toast: useToast(),
     }
   },
   computed: {},
@@ -217,7 +219,7 @@ export default {
       this.one_time_lessons = response.lessons.map(lesson => {
         return {
           ...lesson,
-          start: moment(lesson.start).locale('ru').format('LL')
+          start_raw: moment(lesson.start).locale('ru').format('LL')
         }
       });
 
@@ -228,6 +230,16 @@ export default {
       await this.$router.push(`/users/${this.user.id}/lessons/course/edit/${course_id}`)
     },
     async editLesson(lesson_id) {
+
+      const lesson = this.one_time_lessons.find(lesson => lesson.id === lesson_id);
+
+      const maxEditTime = moment().add(24, 'h');
+
+      if (maxEditTime.isSameOrAfter(lesson.startDate)) {
+        this.toast.warning(this.$t('notifications.can_not_edit_lesson'));
+        return;
+      }
+
       await this.$router.push(`/users/${this.user.id}/lessons/lesson/edit/${lesson_id}`)
     },
     async changeCoursePayStatus(course_id) {

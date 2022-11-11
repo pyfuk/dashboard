@@ -100,7 +100,8 @@ export default {
       oneTimeLessons: [],
       inactiveCalendarDays: [],
       excludedEvents: [],
-      oneTimeLessonsForCourse: []
+      oneTimeLessonsForCourse: [],
+      lesson: '',
     }
   },
   methods: {
@@ -265,6 +266,10 @@ export default {
       if (this.edit === 'course') {
         this.calendarOptions.events = this.calendarOptions.events.concat(this.editCourseLessons)
       }
+
+      if (this.edit === 'lesson') {
+        this.calendarOptions.events = this.calendarOptions.events.concat([this.lesson])
+      }
     },
     async getCalendarInactiveDates() {
       const res = await axios.post(server.URL + '/api/calendar/get_inactive_days');
@@ -308,6 +313,15 @@ export default {
           })
 
           this.dates = this.editCourseLessons;
+        } else if (this.edit === 'lesson') {
+          await this.getLesson(this.$route.params.lesson);
+          this.lesson = {
+            id: this.eventCounter++,
+            start: this.lesson.start,
+            end: this.lesson.end
+          }
+
+          this.dates = [this.lesson];
         } else {
           this.dates = [];
         }
@@ -337,6 +351,14 @@ export default {
       const res = await axios.post(server.URL + '/api/courses/get', data);
       this.course = res.course;
     },
+    async getLesson(lesson_id) {
+      const data = {
+        lesson_id: lesson_id
+      }
+      const res = await axios.post(server.URL + '/api/lessons/get', data);
+      this.lesson = res.lesson;
+    },
+
     changedOneTime(onetime) {
       this.isOneTime = onetime;
 
@@ -451,4 +473,6 @@ export default {
   backdrop-filter: blur(6px);
   z-index: 3;
 }
+
+
 </style>

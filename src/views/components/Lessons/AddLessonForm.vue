@@ -7,7 +7,7 @@
       <label :for="form.subject" class="form-control-label"
       >{{ $t('courses.subject') }}</label>
       <argon-select v-model="form.subject"
-                    :options="subjectsForSelect"
+                    :options="getSubjectsForSelect"
                     :disabled="isCourseEdit"></argon-select>
 
       <label :for="form.teacher" class="form-control-label"
@@ -22,9 +22,10 @@
                     :options="groupsForSelect"
                     v-if="isSelectedSubjectWithGroup"></argon-select>
 
-      <hr class="horizontal dark" v-if="!isSelectedSubjectWithGroup"/>
+      <hr class="horizontal dark" v-if="!isSelectedSubjectWithGroup && !isLessonEdit"/>
 
-      <div class="d-flex justify-content-between mb-2" v-if="!isCourseEdit && !isSelectedSubjectWithGroup">
+      <div class="d-flex justify-content-between mb-2"
+           v-if="!isCourseEdit && !isSelectedSubjectWithGroup && !isLessonEdit">
         <span>{{ $t('courses.one_time') }}</span>
         <argon-switch v-model="form.onetime"></argon-switch>
       </div>
@@ -88,13 +89,14 @@ export default {
       teachers: [],
       passes: [],
       user_id: '',
-      subjectsForSelect: [],
       subjects: [],
       groupsForSelect: [],
       groupsSchedules: [],
       course: '',
       isCourseEdit: false,
       toast: useToast(),
+      lesson: '',
+      isLessonEdit: false,
     }
   },
   props: {
@@ -134,6 +136,17 @@ export default {
         await axios.post(server.URL + '/api/courses/edit', data);
         await this.$router.push(`/courses/${this.course.id}`)
 
+      } else if (this.edit === 'lesson') {
+        const data = {
+          dates,
+          subject_id: this.form.subject,
+          teacher_id: this.form.teacher,
+          lesson_id: this.lesson.id
+        }
+
+        await axios.post(server.URL + '/api/lessons/edit', data);
+        // await this.$router.push(`/users/${this.user_id}/lessons`)
+
       } else {
         const student_id = this.isAdmin(this.$store.state.currentUser) ? this.user_id : this.$store.state.currentUser.id;
 
@@ -170,12 +183,6 @@ export default {
     async getSubjects() {
       const response = await axios.post(server.URL + '/api/subjects/get_all');
       this.subjects = response.subjects;
-      this.subjectsForSelect = response.subjects.map(s => {
-        return {
-          name: s.name,
-          value: s.id
-        }
-      })
     },
     async getPasses() {
       const res = await axios.post(server.URL + "/api/passes/get_all");
@@ -250,6 +257,14 @@ export default {
       const res = await axios.post(server.URL + '/api/courses/get', data);
       this.course = res.course;
     },
+    async getLesson(lesson_id) {
+      const data = {
+        lesson_id: lesson_id
+      }
+
+      const res = await axios.post(server.URL + '/api/lessons/get', data);
+      this.lesson = res.lesson;
+    },
   },
   async mounted() {
     this.user_id = this.$route.params.id;
@@ -257,14 +272,23 @@ export default {
     await this.getPasses();
 
     if (this.edit === 'course') {
+      this.isCourseEdit = true;
       await this.getCourse(this.$route.params.course);
       this.form.subject = this.course.subject.id;
-      this.isCourseEdit = true;
       await this.getTeachersBySubject()
       this.form.teacher = this.course.teacher.id;
       this.form.pass = this.course.pass;
       await this.getGroupSchedule();
       this.form.group = this.course.group
+    }
+
+    if (this.edit === 'lesson') {
+      this.isLessonEdit = true;
+      await this.getLesson(this.$route.params.lesson);
+      this.form.subject = this.lesson.subject.id;
+      await this.getTeachersBySubject()
+      this.form.teacher = this.lesson.teacher.id;
+      this.form.onetime = true;
     }
   },
   watch: {
@@ -313,6 +337,19 @@ export default {
       }
       const subject = this.subjects.find(s => s.id === this.form.subject);
       return subject.group;
+    },
+    getSubjectsForSelect() {
+      if (!this.subjects) {
+        return;
+      }
+      const subs = this.isLessonEdit ? this.subjects.filter(s => !s.group) : this.subjects;
+
+      return subs.map(s => {
+        return {
+          name: s.name,
+          value: s.id
+        }
+      })
     }
   },
 }
