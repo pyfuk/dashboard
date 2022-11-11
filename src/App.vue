@@ -102,6 +102,12 @@ export default {
   padding: 0.625rem 1.25rem !important;
 }
 
+.fc .fc-bg-event .fc-event-title {
+  margin: 0.2em !important;
+  color: white !important;
+  font-weight: 650;
+}
+
 .form-switch .form-check-input:checked {
   border-color: #2dce89 !important;
   background-color: #2dcecc !important;

@@ -160,6 +160,7 @@ export default {
           color: 'red',
           display: 'background',
           overlap: false,
+          title: 'wefwefwefefw'
         }
       })
 
@@ -198,6 +199,7 @@ export default {
           color: 'red',
           display: 'background',
           overlap: false,
+          title: 'Группа'
         }
       })
       this.calendarOptions.events = this.calendarOptions.events.concat(group_time);
