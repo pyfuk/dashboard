@@ -117,6 +117,8 @@ export default {
   flex-direction: inherit !important;
 }
 
+
+
 .form-switch .form-check-input:checked {
   border-color: #2dce89 !important;
   background-color: #2dcecc !important;

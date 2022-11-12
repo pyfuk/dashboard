@@ -11,7 +11,7 @@
         <div class="card">
           <div class="card-body">
             <div :class="{'overlay': overlay}"></div>
-            <FullCalendar ref="fullCalendar" :options="calendarOptions"/>
+            <FullCalendar ref="fullCalendar" :options="calendarOptions" id="AddLessonCalendar"/>
           </div>
         </div>
       </div>
@@ -163,7 +163,7 @@ export default {
           color: 'red',
           display: 'background',
           overlap: false,
-          title: 'wefwefwefefw'
+          title: 'Антонов'
         }
       })
 
@@ -172,7 +172,7 @@ export default {
           groupId: 'inactive',
           start: res.start,
           end: res.end,
-          color: '#BFBFBF',
+          color: '#999999',
           display: 'background',
           overlap: false,
         }
@@ -462,7 +462,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .overlay {
   position: absolute;
   left: 15px;
@@ -473,5 +473,12 @@ export default {
   z-index: 3;
 }
 
+#AddLessonCalendar td.fc-timegrid-col.fc-day {
+  background-color: rgba(189, 243, 189, 0.5);
+}
+
+#AddLessonCalendar .fc .fc-timegrid-col.fc-day-today {
+  background-color: rgba(189, 243, 189, 0.5) !important;
+}
 
 </style>

@@ -226,7 +226,9 @@ export default {
 </script>
 
 <style>
-.fc .fc-timegrid-col.fc-day-today {
-  background-color: inherit !important;
-}
+
+/*td.fc-timegrid-col.fc-day {*/
+/*  background-color: inherit !important;*/
+/*}*/
+
 </style>
