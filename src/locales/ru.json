@@ -72,7 +72,7 @@
     "edit_subject": "Информация о предмете успешно изменена",
     "add_teacher_to_subject": "Учитель добавлен в предмет",
     "add_time_for_lesson": "Добавьте время для урока",
-    "can_not_edit_lesson": "Этот урок нельзя редактировать"
+    "can_not_edit_lesson": "Этот урок нельзя переносить"
   },
   "courses": {
     "courses": "Курсы",

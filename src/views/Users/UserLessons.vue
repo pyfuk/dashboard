@@ -163,7 +163,7 @@ import axios from "axios";
 import utilsMixin from "../../mixins/utilsMixin";
 import IconView from "../../components/IconView";
 import usersRoleMixin from "@/mixins/usersRoleMixin";
-import moment from "moment";
+import moment from "moment-timezone";
 import { useToast } from "vue-toastification";
 
 export default {

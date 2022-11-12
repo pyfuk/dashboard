@@ -52,6 +52,7 @@ import Sidenav from "./examples/Sidenav";
 import Configurator from "@/examples/Configurator.vue";
 import Navbar from "@/examples/Navbars/Navbar.vue";
 import { mapMutations } from "vuex";
+import moment from "moment-timezone";
 
 export default {
   name: "App",
@@ -90,6 +91,7 @@ export default {
         this.$store.state.showASidenav = true;
       }
     }
+    moment.locale('ru')
   }
 };
 </script>

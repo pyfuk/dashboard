@@ -24,9 +24,11 @@ import FullCalendar from "@fullcalendar/vue3";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import AddLessonForm from "../components/Lessons/AddLessonForm";
+import ruLocale from '@fullcalendar/core/locales/ru';
+import momentTimezonePlugin from '@fullcalendar/moment-timezone'
 import axios from "axios";
 import { server } from "@/config";
-import moment from "moment";
+import moment from "moment-timezone";
 
 export default {
 
@@ -53,10 +55,10 @@ export default {
           right: false
         },
         footerToolbar: false,
-        plugins: [timeGridPlugin, interactionPlugin],
+        plugins: [timeGridPlugin, interactionPlugin, momentTimezonePlugin],
+        locales: [ruLocale],
         locale: 'ru',
-        timeZone: 'local',
-        // contentHeight: this.isMobile ? 415 : 500,
+        timeZone: 'Asia/Tashkent',
         height: "auto",
         dayHeaderFormat: { weekday: 'short' },
         events: [],

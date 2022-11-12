@@ -64,10 +64,11 @@
 import ArgonSelect from "../../../components/ArgonSelect";
 import ArgonButton from "../../../components/ArgonButton";
 import axios from "axios";
-import { server } from "../../../config";
+import { server, timeZone } from "../../../config";
 import ArgonSwitch from "@/components/ArgonSwitch";
 import usersRoleMixin from "@/mixins/usersRoleMixin";
 import { useToast } from "vue-toastification";
+import moment from "moment-timezone";
 
 export default {
   name: "AddLessonForm",
@@ -197,11 +198,11 @@ export default {
       this.changedPassForm();
     },
     parseDate(date) {
-      const week = this.getWeek(new Date(date.start).getDay());
-      const startTime = this.addZero(new Date(date.start).getHours()) + ":" + this.addZero(new Date(date.start).getMinutes());
-      const endTime = this.addZero(new Date(date.end).getHours()) + ":" + this.addZero(new Date(date.end).getMinutes());
+      const startDate = moment(date.start).tz(timeZone)
+      const endDate = moment(date.end).tz(timeZone);
+      const week = this.getWeek(startDate.weekday())
 
-      return `${week} -  ${startTime} : ${endTime}`
+      return `${week} -  ${startDate.format('HH:mm')} : ${endDate.format('HH:mm')}`
     },
     addZero(i) {
       if (i < 10) {
@@ -212,20 +213,19 @@ export default {
     getWeek(i) {
       switch (i) {
         case 0:
-          return 'Воскресенье'
-        case 1:
           return 'Понедельник'
-        case 2:
+        case 1:
           return 'Вторник'
-        case 3:
+        case 2:
           return 'Среда'
-        case 4:
+        case 3:
           return 'Четверг'
-        case 5:
+        case 4:
           return 'Пятница'
-        case 6:
+        case 5:
           return 'Суббота'
-
+        case 6:
+          return 'Воскресенье'
       }
     },
     removeCalendarEvent(eventId) {

@@ -48,7 +48,7 @@
               </span>
             </td>
             <td class="align-middle text-center text-sm">
-              <i class="fa fa-pen cursor-pointer mx-2" @click="showAlert"></i>
+              <i class="fa fa-pen cursor-pointer mx-2" @click="editLesson(lesson.id)"></i>
             </td>
           </tr>
           </tbody>
@@ -76,7 +76,8 @@ import utilsMixin from "@/mixins/utilsMixin";
 import usersRoleMixin from "@/mixins/usersRoleMixin";
 import { server, timeout } from "@/config";
 import axios from "axios";
-import moment from "moment";
+import moment from "moment-timezone";
+import { useToast } from "vue-toastification";
 
 export default {
   components: {
@@ -96,6 +97,7 @@ export default {
     return {
       lessons: [],
       isLessonsLoading: true,
+      toast: useToast(),
     }
   },
   methods: {
@@ -118,20 +120,18 @@ export default {
       const endTime = moment(end);
       return `${startTime.format('DD MMMM')} ${startTime.format('HH:mm')} - ${endTime.format('HH:mm')}`
     },
-    showAlert() {
-      this.$swal({
-        title: 'Вы уверены?',
-        text: "После редактирования предмета, у вас будет член.",
-        icon: 'warning',
-        showCancelButton: true,
-        focusConfirm: false,
-        confirmButtonText: 'Да, продолжить',
-        cancelButtonText: 'Отменить'
-      }).then((result) => {
-        if (result.isConfirmed) {
+    async editLesson(lesson_id) {
+      const lesson = this.lessons.find(lesson => lesson.id === lesson_id);
 
-        }
-      })
+
+      const maxEditTime = moment().add(24, 'h');
+
+      if (maxEditTime.isSameOrAfter(lesson.start)) {
+        this.toast.warning(this.$t('notifications.can_not_edit_lesson'));
+        return;
+      }
+
+      await this.$router.push(`/users/${this.course.student.id}/lessons/lesson/edit/${lesson_id}`)
     },
     async changeVisitState(lesson_id) {
       const result = await this.$swal({
