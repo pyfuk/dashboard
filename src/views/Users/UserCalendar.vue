@@ -15,6 +15,8 @@ import listPlugin from '@fullcalendar/list';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import axios from "axios";
 import { server } from "../../config";
+import ruLocale from "@fullcalendar/core/locales/ru";
+import momentTimezonePlugin from "@fullcalendar/moment-timezone";
 
 export default {
   props: {
@@ -49,9 +51,10 @@ export default {
           day: 'День',
           list: 'Лист'
         },
-        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
+        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin, momentTimezonePlugin],
         locale: 'ru',
-        timeZone: 'local',
+        locales: [ruLocale],
+        timeZone: 'Asia/Tashkent',
         contentHeight: this.isMobile ? 415 : 460,
         navLinks: true, //Переход по датам
         events: [],

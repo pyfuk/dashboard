@@ -44,8 +44,9 @@
 import ArgonSelect from "@/components/ArgonSelect";
 import ArgonButton from "@/components/ArgonButton";
 import axios from "axios";
-import { server } from "@/config";
+import { server, timeZone } from "@/config";
 import ArgonInput from "@/components/ArgonInput";
+import moment from "moment-timezone";
 
 export default {
   name: "GroupSubjectScheduleAdd",
@@ -87,13 +88,15 @@ export default {
     },
     async addSchedule() {
       const dates = this.dates.map(date => {
-        const startTime = this.addZero(date.start.getHours()) + ":" + this.addZero(date.start.getMinutes());
-        const endTime = this.addZero(date.end.getHours()) + ":" + this.addZero(date.end.getMinutes());
+        const startDate = moment(date.start).tz(timeZone)
+        const endDate = moment(date.end).tz(timeZone);
+        const week = startDate.weekday()
+
         return {
-          weekDay: date.start.getDay(),
-          startTime,
-          endTime,
-          millis: date.start.getTime()
+          weekDay: week,
+          startTime: startDate.format('HH:mm'),
+          endTime: endDate.format('HH:mm'),
+          millis: startDate.valueOf()
         }
       })
 
@@ -113,30 +116,29 @@ export default {
 
     },
     parseDate(date) {
-      const week = this.getWeek(date.start.getDay());
-      const startTime = this.addZero(date.start.getHours()) + ":" + this.addZero(date.start.getMinutes());
-      const endTime = this.addZero(date.end.getHours()) + ":" + this.addZero(date.end.getMinutes());
+      const startDate = moment(date.start).tz(timeZone)
+      const endDate = moment(date.end).tz(timeZone);
+      const week = this.getWeek(startDate.weekday())
 
-      return `${week} -  ${startTime} : ${endTime}`
+      return `${week} -  ${startDate.format('HH:mm')} : ${endDate.format('HH:mm')}`
     },
 
     getWeek(i) {
       switch (i) {
         case 0:
-          return 'Воскресенье'
-        case 1:
           return 'Понедельник'
-        case 2:
+        case 1:
           return 'Вторник'
-        case 3:
+        case 2:
           return 'Среда'
-        case 4:
+        case 3:
           return 'Четверг'
-        case 5:
+        case 4:
           return 'Пятница'
-        case 6:
+        case 5:
           return 'Суббота'
-
+        case 6:
+          return 'Воскресенье'
       }
     },
     addZero(i) {

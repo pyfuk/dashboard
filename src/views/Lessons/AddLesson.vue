@@ -177,8 +177,8 @@ export default {
           overlap: false,
         }
       })
-      this.calendarOptions.events = this.calendarOptions.events.concat(inactive_time);
 
+      this.calendarOptions.events = this.calendarOptions.events.concat(inactive_time);
 
       this.oneTimeLessonsForCourse = res.one_time;
       const one_time_for_course = res.one_time.map(res => {
@@ -277,9 +277,6 @@ export default {
       const res = await axios.post(server.URL + '/api/calendar/get_inactive_days');
 
       this.inactiveCalendarDays = res.inactive_calendar_dates;
-
-      console.log(this.inactiveCalendarDays)
-
     },
     eventDropped(params) {
       const datesIndex = this.dates.findIndex(event => event.id == params.event.id);

@@ -115,13 +115,15 @@ export default {
       }
 
       const dates = this.dates.map(date => {
-        const startTime = this.addZero(new Date(date.start).getHours()) + ":" + this.addZero(new Date(date.start).getMinutes());
-        const endTime = this.addZero(new Date(date.end).getHours()) + ":" + this.addZero(new Date(date.end).getMinutes());
+        const startDate = moment(date.start).tz(timeZone)
+        const endDate = moment(date.end).tz(timeZone);
+        const week = startDate.weekday()
+
         return {
-          weekDay: new Date(date.start).getDay(),
-          startTime,
-          endTime,
-          millis: new Date(date.start).getTime()
+          weekDay: week,
+          startTime: startDate.format('HH:mm'),
+          endTime: endDate.format('HH:mm'),
+          millis: startDate.valueOf()
         }
       })
 

@@ -20,6 +20,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/vue3";
 import axios from "axios";
 import { server } from "@/config";
+import ruLocale from "@fullcalendar/core/locales/ru";
+import momentTimezonePlugin from "@fullcalendar/moment-timezone";
 
 export default {
   name: "SubjectScheduleAdd",
@@ -32,9 +34,10 @@ export default {
           center: false,
           right: false
         },
-        plugins: [timeGridPlugin, interactionPlugin],
+        plugins: [timeGridPlugin, interactionPlugin, momentTimezonePlugin],
+        locales: [ruLocale],
         locale: 'ru',
-        timeZone: 'local',
+        timeZone: 'Asia/Tashkent',
         // contentHeight: this.isMobile ? 415 : 500,
 
         height: "auto",
@@ -77,10 +80,6 @@ export default {
   },
   methods: {
     selectedEvent(event) {
-      if (this.dates.length >= this.pass / 4) {
-        return;
-      }
-
       const id = this.eventCounter++;
       this.calendarOptions.events = [...this.calendarOptions.events,
         {

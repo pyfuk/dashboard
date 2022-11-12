@@ -43,12 +43,15 @@ import AddUserForm from "../components/User/AddUserForm";
 import FullCalendar from "@fullcalendar/vue3";
 import ArgonButton from "@/components/ArgonButton";
 import axios from "axios";
-import { server } from "@/config";
+import { server, timeZone } from "@/config";
 import ChangePasswordForm from "@/views/components/User/ChangePasswordForm";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import utilsMixin from "@/mixins/utilsMixin";
 import { useToast } from "vue-toastification";
+import ruLocale from "@fullcalendar/core/locales/ru";
+import momentTimezonePlugin from "@fullcalendar/moment-timezone";
+import moment from "moment-timezone";
 
 export default {
   name: "UserProfile",
@@ -74,9 +77,10 @@ export default {
           center: false,
           right: false
         },
-        plugins: [timeGridPlugin, interactionPlugin],
+        plugins: [timeGridPlugin, interactionPlugin, momentTimezonePlugin],
+        locales: [ruLocale],
         locale: 'ru',
-        timeZone: 'local',
+        timeZone: 'Asia/Tashkent',
         height: "auto",
         dayHeaderFormat: { weekday: 'short' }, // Название дней недели
         events: [],
@@ -114,20 +118,14 @@ export default {
           color: '#BFBFBF'
         }]
 
-      this.dates = [...this.dates, {
-        id,
-        weekDay: event.start.getDay(),
-        startTime: this.addZero(event.start.getHours()) + ":" + this.addZero(event.start.getMinutes()),
-        endTime: this.addZero(event.end.getHours()) + ":" + this.addZero(event.end.getMinutes()),
-        millis: event.start.getTime()
-      }]
-
+      this.dates.push(this.parseEvent(event, id))
     },
     async addTeacherInactiveTime() {
       const data = {
         teacher_id: this.user.id,
         dates: this.dates
       }
+
 
       await axios.post(server.URL + '/api/users/add_teacher_inactive_time', data);
       this.toast.success(this.$t('notifications.add_inactive_time_to_teacher'))
@@ -176,18 +174,11 @@ export default {
     editInactiveTime() {
       this.inactiveEdit = true;
       this.calendarOptions.selectable = true;
+      this.dates = [];
 
       this.calendarOptions.events = this.inactive_times.map(event => {
-
         const id = this.eventCounter++;
-
-        this.dates.push({
-          id,
-          weekDay: new Date(event.start).getDay(),
-          startTime: this.addZero(new Date(event.start).getHours()) + ":" + this.addZero(new Date(event.start).getMinutes()),
-          endTime: this.addZero(new Date(event.end).getHours()) + ":" + this.addZero(new Date(event.end).getMinutes()),
-          millis: new Date(event.start).getTime()
-        })
+        this.dates.push(this.parseEvent(event, id))
 
         return {
           id,
@@ -196,7 +187,9 @@ export default {
           color: '#BFBFBF',
           overlap: false,
         }
-      })
+      });
+
+      console.log(this.dates)
     },
     clickEvent(event) {
       if (event.event.display === 'background') {
@@ -204,14 +197,26 @@ export default {
       }
       this.dates = this.dates.filter(d => d.id != event.event.id);
       this.calendarOptions.events = this.calendarOptions.events.filter(e => e.id != event.event.id);
+    },
+    parseEvent(event, id) {
+      const startDate = moment(event.start).tz(timeZone)
+      const endDate = moment(event.end).tz(timeZone);
+      const week = startDate.weekday()
+
+      return {
+        id,
+        weekDay: week,
+        startTime: startDate.format('HH:mm'),
+        endTime: endDate.format('HH:mm'),
+        millis: startDate.valueOf()
+      }
     }
   },
   mounted() {
     if (this.isTeacher(this.user)) {
       this.getTeacherInactiveTime()
     }
-  }
-  ,
+  },
   computed: {
     isCurrentUserEqualToUser() {
       return this.$store.state.currentUser.id === this.user.id;
