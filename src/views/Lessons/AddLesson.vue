@@ -172,7 +172,7 @@ export default {
           groupId: 'inactive',
           start: res.start,
           end: res.end,
-          color: '#999999',
+          color: '#333333',
           display: 'background',
           overlap: false,
         }
@@ -208,30 +208,6 @@ export default {
       this.calendarOptions.events = this.calendarOptions.events.concat(group_time);
 
       if (this.isOneTime) {
-        const inactiveDates = this.inactiveCalendarDays.map(date => {
-          return {
-            groupId: 'inactive_dates',
-            date,
-            color: '#BFBFBF',
-            display: 'background',
-            overlap: false,
-          }
-        })
-
-        this.excludedEvents = [];
-        this.calendarOptions.events = this.calendarOptions.events.filter(event => {
-          const start = moment(event.start).format('YYYY-MM-DD')
-
-          if (!this.inactiveCalendarDays.includes(start)) {
-            return true
-          }
-          this.excludedEvents.push(event);
-          return false
-        })
-
-
-        this.calendarOptions.events = this.calendarOptions.events.concat(inactiveDates);
-
         const one_time = this.oneTimeLessons.map(lesson => {
           return {
             groupId: 'one_time',
@@ -381,30 +357,6 @@ export default {
           }
         }
 
-        const inactiveDates = this.inactiveCalendarDays.map(date => {
-          return {
-            groupId: 'inactive_dates',
-            date,
-            color: '#BFBFBF',
-            display: 'background',
-            overlap: false,
-          }
-        })
-
-        this.excludedEvents = [];
-        this.calendarOptions.events = this.calendarOptions.events.filter(event => {
-          const start = moment(event.start).format('YYYY-MM-DD')
-
-          if (!this.inactiveCalendarDays.includes(start)) {
-            return true
-          }
-          this.excludedEvents.push(event);
-          return false
-        })
-
-
-        this.calendarOptions.events = this.calendarOptions.events.concat(inactiveDates);
-
         const one_time = this.oneTimeLessons.map(lesson => {
           return {
             groupId: 'one_time',
@@ -474,11 +426,12 @@ export default {
 }
 
 #AddLessonCalendar td.fc-timegrid-col.fc-day {
-  background-color: rgba(189, 243, 189, 0.5);
+    background-color: rgba(189, 243, 189, 0.3);
+  /*background-color: inherit !important;*/
 }
 
 #AddLessonCalendar .fc .fc-timegrid-col.fc-day-today {
-  background-color: rgba(189, 243, 189, 0.5) !important;
+  background-color: rgba(189, 243, 189, 0.3) !important;
 }
 
 </style>
