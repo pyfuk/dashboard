@@ -249,11 +249,6 @@ export default {
         this.calendarOptions.events = this.calendarOptions.events.concat([this.lesson])
       }
     },
-    async getCalendarInactiveDates() {
-      const res = await axios.post(server.URL + '/api/calendar/get_inactive_days');
-
-      this.inactiveCalendarDays = res.inactive_calendar_dates;
-    },
     eventDropped(params) {
       const datesIndex = this.dates.findIndex(event => event.id == params.event.id);
       const calendarIndex = this.calendarOptions.events.findIndex(event => event.id == params.event.id);
@@ -297,6 +292,8 @@ export default {
           }
 
           this.dates = [this.lesson];
+          let calendarApi = this.$refs.fullCalendar.getApi();
+          calendarApi.gotoDate(this.lesson.start);
         } else {
           this.dates = [];
         }
@@ -409,7 +406,6 @@ export default {
     }
   },
   async mounted() {
-    await this.getCalendarInactiveDates()
   }
 }
 </script>
@@ -426,7 +422,7 @@ export default {
 }
 
 #AddLessonCalendar td.fc-timegrid-col.fc-day {
-    background-color: rgba(189, 243, 189, 0.3);
+  background-color: rgba(189, 243, 189, 0.3);
   /*background-color: inherit !important;*/
 }
 

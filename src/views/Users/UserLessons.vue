@@ -219,7 +219,7 @@ export default {
       this.one_time_lessons = response.lessons.map(lesson => {
         return {
           ...lesson,
-          start_raw: moment(lesson.start).locale('ru').format('LL')
+          start_raw: moment(lesson.start).locale('ru').format('HH:mm LL')
         }
       });
 
@@ -235,7 +235,7 @@ export default {
 
       const maxEditTime = moment().add(24, 'h');
 
-      if (maxEditTime.isSameOrAfter(lesson.startDate)) {
+      if (maxEditTime.isSameOrAfter(lesson.start)) {
         this.toast.warning(this.$t('notifications.can_not_edit_lesson'));
         return;
       }
