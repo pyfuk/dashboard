@@ -21,6 +21,9 @@
                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
               {{ $t('lessons.attendance') }}
             </th>
+            <th v-if="isMovedLessonExists">
+
+            </th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
               {{ $t('lessons.actions') }}
             </th>
@@ -28,25 +31,33 @@
           </thead>
           <tbody>
           <tr v-for="lesson in lessons" :key="lesson.id">
-            <td class="text-sm">
+            <td class="text-sm" :class="lesson.moved_to ? 'text-decoration-line-through': ''">
               <span class="ms-2">
                               {{ getStartDate(lesson.start, lesson.end) }}
               </span>
             </td>
-            <td class="text-sm">
+            <td class="text-sm" :class="lesson.moved_to ? 'text-decoration-line-through': ''">
               <span>{{ lesson.teacher.firstname }} {{ lesson.teacher.lastname }}</span>
             </td>
             <td class="align-middle text-sm">
-              <span class="badge badge-sm" :class="`${lesson.paid ? 'bg-gradient-success' : 'bg-gradient-warning'}`">
+              <span class="badge badge-sm"
+                    :class="`${lesson.paid ? 'bg-gradient-success' : 'bg-gradient-warning'} ${ lesson.moved_to ? 'text-decoration-line-through': ''}`">
                 {{ lesson.paid ? $t('lessons.paid') : $t('lessons.un_paid') }}
               </span>
             </td>
             <td class="align-middle text-sm">
               <span @click="changeVisitState(lesson.id)" class="badge badge-sm cursor-pointer"
-                    :class="`${lesson.visited ? 'bg-gradient-success' : 'bg-gradient-secondary'}`">
+                    :class="`${lesson.visited ? 'bg-gradient-success' : 'bg-gradient-secondary'}  ${ lesson.moved_to ? 'text-decoration-line-through': ''}`">
                 {{ lesson.visited ? $t('lessons.visited') : $t('lessons.absent') }}
               </span>
             </td>
+
+            <td class="align-middle text-sm" v-if="isMovedLessonExists">
+              <span class="badge badge-sm bg-gradient-danger">
+                {{ lesson.moved_to ? $t('lessons.moved') : '' }}
+              </span>
+            </td>
+
             <td class="align-middle text-center text-sm">
               <i class="fa fa-pen cursor-pointer mx-2" @click="editLesson(lesson.id)"></i>
             </td>
@@ -126,7 +137,7 @@ export default {
 
       const maxEditTime = moment().add(24, 'h');
 
-      if (maxEditTime.isSameOrAfter(lesson.start)) {
+      if (maxEditTime.isSameOrAfter(lesson.start) || lesson.moved_to) {
         this.toast.warning(this.$t('notifications.can_not_edit_lesson'));
         return;
       }
@@ -162,6 +173,11 @@ export default {
   watch: {
     'course.active'() {
       this.lessons.forEach(lesson => lesson.paid = !lesson.paid)
+    }
+  },
+  computed: {
+    isMovedLessonExists() {
+      return !!this.lessons.find(lesson => lesson.moved_to);
     }
   }
 }
