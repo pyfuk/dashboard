@@ -307,7 +307,7 @@ export default {
     'form.teacher'() {
       this.$emit('form', {
         ...this.form,
-        isGroup: this.isSelectedSubjectWithGroup
+        isGroupSubject: this.isSelectedSubjectWithGroup
       });
 
       if (this.isSelectedSubjectWithGroup && this.form.teacher) {
@@ -326,7 +326,7 @@ export default {
       if (this.form.group) {
         this.$emit('form', {
           ...this.form,
-          isGroup: this.isSelectedSubjectWithGroup,
+          isGroupSubject: this.isSelectedSubjectWithGroup,
           schedule: schedule.dates
         });
       }

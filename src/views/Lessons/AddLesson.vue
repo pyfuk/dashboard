@@ -98,12 +98,19 @@ export default {
       eventCounter: 0,
       course: '',
       editCourseLessons: [],
+      editLesson: '',
       isOneTime: false,
       oneTimeLessons: [],
       inactiveCalendarTime: [],
-      excludedEvents: [],
       oneTimeLessonsForCourse: [],
       lesson: '',
+      teacher_id: '',
+      calendarApi: '',
+      formInputs: {
+        isGroupSubject: false,
+        groupScheduleDates: [],
+        teacher: ''
+      }
     }
   },
   methods: {
@@ -139,120 +146,12 @@ export default {
     eventClicked(eventClickInfo) {
       console.log(eventClickInfo.event.id)
     },
-    async getTeacherLessons(teacher_id, isGroup, schedule) {
-      const data = {
-        teacher_id: teacher_id,
-      }
-      const res = await axios.post(server.URL + '/api/courses/get_teacher_reserved_time', data);
 
-      this.inactiveCalendarTime = res.inactive_calendar_time;
-
-      const one_time_data = {
-        user_id: teacher_id,
-        type: 'teacher',
-        for_calendar: true
-      }
-
-      const one_time_res = await axios.post(server.URL + '/api/lessons/get_one_time_lessons', one_time_data)
-
-      this.oneTimeLessons = one_time_res.lessons;
-
-      this.calendarOptions.events = res.reserved.map(res => {
-        return {
-          groupId: 'reserved',
-          start: res.start,
-          end: res.end,
-          color: 'red',
-          display: 'background',
-          overlap: false,
-          title: 'Антонов'
-        }
-      })
-
-      const inactive_time = res.inactive_time.map(res => {
-        return {
-          groupId: 'inactive',
-          start: res.start,
-          end: res.end,
-          color: '#333333',
-          display: 'background',
-          overlap: false,
-        }
-      })
-
-      this.calendarOptions.events = this.calendarOptions.events.concat(inactive_time);
-
-      this.oneTimeLessonsForCourse = res.one_time;
-      const one_time_for_course = res.one_time.map(res => {
-        return {
-          groupId: 'one_time_for_course',
-          start: res.start,
-          end: res.end,
-          color: 'red',
-          display: 'background',
-          overlap: false,
-        }
-      })
-
-      this.calendarOptions.events = this.calendarOptions.events.concat(one_time_for_course);
-
-      const group_time = res.group_time.map(res => {
-        return {
-          groupId: 'group',
-          start: res.start,
-          end: res.end,
-          color: 'red',
-          display: 'background',
-          overlap: false,
-          title: 'Группа'
-        }
-      })
-      this.calendarOptions.events = this.calendarOptions.events.concat(group_time);
-
+    async getCalendarActivity() {
       if (this.isOneTime) {
-        const one_time = this.oneTimeLessons.map(lesson => {
-          return {
-            groupId: 'one_time',
-            start: lesson.start,
-            end: lesson.end,
-            color: 'red',
-            display: 'background',
-            overlap: false,
-          }
-        });
-
-        const inactiveCalendarTime = this.inactiveCalendarTime.map(lesson => {
-          return {
-            groupId: 'inactive_calendar_time',
-            start: lesson.start,
-            end: lesson.end,
-            color: '#333333',
-            display: 'background',
-            overlap: false,
-          }
-        })
-
-        this.calendarOptions.events = this.calendarOptions.events.concat(inactiveCalendarTime);
-        this.calendarOptions.events = this.calendarOptions.events.concat(one_time);
-
-        this.calendarOptions.events = this.calendarOptions.events.filter(e => e.groupId != 'one_time_for_course');
-      }
-
-      if (isGroup) {
-        this.calendarOptions.selectable = false;
-        this.calendarOptions.editable = false;
-        this.calendarOptions.events = this.calendarOptions.events.filter(e => e.id != 'groupSchedule');
-        const scheduleEvents = schedule.map(sc => {
-          return {
-            id: 'groupSchedule',
-            start: sc.startDate,
-            end: sc.endDate,
-          }
-        })
-
-        this.dates = scheduleEvents;
-
-        this.calendarOptions.events = this.calendarOptions.events.concat(scheduleEvents);
+        await this.getCalendarActivityForOneTime();
+      } else {
+        await this.getCalendarActivityForCourse();
       }
 
       if (this.edit === 'course') {
@@ -260,9 +159,43 @@ export default {
       }
 
       if (this.edit === 'lesson') {
-        this.calendarOptions.events = this.calendarOptions.events.concat([this.lesson])
+        this.calendarOptions.events = this.calendarOptions.events.concat(this.editLesson)
       }
     },
+
+    async getCalendarActivityForCourse() {
+      const calendar_activity = await axios.post(server.URL + '/api/calendar/get_calendar_activity_for_course', {
+        teacher_id: this.formInputs.teacher,
+      });
+
+      this.calendarOptions.events = calendar_activity.coursesTime;
+      this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.inactiveTime);
+      this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.groupTime);
+      this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.oneTime);
+
+      if (this.formInputs.isGroupSubject) {
+        this.calendarOptions.selectable = false;
+        this.calendarOptions.editable = false;
+        this.calendarOptions.events = this.calendarOptions.events.filter(e => e.id != 'groupSchedule');
+
+        const scheduleEvents = this.getEditEvents(this.formInputs.groupScheduleDates, 'groupSchedule');
+        this.dates = scheduleEvents;
+        this.calendarOptions.events = this.calendarOptions.events.concat(scheduleEvents);
+      }
+    },
+
+    async getCalendarActivityForOneTime() {
+      const calendar_activity = await axios.post(server.URL + '/api/calendar/get_calendar_activity_for_one_time', {
+        teacher_id: this.formInputs.teacher,
+      });
+
+      this.calendarOptions.events = calendar_activity.coursesTime;
+      this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.inactiveTime);
+      this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.groupTime);
+      this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.oneTime);
+      this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.inactiveCalendarTime)
+    },
+
     eventDropped(params) {
       const datesIndex = this.dates.findIndex(event => event.id == params.event.id);
       const calendarIndex = this.calendarOptions.events.findIndex(event => event.id == params.event.id);
@@ -275,8 +208,13 @@ export default {
         overlap: false
       };
     },
+
     async getFormData(value) {
-      if (value.isGroup && !value.group) {
+      this.formInputs.isGroupSubject = value.isGroupSubject;
+      this.formInputs.groupScheduleDates = value.schedule;
+      this.formInputs.teacher = value.teacher;
+
+      if (value.isGroupSubject && !value.group) {
         this.overlay = true;
         return
       }
@@ -286,40 +224,32 @@ export default {
         this.calendarOptions.selectable = true;
         this.calendarOptions.editable = true;
 
-        if (this.edit === 'course' && !value.isGroup) {
+        if (this.edit === 'course' && !value.isGroupSubject) {
           await this.getCourse(this.$route.params.course);
-          this.editCourseLessons = this.course.dates.map(d => {
-            return {
-              id: this.eventCounter++,
-              start: d.startDate,
-              end: d.endDate,
-            }
-          })
-
+          this.editCourseLessons = this.getEditEvents(this.course.dates);
           this.dates = this.editCourseLessons;
+
         } else if (this.edit === 'lesson') {
           await this.getLesson(this.$route.params.lesson);
-          this.lesson = {
-            id: this.eventCounter++,
-            start: this.lesson.start,
-            end: this.lesson.end
-          }
+          this.editLesson = this.getEditEvents([this.lesson])
+          this.dates = this.editLesson;
+          this.calendarApi.gotoDate(this.editLesson[0].start);
 
-          this.dates = [this.lesson];
-          let calendarApi = this.$refs.fullCalendar.getApi();
-          calendarApi.gotoDate(this.lesson.start);
         } else {
           this.dates = [];
         }
-        await this.getTeacherLessons(value.teacher, value.isGroup, value.schedule)
+        await this.getCalendarActivity(value.teacher);
+        // await this.getTeacherLessons(value.teacher, value.isGroup, value.schedule)
       } else {
         this.overlay = true;
       }
     },
+
     removeEvent(eventId) {
       this.dates = this.dates.filter(d => d.id != eventId);
       this.calendarOptions.events = this.calendarOptions.events.filter(e => e.id != eventId);
     },
+
     changedPassForm(pass) {
       this.pass = pass;
 
@@ -330,27 +260,12 @@ export default {
         }
       }
     },
-    async getCourse(course_id) {
-      const data = {
-        course_id: course_id
-      }
-      const res = await axios.post(server.URL + '/api/courses/get', data);
-      this.course = res.course;
-    },
-    async getLesson(lesson_id) {
-      const data = {
-        lesson_id: lesson_id
-      }
-      const res = await axios.post(server.URL + '/api/lessons/get', data);
-      this.lesson = res.lesson;
-    },
 
-    changedOneTime(onetime) {
+    async changedOneTime(onetime) {
       this.isOneTime = onetime;
 
-      const validDate = {
-        start: moment().startOf('week'),
-        end: moment().add(4, 'w').endOf('week').add('1', 'd')
+      if (this.formInputs.teacher) {
+        await this.getCalendarActivity();
       }
 
       if (this.isOneTime) {
@@ -363,38 +278,10 @@ export default {
           },
           dayHeaderFormat: false,
           validRange: {
-            start: validDate.start.format('YYYY-MM-DD'),
-            end: validDate.end.format('YYYY-MM-DD')
+            start: moment().startOf('week').format('YYYY-MM-DD'),
+            end: moment().add(4, 'w').endOf('week').add('1', 'd').format('YYYY-MM-DD')
           }
         }
-
-        const one_time = this.oneTimeLessons.map(lesson => {
-          return {
-            groupId: 'one_time',
-            start: lesson.start,
-            end: lesson.end,
-            color: 'red',
-            display: 'background',
-            overlap: false,
-          }
-        });
-
-        const inactiveCalendarTime = this.inactiveCalendarTime.map(lesson => {
-          return {
-            groupId: 'inactive_calendar_time',
-            start: lesson.start,
-            end: lesson.end,
-            color: '#333333',
-            display: 'background',
-            overlap: false,
-          }
-        })
-
-        this.calendarOptions.events = this.calendarOptions.events.concat(inactiveCalendarTime);
-        this.calendarOptions.events = this.calendarOptions.events.concat(one_time);
-
-        this.calendarOptions.events = this.calendarOptions.events.filter(e => e.groupId != 'one_time_for_course');
-
         return;
       }
 
@@ -409,29 +296,35 @@ export default {
         validRange: false
       }
 
-      let calendarApi = this.$refs.fullCalendar.getApi()
-      calendarApi.today();
+      this.calendarApi.today();
+    },
 
-      this.calendarOptions.events = this.calendarOptions.events.filter(e => e.groupId != 'one_time' && e.groupId != 'inactive_calendar_time');
-
-      this.calendarOptions.events = this.calendarOptions.events.concat(this.excludedEvents)
-
-      const one_time_for_course = this.oneTimeLessonsForCourse.map(lesson => {
+    getEditEvents(dates, new_id) {
+      console.log(new_id)
+      return dates.map(d => {
         return {
-          groupId: 'one_time_for_course',
-          start: lesson.start,
-          end: lesson.end,
-          color: 'red',
-          display: 'background',
-          overlap: false,
+          id: new_id ?? this.eventCounter++,
+          start: d.start,
+          end: d.end,
         }
+      })
+    },
+
+    async getCourse(course_id) {
+      const courseResult = await axios.post(server.URL + '/api/courses/get', {
+        course_id: course_id
       });
-
-      this.calendarOptions.events = this.calendarOptions.events.concat(one_time_for_course);
-
-    }
+      this.course = courseResult.course;
+    },
+    async getLesson(lesson_id) {
+      const lessonResult = await axios.post(server.URL + '/api/lessons/get', {
+        lesson_id: lesson_id
+      });
+      this.lesson = lessonResult.lesson;
+    },
   },
   async mounted() {
+    this.calendarApi = this.$refs.fullCalendar.getApi();
   }
 }
 </script>
