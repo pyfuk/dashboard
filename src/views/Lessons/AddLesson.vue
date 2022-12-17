@@ -100,7 +100,7 @@ export default {
       editCourseLessons: [],
       isOneTime: false,
       oneTimeLessons: [],
-      inactiveCalendarDays: [],
+      inactiveCalendarTime: [],
       excludedEvents: [],
       oneTimeLessonsForCourse: [],
       lesson: '',
@@ -143,7 +143,9 @@ export default {
       const data = {
         teacher_id: teacher_id,
       }
-      const res = await axios.post(server.URL + '/api/courses/get_teacher_reserved_time', data)
+      const res = await axios.post(server.URL + '/api/courses/get_teacher_reserved_time', data);
+
+      this.inactiveCalendarTime = res.inactive_calendar_time;
 
       const one_time_data = {
         user_id: teacher_id,
@@ -219,6 +221,18 @@ export default {
           }
         });
 
+        const inactiveCalendarTime = this.inactiveCalendarTime.map(lesson => {
+          return {
+            groupId: 'inactive_calendar_time',
+            start: lesson.start,
+            end: lesson.end,
+            color: '#333333',
+            display: 'background',
+            overlap: false,
+          }
+        })
+
+        this.calendarOptions.events = this.calendarOptions.events.concat(inactiveCalendarTime);
         this.calendarOptions.events = this.calendarOptions.events.concat(one_time);
 
         this.calendarOptions.events = this.calendarOptions.events.filter(e => e.groupId != 'one_time_for_course');
@@ -365,6 +379,18 @@ export default {
           }
         });
 
+        const inactiveCalendarTime = this.inactiveCalendarTime.map(lesson => {
+          return {
+            groupId: 'inactive_calendar_time',
+            start: lesson.start,
+            end: lesson.end,
+            color: '#333333',
+            display: 'background',
+            overlap: false,
+          }
+        })
+
+        this.calendarOptions.events = this.calendarOptions.events.concat(inactiveCalendarTime);
         this.calendarOptions.events = this.calendarOptions.events.concat(one_time);
 
         this.calendarOptions.events = this.calendarOptions.events.filter(e => e.groupId != 'one_time_for_course');
@@ -386,7 +412,7 @@ export default {
       let calendarApi = this.$refs.fullCalendar.getApi()
       calendarApi.today();
 
-      this.calendarOptions.events = this.calendarOptions.events.filter(e => e.groupId != 'one_time' && e.groupId != 'inactive_dates');
+      this.calendarOptions.events = this.calendarOptions.events.filter(e => e.groupId != 'one_time' && e.groupId != 'inactive_calendar_time');
 
       this.calendarOptions.events = this.calendarOptions.events.concat(this.excludedEvents)
 
@@ -422,12 +448,12 @@ export default {
 }
 
 #AddLessonCalendar td.fc-timegrid-col.fc-day {
-  background-color: rgba(189, 243, 189, 0.3);
-  /*background-color: inherit !important;*/
+  /*background-color: rgba(189, 243, 189, 0.3);*/
+  background-color: inherit !important;
 }
 
-#AddLessonCalendar .fc .fc-timegrid-col.fc-day-today {
-  background-color: rgba(189, 243, 189, 0.3) !important;
-}
+/*#AddLessonCalendar .fc .fc-timegrid-col.fc-day-today {*/
+/*  background-color: rgba(189, 243, 189, 0.3) !important;*/
+/*}*/
 
 </style>
