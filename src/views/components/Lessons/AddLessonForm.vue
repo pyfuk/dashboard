@@ -30,12 +30,6 @@
         <argon-switch v-model="form.onetime"></argon-switch>
       </div>
 
-      <label v-if="!form.onetime && !isSelectedSubjectWithGroup" :for="form.onetime" class="form-control-label"
-      >{{ $t('courses.pass') }}</label>
-      <argon-select v-if="!form.onetime && !isSelectedSubjectWithGroup" v-model="form.pass"
-                    :options="passes"></argon-select>
-
-
       <hr class="horizontal dark"/>
       <label class="form-control-label"
       >{{ $t('courses.time') }}</label>
@@ -84,11 +78,9 @@ export default {
         subject: '',
         teacher: '',
         group: '',
-        pass: '4',
         onetime: false,
       },
       teachers: [],
-      passes: [],
       user_id: '',
       subjects: [],
       groupsForSelect: [],
@@ -110,10 +102,6 @@ export default {
   },
   methods: {
     async addLesson() {
-      if (this.dates.length < this.form.pass / 4) {
-        this.toast.error(this.$t('notifications.add_time_for_lesson'))
-      }
-
       const dates = this.dates.map(date => {
         const startDate = moment(date.start).tz(timeZone)
         const endDate = moment(date.end).tz(timeZone);
@@ -132,7 +120,6 @@ export default {
           dates,
           course_id: this.course.id,
           teacher_id: this.form.teacher,
-          pass: this.form.pass,
           group_id: this.form.group || undefined
         }
 
@@ -160,7 +147,6 @@ export default {
           teacher_id: this.form.teacher,
           group_id: this.form.group,
           type: this.form.onetime ? 'one_time' : 'pass',
-          pass: this.form.pass,
         }
 
         await axios.post(server.URL + '/api/lessons/create', data)
@@ -186,18 +172,6 @@ export default {
     async getSubjects() {
       const response = await axios.post(server.URL + '/api/subjects/get_all');
       this.subjects = response.subjects;
-    },
-    async getPasses() {
-      const res = await axios.post(server.URL + "/api/passes/get_all");
-
-      this.passes = res.passes.map(pass => {
-        return {
-          name: pass,
-          value: pass
-        }
-      });
-
-      this.changedPassForm();
     },
     parseDate(date) {
       const startDate = moment(date.start).tz(timeZone)
@@ -232,9 +206,6 @@ export default {
     },
     removeCalendarEvent(eventId) {
       this.$emit('removeEvent', eventId);
-    },
-    changedPassForm() {
-      this.$emit('changedPassForm', this.form.pass)
     },
     async getGroupSchedule() {
       const data = {
@@ -271,7 +242,6 @@ export default {
   async mounted() {
     this.user_id = this.$route.params.id;
     await this.getSubjects();
-    await this.getPasses();
 
     if (this.edit === 'course') {
       this.isCourseEdit = true;
@@ -279,7 +249,6 @@ export default {
       this.form.subject = this.course.subject.id;
       await this.getTeachersBySubject()
       this.form.teacher = this.course.teacher.id;
-      this.form.pass = this.course.pass;
       await this.getGroupSchedule();
       this.form.group = this.course.group
     }
@@ -313,9 +282,6 @@ export default {
       if (this.isSelectedSubjectWithGroup && this.form.teacher) {
         this.getGroupSchedule()
       }
-    },
-    'form.pass'() {
-      this.changedPassForm();
     },
     'form.onetime'() {
       this.$emit('onetime', this.form.onetime);
