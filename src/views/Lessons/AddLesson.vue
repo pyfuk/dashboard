@@ -84,12 +84,12 @@ export default {
         //select
 
         selectable: true,
-        selectOverlap: false,
+        selectOverlap: this.isAllowOverlap,
         select: this.selectedEvent,
         selectAllow: this.isSelectAllow,
 
 
-        eventClick: this.eventClicked,
+        // eventClick: this.eventClicked,
       },
       dates: [],
       overlay: true,
@@ -112,6 +112,10 @@ export default {
     }
   },
   methods: {
+    isAllowOverlap(event) {
+      return event.overlap;
+    },
+
     isSelectAllow(event) {
       if (this.isOneTime && moment().add('24', 'h').isAfter(event.start)) {
         return false
@@ -188,6 +192,7 @@ export default {
       this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.groupTime);
       this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.oneTime);
       this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.inactiveCalendarTime)
+      this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.activeCalendarTime)
     },
 
     eventDropped(params) {
