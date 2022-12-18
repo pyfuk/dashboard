@@ -80,7 +80,6 @@ export default {
         eventDurationEditable: false,
         eventDrop: this.eventDropped,
 
-
         //select
 
         selectable: true,
@@ -131,7 +130,6 @@ export default {
           id,
           start: event.start,
           end: event.end,
-          overlap: false,
         }]
 
       this.dates = [...this.dates, {
@@ -204,7 +202,6 @@ export default {
         id: params.event.id,
         start: params.event.start,
         end: params.event.end,
-        overlap: false
       };
     },
 
@@ -238,7 +235,6 @@ export default {
           this.dates = [];
         }
         await this.getCalendarActivity(value.teacher);
-        // await this.getTeacherLessons(value.teacher, value.isGroup, value.schedule)
       } else {
         this.overlay = true;
       }
@@ -288,7 +284,6 @@ export default {
     },
 
     getEditEvents(dates, new_id) {
-      console.log(new_id)
       return dates.map(d => {
         return {
           id: new_id ?? this.eventCounter++,
