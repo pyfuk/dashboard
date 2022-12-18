@@ -168,7 +168,8 @@ export default {
       this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.inactiveTime);
       this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.groupTime);
       this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.oneTime);
-
+      this.calendarOptions.events = this.calendarOptions.events.concat(calendar_activity.activeCalendarTime)
+      
       if (this.formInputs.isGroupSubject) {
         this.calendarOptions.selectable = false;
         this.calendarOptions.editable = false;
